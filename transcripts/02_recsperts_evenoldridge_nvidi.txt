@@ -1,0 +1,392 @@
+Note: This transcript has been generated automatically using OpenAI's whisper and may contain inaccuracies or errors. We recommend listening to the audio for a better understanding of the content. Please feel free to reach out if you spot any corrections that need to be made. Thank you for your understanding.
+
+What are the most complex machine learning problems out there?
+Recommender systems, like when we say, you know, I'm building a recommender system or here's a recommender system, generally we're talking about the model, like the ranking model.
+That's like an engine but not a car, right?
+Like it's a part of a broader system.
+And I think we've kind of done a disservice in naming that a recommender system because it's really a recommender model.
+The context of like what I want to watch when I turn on Netflix at night, that can change dramatically.
+Like you're literally trying to model a human's preference and you know, the number of confounding variables in that is like astronomical.
+Deep learning is very hard to do correctly.
+I think deep learning is the future.
+It's very hard right now, right, to do deep learning.
+But that's a big part of what my team's working on at Merlin is, you know, we're trying to make recommender systems easier to build and make recommender systems easier to deploy into production.
+And that's not just deep learning.
+Welcome to this second episode of RECSPERTS, recommender systems experts.
+This time I'm welcoming and very excited to be joined by Even Oldridge, who is a senior manager with NVIDIA and is joining me nine hours apart from Canada, actually from Vancouver, where for those that are aware of it, the RECSPERTS took place in 2018, quite some time ago, but nice place to have a conference there.
+Hello, even nice to have you on board.
+Great to be here, Marcel, and honored really to be, you know, especially after Kim took the first slot to be your second guest is a huge honor.
+It's funny you mentioned the Vancouver RecSys.
+That was really my introduction to the RecSys community and a chance to make connections.
+And it was that moment of finding your tribe really of like, you know, being in amongst hundreds of people who were so deep into recommenders and embedding spaces and that mental model.
+It just, I mean, it launched my career really, it like put me into the role of NVIDIA through some tweets that my boss caught, but that sort of he ended up running into.
+And yeah, it's a pleasure to be here.
+Cool. Yeah, thanks. I'm really grateful that you directly said yes.
+It's really nice feedback for me to see people that are joining this really early stage show.
+Actually, the RecSys 2018 in Vancouver was also, I guess, the first time that we met each other because this was still the time where you have been with Realtor, I guess.
+So I saw your presentation over there and coming from industry and also then this year in 2021, becoming also an industry co-chair with the conference and involving much more with the community.
+So it's very interesting. Can you give us just a picture?
+How did you join the field? I saw that you have a PhD in electrical engineering and computer engineering from the University of British Columbia.
+But of course, from there to RecSys, it must have been quite a path.
+It's a bit of a gap. I think I came to RecSys the way a lot of people come to it, which is sort of like being in the right place at the right time.
+I did a PhD. So first I did a master's in programmable logic.
+So like hardware design and have a deep appreciation for that aspect.
+I did a PhD in computer vision and was interested in the computer vision side.
+This is pre-deep learning. I'm dating myself a little bit here, but pre-deep learning computer vision is very different from today's computer vision, much more about feature engineering and the other aspects there.
+And it was sort of through that I was teaching and like doing sessional teaching and running some courses at UBC and some interactive art courses at Emily Carr, the local university as well.
+And an opening came up at a company called Plenty of Fish. They're one of the biggest online dating sites in the world.
+And I started there initially to do some computer vision work.
+I think the idea was detecting photos that are inappropriate was the starting point.
+But it very quickly became clear that there was the recommender system problem there was the core part of the business.
+And it had been run by the founder for a very long time.
+But he was very involved in scaling up the mobile side of things and growing the business there.
+And there was opportunities to really dig into some technologies.
+And the solutions there were pretty old.
+And we started getting into some interesting methods, nothing too advanced really.
+But I think it was a very interesting exploration and an interesting space sort of person to person so that the users and the items are the same in the same space.
+They are the same thing. But the interactions are, you know, and it made for a very, very interesting RecSys problem.
+And then when it came to Realtor, it was kind of the same transition.
+I left Plenty of Fish after they were sold. So we sold to the match group.
+And I took a break for a couple of months.
+I really learned deep learning through the fast AI course and got super into that.
+Oh, OK. OK. At Plenty of Fish, was this also the first time there where you transitioned from the computer vision domain into the RecSys domain?
+And then directly starting right off with reciprocal recommender systems, which are a bit more special than, as you said, the standard setting.
+Yeah, my world for recommenders was reciprocal for a very long time and unique market recommenders, which are different from, you know, like there is only one person, you know, one person that you can end up with in the online dating space.
+And that's sort of when I went to Realtor, it was a similar situation.
+There's only one family that can buy that house or person that can buy that house, right, or that apartment or whatever.
+And that, you know, that journey of getting to that unique properties of the house and understanding how and where and when and why you're going to make that purchasing decision within the market and how to surface that trajectory or that journey. It's a very interesting space to be in and to look at.
+Okay, I see. So this was some of the consistency when you transitioned from plenty of fish to Realtor, the uniqueness of the let's call them items, even though they were persons in the former case.
+Yeah, quite interesting. So I guess this was also, as I said, Realtor, where you gave the presentation about your approaches at Realtor.
+But I guess sometimes the consequences of buying a house or dating a new person are quite different.
+But if they go right, you know, like the house purchase is the biggest financial decision most people make in their lives, right?
+And the online dating, like when you really do find that right partner, it's like it's the biggest social decision you make in your life.
+So it's like they're very similar problems in that way, right?
+Yeah, okay, I see. So and then at Realtor, I guess, for how long did you stay with them?
+I was at Realtor for three years and sort of, I guess, towards the end, I was doing a lot of work in Tabular deep learning specifically, like not necessarily in the RecSys space, but just in Tabular relative to, you know, tree based models and other solutions.
+And my current boss, Nico, had seen a tweet, you know, just kind of got on onto Twitter through the RecSys community at RecSys. And somebody kind of tweeted about my talk and had shared that with him.
+And he had some questions and we ended up having kind of a back and forth messaging on Twitter at the time.
+And then, you know, four or five months later, maybe not even that, maybe two or three months later, a posting came up that he'd sort of shared.
+They were looking for somebody at NVIDIA to tackle Tabular deep learning.
+And that was the starting point. And I joined NVIDIA to do, you know, basically, there's a software suite called RAPIDS, which is, you know, the Python data science ecosystem on GPU.
+So you can do data frame operations, you can do, you know, accelerated everything, everything that sort of in the Python ecosystem.
+And it's an amazing product. And what we looked at doing was like joining that to the framework. So figuring out how to make that work in TensorFlow and PyTorch.
+So that means that RAPIDS.ai, together with QDF and QPy, they were already there, but there was no RecSys framework at that time.
+And it was somehow like, hey, even you have done RecSys, you have a good track record as a team lead. So please build that up, build your team and go for it.
+Was it like that? Yeah, pretty much. I mean, it started out as this like, wow, this is a big market that, you know, as in NVIDIA, we haven't really traditionally served.
+And the solutions that we have in the space, like if you look at even today, how TensorFlow performs on recommender system workflows out of the box, is there's real issues.
+And those stem from historical reasons a little bit. And, you know, some of that's on the hardware side, and there's been big improvements there.
+So we've gone from, you know, like when I first started digging into the deep learning side, 11 gigs was a big GPU for memory, right?
+You know, and now we're looking at the DGX or the like the 100 cards have 80 gigs of memory.
+And more than that, like memory bandwidth is actually super important.
+So if you look at the structure of a recommender system, like the embeddings are the core part of it, but they're making it unique, right?
+And so really, like being able to look up that memory efficiently is the most important aspect of that training process.
+And really, like the A100 cards have roughly 10 times the memory bandwidth of the most performance CPU you can find.
+Right? So suddenly you can get to these, you know, these crazy fast performance measures on the hardware, but the software wasn't keeping up because it was designed from an era of computer vision, right?
+And with computer vision, you've got these big images, these big vectors, and you're feeding those in, you know, and passing that through the model.
+And the model is what makes up most of the weights. You're not like those memory lookups are not a constraint, and the IO is not a constraint.
+And one of the first things I did when I was at NVIDIA was like looking at how the data loaders were performing on recommender data.
+Like a RecSys data, it's a single line in a data frame. It's an interaction point with user features and item features, right?
+So it's very, very small from a, you know, like relative to an image.
+And you want to batch and collate a bunch of those together as best you can.
+And so we worked on techniques for doing that to really make a difference in performance.
+And so that was my kind of my first work was it's now we call it the MV Tabular Data Loader.
+We're probably renaming it in the next sort of section into Merlin has become the overarching umbrella that NVIDIA talks about RecSys as.
+Because I see there are quite a lot of terms that are circulating around this.
+I just found Merlin, then there's Triton, there's NV Tabular, and then you have something else.
+So maybe we'll bring them some order into that.
+So I got so far that Merlin is rather the overarching and it's also called the Merlin team, I guess.
+Yeah.
+Taking just a step back.
+So it's really interesting though, how dots connect backwards.
+If you look back, just to think about why we go through your maybe past 10 years a bit fast.
+I have to think about that speech that Steve Jobs once gave where he said, okay, to totally make sense if you look backwards, but not if you look forward.
+So you have been embarking on deep learning with your work in fast AI.
+You have been joining the RecSys field at Plenty of Fish.
+And what was really the time where you said, hey, I should combine them.
+I should apply deep learning to recommender systems.
+Yeah, that came.
+So I left Plenty of Fish and started on the deep learning side of things and got really into the deep learning.
+And I wasn't sure when I left Plenty of Fish if I really wanted to go back into data science because a lot of the work like data science can split into two directions.
+The machine learning side and the sort of more of the analytic side.
+And I found towards the end of my work, my work time at Plenty of Fish, I was doing more analytics and it wasn't kind of what I was just interested in.
+And so I was looking at data engineering roles and this and that.
+And then I stumbled across fast AI and I'd taken the time off.
+And so I had a young kid and I was spending time with them and then really digging into the course in a serious way.
+Like I was doing it full time essentially.
+And that really let me go deep into the recommender systems.
+I guess the recommender systems part, you know, there's a very brief, brief section of neural collaborative filtering that gets covered.
+And I went into that.
+And then when I started looking at roles, the Realtor.com role, I kind of went into that explicitly from the like, hey, I know recommender systems and deep learning.
+I mean, really, I didn't know anything.
+Like, you know, it took several years to get even further up to speed, you know, and I still like it's there's so much in the space and in the field that it's really hard to maintain everything.
+So so referring to that example that you just mentioned, so neural collaborative filtering, whereas it has been quite some controversy around, there are three different, I would say, maybe, maybe scenarios of data that you're basically using.
+So on the one side, you have that interaction data where you just basically try to factorize the matrix of users and items.
+And then, of course, you you go beyond it and try to exploit your metadata, I guess, like you have quite successfully done with your feature engineering or the RecSys competitions we will come to later.
+And the third part is really when it comes to leveraging unstructured data like photos or some tech.
+I always have to think about that very illustrative blog post by Sander Dielemann from Spotify back in 2013, where he was referring to the smell spectrograms that he kind of created as fingerprints for music and then was applying deep learning to it coming up with new clusters.
+So that was very funny.
+Where did you find that deep learning is really contributing here and making a difference?
+Was it really on pure interactional or transactional data like this user item interactions or was it when it came to the tabular or even the unstructured data there at Realtor?
+At Realtor, it was a discovery process.
+Features are key to, because the items are so unique and you can't build up a history of the item in the market when it is on the market for 10 or 15 days.
+So similar to a lot of other marketplaces, you really have to use the user and item features.
+So we were using user and item features and building embeddings from that.
+And we used things like denoising autoencoders to build up a vector representation and other elements.
+And I think one of the key things that I still am working towards actually, the new work that we're doing in Merlin is splitting those models up.
+How do you get to the point where you can run these systems in production?
+And I think the key difference and the key challenge I see in the Rexxus space is the data sets that we have are not really representative of what's going on in production environments.
+And so there's a big gap and challenge from the research community and from the public perception.
+Like if you Google recommender systems, you're going to find matrix factorization based solutions.
+Movie lens.
+90% of the time. Movie lens based. Yeah, exactly.
+And movie lens is a great data set and it's a good starting point, but it's like MNIST, right?
+Like you wouldn't build a modern computer vision system off of MNIST, right?
+So it's really, and it just doesn't reflect what's going on in the major companies.
+And I think like working now at NVIDIA, like one of the beautiful things about being at NVIDIA is as my founder Jensen says, it's the only AI company that works with every other AI company. So we're talking to everybody.
+That's a good way of putting it.
+Yeah. And it's really fun to be in that position, right?
+But when you get into the upper end of things, nearly everybody's using deep learning based models.
+The data, I think, to get to that scale, once you hit that scale, then deep learning becomes the dominant life form there, for lack of a better term.
+It's when you say nearly everyone is using deep learning.
+So how did you feel when that shock was going through the community in 2019, whether the Rexus was taking place in Copenhagen with paper, are we really making much progress of worrying analysis of recent new recommendation approaches?
+It didn't shock me honestly, because I think like there's a recent paper by Hutter that covers how tabular deep learning actually, if you properly regularize, you can beat XGBoost and LGBM.
+And I think you're like, there's back and forth in this domain.
+It's one of those funny things where I think on the data sets that are available to researchers, it's probably true that deep learning isn't necessarily the best solution.
+And I think that even can include the Rexus challenges, right?
+Like the Rexus challenges that the team worked on this year, and even last year and the year before, it's a mixture of XGBoost and neural models.
+And generally, the single best model is an XGBoost model.
+When you've got a finite chunk of data, like most companies in production with their deep learning models, they're doing iterative training. So they have this baseline model that has this contextual representation of years worth of data, and they're updating that model on the next day's worth, right?
+I mean, there's dangers to that too, in terms of like, you know, catastrophic forgetting and other issues there.
+But it tends to be, you know, there's like there's ways to train much, much larger, longer data sets using deep learning to build up context over time and develop.
+And the other thing is, like you said, those representations of users and items, and like you can feed those into tree based models, but it's not as effective, or it's not as easy to do, I guess.
+I think deep learning is the future. It's very hard right now, right, to do deep learning.
+But that's a big part of what my team is working on at Merlin is, you know, we're trying to make recommender systems easier to build and make recommender systems easier to deploy into production.
+And that's not just deep learning.
+So when it comes to that point, I found the paper that you were co-authoring with Deep Mayana and Gabrielle Moreira, actually, the later one, I guess, is also one of your colleagues.
+In 2020, that you presented along with the Rexas Challenge Workshop about why are deep learning models not consistently winning recommender systems competitions yet?
+Was this somehow kind of a response to the paper in the previous year, or what actually were the reasons you found out in that paper?
+Yeah, I mean, if you go through the paper, you find, you know, mostly we're asking questions rather than giving answers, right?
+I don't think it is. I don't think there are clear answers per se. I think a lot of the paper was speculative.
+And, you know, my part of that speculation and my biggest contribution there, you know, like, Deep Mar and Gabrielle did the vast majority of the work there on the paper, and we're gracious enough to make me an author because of the additional contributions that I made to it.
+But really, my contributions and arguments came in the form of like digging into that dataset size and that dataset sort of, like the gaps there, sort of conclusions that you would draw on different datasets.
+I'd like to figure out a systematic way to study that too, and to be able to say, like, okay, here is the size at which deep learning makes sense.
+Here's the size at which, you know, these more traditional models makes sense, right?
+And to be able to say, like, in this context, this is a better method or, you know, in this situation or that, because I think it's not, I don't think you can say de facto that any one solution is going to fit the bill all the time.
+I guess this is also what you mentioned as one of the three top categories of potential reasons that you're speculating about might also be the motivation of researchers.
+So I guess it's not bad if someone tries deep learning, even though he or she might not outperform some existing heuristics or something like that.
+But I guess it's always nice for the field to explore more solutions towards a problem, because I guess by that, you may also understand the problem a bit better.
+So because I remember that, colleagues that I have a constant discussion about, and I wouldn't say that he's against deep learning or using deep learning for everything, but he is a big fan of mathematical modeling, which I guess has also a good reason to use it.
+But sometimes it feels like deep learning gets turned down just because you have these sometimes unsolid works or non-reproducible works, and then kind of deep learning gets kind of reflected bad by the stuff somehow.
+Deep learning is very hard to do correctly.
+Good point, yeah.
+One of the things we tried to do in the Transformers for Arc paper when we were digging into that as an example was, first of all, to run it against non-deep learning baselines.
+Because I think that's a common mistake that a lot of people doing deep learning papers do, is they compare against only deep learning.
+But the other thing is, when we ran that paper in the evaluation studies that we were doing, we were doing 50 or 100 hyperparameter tuning stages.
+So we'd do five at a time for, I believe it was for 10 or 20 times.
+To really get to the point where the model performance is acceptable, and you can see these curves, and something that we're looking into and trying to figure out how to present this information is, how do you know when your model is tuned properly in terms of the hyperparameters?
+That's a big question and a big problem in the RecSys space, and it makes a huge difference in terms of model performance.
+You can see the relative performance gradually.
+It can change over time.
+And the other thing is, if you're only measuring a single run, so we were running multiple runs to get the mean and standard deviation of those final outputs, if you're only running a single run, I'm very informed by a paper I did in my masters.
+We were doing this research into programmable logic, and one of the tasks in programmable logic is scheduling.
+So how do you get the connections from all the pieces on the chip from one to another in the way that they're supposed to go?
+There's all these different parameters that you can input into the FPGA for configurations to try and provide the optimal solutions.
+And so what we were trying to study was, what is the impact of each of these different components?
+And what I pushed on team and what we worked on and added to it was just the random variable, the random seed that we stick in, how much does that play an effect on the final outcome of the model?
+Because many times, this is a lot of compute we're talking about. You're running these things over hours or days.
+And so sometimes you're looking at a single run.
+And it turns out that that random variable was one of the most significant contributing factors to the final performance of the model.
+So if that's the case, then it's pretty easy to, especially if you're looking for a solution and you're looking amongst a bunch of hyperparameter options and saying, oh, wow, this solution here is the best I can get to.
+If you're cherry picking your hyperparameters and your random seed and getting to that final best solution, the variability can be high in some instances.
+That's one reason not to use deep learning, frankly, is it's hard to do right.
+But if you, again, look at the biggest companies in the world doing recommender systems, they're doing deep learning.
+And I can tell you they're not doing it because they want the added complexity and they want the extra engineering hassle.
+They're doing it because it's making them a lot of money.
+And you can see that in some of, like, especially in the Asia Pacific region, there's been a bunch of great papers from Tencent and ByteDance and some of the other companies doing session-based recommenders.
+I'm thinking about a similar thing when you are bringing up that they are doing deep learning and they don't just do it for fun or to attract the best people, but they are doing it for profit because it has some advantage, at least at the stakes when they are that high.
+I remember just a discussion that we had yesterday where we were kind of internally presenting our insights from this year's RecSys, and we were talking about that counterfactual learning and off-policy evaluation settings, where it was also actually said you need lots and lots of data there, and the best thing to make is have everything locked that you can, and then maybe you can get to that point.
+But even there, the investment is that high.
+But once you are there and are really, for example, able to, for example, predict your A-B test results based on locks in an unbiased fashion, then this is really a huge benefit. But of course, it doesn't come for free.
+Yeah, yeah, it's a very complex space. I mean, recommender systems are, in my mind, the most complex machine learning problem out there.
+I'm part of an org that also does, you know, self-driving cars, and I think that's a very challenging problem.
+But the context of driving a car hasn't changed in a decade or two.
+So the problem is very clear and defined.
+The context of what I want to watch when I turn on Netflix at night, that can change dramatically.
+You're literally trying to model a human's preference, and the number of confounding variables in that is astronomical, right?
+And now you're trying to do that across a whole set of people.
+It kind of boggles my mind that we can do anything beyond popularity.
+But it's great that we can, and I think that there's been a lot of great work and solutions.
+And I mean, the great thing about deep learning based is that it really lets you model individuals and try and build up representations there, I think.
+Yeah.
+The other part that we haven't done any papers on this, but I gave a talk about this recently.
+My friend Carl Higley is on the team, and I would highly recommend, I think he'd be a great sort of person for this podcast as well, because he...
+Okay. Well, definitely looks like up.
+You know, he talks a lot on Twitter about recommender systems and has a really interesting view and vision on the space, and I'm lucky enough to have him on the team.
+So he had this concept of a four-stage recommender system, and I think recommender systems, like when we say, you know, I'm building a recommender system or here's the recommender system.
+Generally, we're talking about the model, like the ranking model, that's like an engine but not a car, right?
+Like, it's a part of a broader system, and I think we've kind of done a disservice in naming that a recommender system because it's really a recommender model.
+And it gets us in trouble in terms of, like, people joining the community and coming in and understanding, you know, like, most people who haven't worked on a production system have no idea about the other stages, you know?
+Like, the idea of having to do retrieval and then...or candidate generation and then, you know, do some filtering on that based on business logic rules and then do some ranking and then do some reordering because the ranking is not the final solution in terms of what you output to the user.
+Yeah.
+You know, we're trying to build systems within the Merlin team now that allow for that kind of system to, you know, to be deployed and applied to, you know, to smaller business problems.
+Like, most companies in the RecSys space already have all of those pieces, and so they're interested in the ranking, but there's a lot of companies out there that are trying to figure out RecSys and a lot of people trying to figure out RecSys, and they, you know, there's other parts that are kind of black boxes or even boxes you don't even know that exist.
+That's an interesting differentiation you make there. So really think about model and system are not the same, the same things. So you have a great model. If you did your matrix factorization on some user item matrix, now you have your embeddings that are part of the model, but systems adds components to that model.
+Like, what is the feedback mechanism and what are the feedback loops and do I model them and how do I show it context and all that stuff? That's an interesting point you're bringing up there.
+You already mentioned it a couple of times, and I want to definitely talk about the work that you're doing currently at NVIDIA that is really amazing, the challenges that you are rocking.
+So from the challenges you see for the field and your current setting at NVIDIA, how are you addressing them and what challenges would you say you successfully addressed and you made people's or researchers or practitioners life easier?
+And where do you think this is still something that is on your roadmap or that something that you want to solve?
+Yeah, no, I mean, there's a lot on our roadmap and a lot that we want to solve. We're really trying to tackle the entirety of the Rexas space because I think nobody really has, right?
+There's a lot of homegrown solutions to each different stage and, you know, very little cohesion within the space. And what that means is there's this really high cost when you move roles.
+There's a really high cost trying to bring people into the field. It's kind of in the space where computer vision was when I was doing my PhD, right? It was like you need a PhD.
+You don't need a PhD to do Rexas work right now, but you need to invest roughly an equivalent amount of time to understand the space to be able to contribute, right?
+You know, so you need a couple of years in the field to really understand what's going on. And what we're trying to do at NVIDIA and at Merlin is basically to make recommender systems easier to build.
+So the modeling side of it. But when I say recommender systems, I really do mean that whole system. So like the retrieval models, the filtering, the ordering, all of those other components.
+And then making that easy to deploy into production, I think there's often this sort of gap at NVIDIA. We call it the burrito triangle of like you've got this great model that the data scientists have done an offline evaluation and everything looks good.
+And now they're kind of handing that off to some other team. And a lot of models go to die in that way, right? It just doesn't ever make it to production.
+I guess there is this great picture of data scientists sitting on the one side of the fence, throwing their models over the fence, and then please data engineers just bring that into production.
+But I guess that's changing with especially the involvement of machine learning engineers.
+It definitely is. And I think as a community, we're building better practices there. But, you know, there's still a lot of complexity in that space.
+And so like one of the focuses early on, you know, with the tooling we built, like mv tabular is an example. So mv tabular is a feature engineering and pre-processing library for machine learning.
+RecSys specifically, but it's generally applicable to tabular data. And, you know, and it does things like, you know, you can specify, I want to categorify all of my categorical variables.
+And you just give it the list of columns or you give it, you know, a tag of all the categorical columns, and it'll go through and it'll calculate, you know, the dictionary translation for that list.
+Or, you know, I want to normalize all my continuous variables. So it'll compute the mean and the standard deviation and it'll do all that pre-processing for you.
+One of the things it saves, so it saves a couple of things in the process. It saves a schema that represents that data. So you know, OK, these are the ranges within the embeddings and these are the values for the normalization.
+So you can apply that again. It saves the workflow as well. Like these are the things that I did to the data. And that workflow is transferable to a production environment.
+So you can take that workflow and apply it at production at inference time and be able to transform the data in the same way.
+And that like that process sort of stemmed from a challenge I ran into a realtor where like we would always have issues of like, OK, here's the transforms we did on the data.
+But now we've got to get those transforms into a production version or environment. It's very hard to like to reproduce.
+And if anything was wrong in terms of the math that was used or the ordering of the data or anything else, suddenly, you know, what's going into the model is different from what it was trained on and the garbage.
+So to some certain degree, your preprocessing is already part of your model. So this is what you kind of persist because you also fit some certain degrees of your preprocessing.
+Is that the case? That's one way of thinking about it. Yeah, it's thinking about how the preprocessing is going to work in inference.
+And I think that's like that's one of the main things that we think about. It's like, OK, how are these things going to be like there's an offline calculation of like how do we prepare these things?
+And then there's the online implications of like, how do these things work in production?
+And one of the things that you know that that you talk about a roadmap that I would like to get to is like there's there's a lot of variables or things that you calculate from a statistics perspective over the data set that are changing in the live data.
+And you may want to actually have some computation being done to figure out, OK, now that I've got this streaming data coming in, how do I use that streaming data to update the statistics to make it more, you know, more real time in that context?
+I think the iterative updating of models is something we'd really like to get to.
+So there's the feature engineering stage, the modeling stage, the candidate generation stages, all of these pieces we're trying to figure out.
+And then and then there's ways that those can be put together. Right.
+Like there's different configurations of how a RecSys model gets built up. So we're working our way up from like, OK, now we have feature engineering and ranking and inference for those two stages.
+How do we get retrieval into that picture? How do we get filtering into that picture?
+And then how do we provide a couple of configurations that are pretty common?
+Like here's an offline batch configuration that just lets you run and generate the recommendations for the user offline and store that in a Redis database for an inference API to look up.
+Right. And you just sort of that's one kind of configuration system. Here's a here's a live configuration system where you can generate all of those recommendations in real time.
+Right. Here's one that's keeping the statistics up to date.
+You know, and here's here's one that deals with sessions in a way that's like caching the sessions and computing.
+So we're like we're looking at, you know, all these different spaces or all these different parts of the RecSys space.
+I'm trying to figure out, like, how do we provide solutions and also thinking about which companies and which people when they're getting involved in this, like they may be much further down the RecSys journey in terms of like they've got a very small data set.
+You know, users and items and a couple of interactions and maybe some features and just trying to find a way to make that journey of like, okay, you've got a small simple problem.
+And then you've got some success and it's growing and you've got some more success that's growing, like making those transitions easier.
+So what would you recommend? So let's say these are smaller companies that have, as you said, their first successes with applying recommender systems to their business problem.
+And now they are thinking about how can we advance? How can we go further?
+What would you really recommend them to get started with? Because you have touched a bit on Envy Tabular.
+I actually also tried it out. And I would be interested in which parts of that whole ecosystem that you are currently building are part or were used as part of your solutions for the challenges.
+Because I guess there is also a huge CTR. What is the point where you will tell someone, hey, this is what you should use now or could use now.
+And here is how you start with it. Yeah, I know that those are all good questions.
+So we're I mean, we're we're trying to figure some of that out ourselves in terms of the transition points for the competitions.
+Those were done in conjunction with the KG mon team at Nvidia.
+So it's like Jensen founded or when he created the team, he was he was thinking of Pokemon and like catching them all.
+So he's got he's got his KG mon grandmasters all packaged up in their little KG mon balls to like to throw out at these these super complex problems.
+So we're super lucky to be a part of that, you know, that process and work with those teams.
+You know, they're incredible. I mean, brilliant.
+I think many of them at one point have been number one on Kaggle and they're they're really, really incredible data scientists and engineers.
+And so working with them to like to inform and integrate some of those solutions back into the product, like, you know, like one of the good examples of that is Jiba is one of the KG Mon out of Brazil.
+He developed this technique for for targeting coding that that basically, you know, allows you to get a prediction of the likelihood of a click based on a bunch of different extra techniques that really actually make this work.
+So we've built that and baked that into the NBA tabular.
+Now you can do targeting coding with a single single line of code on a bunch of different columns.
+Right. In terms of places to start, I think like understanding where the time is taking in your pipeline and getting like to me, the most important thing is getting a flywheel going where you're getting models into production quickly.
+Right. Yeah.
+You know, getting to the point where you're iterating quickly.
+So it you need to kind of think about all the different stages and figure out where your pain points are and your gaps are like it's it's okay to have the brakes in those flywheels because you can't have like it's very rare to have one person who understands the whole piece.
+But you need to have a team that's thinking about about that sort of end to end process of like, okay, I've got this idea.
+I'm going to iterate on that idea. I'm going to generate new features.
+I'm going to generate new models.
+Like, it doesn't matter if the data scientist or the person working on the models is iterating, you know, quickly and coming up with great new models if it takes three months to get that model into production.
+Right.
+Because it's just going to be this this deep like debt of trying to get anything pushed live.
+Right. So figuring out those pain points, understanding and getting to the point where you have this straightforward mechanism for putting things into production for really getting this sort of the solution deployed, tested, you know.
+And once the pipeline's there, then, you know, it's great to start iterating and applying these tools.
+And the nice thing about the tools is like some of the tools we're developing are designed to make that pipeline easier.
+And some of them are designed to make it make that flywheel spin faster. Right.
+The data loaders that we've built for TensorFlow and PyTorch, they're roughly 10 times faster than for training, you know.
+And the feature engineering on GPU is roughly 10 times faster than on CPU for kind of for equivalent cost.
+Right. This also be one counter argument for using GPUs and smaller companies could be here, but they're costing a lot of money and renting an A100 is about $3 per hour and something like that.
+It's just for you to play around with it and get accustomed to that. What would you tell those people?
+Yeah, no, that's a perfectly valid argument. So Nvidia Tabular supports CPU and GPU.
+The deep learning frameworks all support CPU and GPU.
+Trade and inference server supports CPU and GPU. Like, Nvidia is not just a GPU company anymore.
+We're a data center company. Right. We're thinking about this holistically now.
+And so if the right solution is to run on CPU, you know, for a small scale, that's fine. That makes sense.
+If you have a reasonable volume of performance, though, like you get to the point very quickly where GPUs actually are very cost effective. Right.
+You know, there's advantages to having your model updated more frequently.
+So if you're training, you know, if you're training on CPU is taking you 10 hours and you can bump it down to, you know, 45 minutes on GPU, that means your model can be up to date that much more frequently.
+Yeah. That's going to translate into more than the $3 that A100 is going to cost you. Right.
+Like if your business isn't making that $3 back, then you're you've got other problems.
+But you know, people focus on the cost of GPUs often. And I think like the real thing that's missing is this awareness of the amount of time.
+And I think especially that time of that cycle for the people developing the models. Right.
+If it takes even if it's an hour to go through the future engineering preprocessing stages and then go through the modeling and you know, and there's gaps and breaks and challenges and you got to iterate.
+Like the number of iterations you can do if your process takes an hour per day is like probably five. Right.
+Like you go for lunch, you go for coffee, you got a couple of meetings.
+You could probably run five iterations of that model during the day where you can try new features and do other things. Right.
+If you can shorten that from, you know, an hour to five minutes, you can probably go through a hundred iterations in the day and get really into the flow of like, oh, I'm trying this thing.
+Oh, that that sort of work, but this didn't. And then you like you get in that flow state where you're really working.
+Yeah. Within that, you know, that iteration cycle. That's where the magic happens.
+The only downside is you don't have time for coffee anymore. Right.
+Yeah. You've seen the rapid diagrams. Yeah.
+Cool. Yeah. Of course, it makes sense. Yeah.
+I guess you also always have to see the full picture of time that you're saving.
+But I guess it's not only about the feature engineering or the model training.
+Sometimes it's also about the setup. What are you doing actually there to make it easier for people to tap into the field?
+I guess you are doing many tutorials and looking ahead, there will be someone around the GTC.
+But what else is there that I could get easily started with?
+Yeah. So we try and make examples available on our repo to make it super straightforward, you know, and provide containers that you can just pick up and run.
+The biggest challenge a lot of companies or a lot of people face is just getting the dependencies all working together.
+And I think that's a very complex thing. You know, like, you know, what we're building is at the center of Rapids, which is a big sort of complex ecosystem that has a lot of dependencies, the deep learning frameworks.
+And those are a big ecosystem with a lot of dependencies that often clashes with Rapids.
+And those, you know, they're actually working right now on how to make those two ecosystems cohesive so that, you know, we can build off of that existing container.
+But making things more straightforward in terms of, you know, dependencies. Once you've got your dependency sorted out, like, most people find the solutions we've built fairly easy to use.
+We've tried to make the API super straightforward, really thinking about, like, how do we make this, you know, fast AI was very informative to me, or formative to me, rather, in the sense that, like, the work that was being done by, you know, Jeremy and Rachel, and trying to get the APIs concise and clear and the right abstraction, you know, and iterating over and over again. We've done similar things with our libraries, right? And we're still iterating on all of them.
+But, you know, we're trying to figure out ways to make the APIs more straightforward and simple, trying to make development more straightforward and simple.
+Lots of examples, like, we try and include lots of example notebooks that show how to do things in different ways. And that's something, you know, there's a couple of members of the team that that's their full time role is creating examples and working with customers to help understand.
+So, you know, it's always a challenge to try and get up to speed on a new technology. But we've tried to make it as painless as possible. I would say, you know, from an ease of use perspective, mv tabular is probably a good starting point.
+It provides data loaders for TensorFlow and PyTorch and makes it simple. It provides feature engineering pre-processing in a really straightforward way.
+And we're working on some cool new features that, you know, that we'll be releasing at GTC that I'll be sharing in my talk then, which I'm super excited about that are going to take it like take that ease of use even further.
+And then like some of the more complex stuff that the team does, like the huge CTR focus is much more on like how to scale GPUs to, you know, multi-node distributed systems.
+And so it's more complex. It's, you know, it's like low level C++. It's got to be super performance. It's really thinking about those like milliseconds when it comes to latency.
+It's really, you know, it's greater complexity, but it's targeted towards a different audience, right? It's not meant for the people just getting into RecSys so much as the people who are at the peak of RecSys.
+We want to really scale stuff and build on large scale recommended systems.
+Cool. Interesting stuff. I will definitely put all the reference links to GitHub and to blog posts that you already wrote in that domain and the show notes that people can look that up.
+Really great, great stuff you are doing there. And again, congrats to you and your team for that amazing performance with that more real world related challenges around, around RecSys.
+I also worked a bit on the Twitter challenge myself. Didn't find that much time, but at least scored 11th and was actually working also with MV Tabular a bit.
+So it was interesting to see and looking forward to what the progress is there when I'm pulling up a container next time.
+Yeah, just for the end, I have three surprise questions for you.
+One, you just crossed off my list because this was actually the person that I was asking you to provide me that you want to have or see in the show.
+So can you name? Yeah, Carl Hidley is a lovely man and very, very smart. You know, in the recommender system space, he's full of ideas.
+Yeah. Maybe I already read something from him. If you're on Twitter in the RecSys space, then I should have seen his work.
+Maybe is there some kind of a wish that you have for the RecSys field or some kind of appeal to the research and practitioner community?
+Oh, yeah. I mean, a couple of wishes. One is like better data sets. I think that's really hard to do, but we really, you know, we need companies to offer up better data sets to be able to make significant progress in the field, I think.
+OK. With the Twitter data sets, is it already going to the right direction?
+It is, but even there, it's like it's a long way off from what Twitter is using in production, is my guess.
+And the amount of data and the scale and the methodologies, they're all like it's hard because it's very hard for a company to, you know, to give away that level of data and that volume of data.
+And so I don't know the solution to this in terms of how to resolve it, but that's probably my number one wish would be.
+And then the other is like trying to make the field more accessible to newcomers. And that's sort of we're pushing and working really hard.
+Yeah, definitely. I agree. Maybe last but not least, what is actually your favorite recommender product in the large space of recommender products?
+Which recommendations do you really enjoy?
+That's a tough one. I guess, you know, from a daily use perspective, I would have to say Spotify.
+I listen to their music and it's definitely, you know, you can you can see the degree to which the recommendations are applied.
+I really appreciate the music. If the team's listening or happens to hear this, the one feature I want you to add is vocals and music, vocal samples as a feature.
+Because I like to listen to music while I work and vocals distracts me. So I want music recommended for the vocals.
+And I'm trying to get the like that. The funny thing is, you know, knowing how recommenders work, you actually interact with them a little bit differently.
+So I know how to give active signals to to recommend their systems.
+So it's in the way I want. Right. And and that plays out in a couple of ways. Right.
+Like YouTube is another one that I use and enjoy. And partly why it works so well is I have very distinct boxes of like, here's my personal YouTube and here's my professional YouTube.
+And the professional, you know, it provides like better recommendations when I keep a professional.
+OK, that's interesting. So you keep really different accounts to access YouTube to then to make sure that you have the right recommendations at the right place.
+Yeah, exactly. Cool. Even thank you so much for joining my second episode.
+It was really a pleasure to talk to you. And I hope we will also see each other again in person, maybe in Seattle next year at RecSys.
+Yeah, very much so. Should not be too far for you. Yeah, no, I'm excited. Just take the train. Yeah, exactly. Cool.
+Nice. Thank you so much. Thank you so much for listening to this episode of Rex Birds.
+Recommender systems expert, the podcast that brings you the experts in recommender systems.
+If you enjoy this podcast, please subscribe to it on your favorite podcast player and please share it with anybody you think might benefit from it.
+Please also leave a review on Podjaser. And last but not least, if you have questions, a recommendation for an interesting expert you want to have in my show or any other suggestions, drop me a message on Twitter or send me an email to Marcel at Rex Birds dot com.
+Thank you again for listening and sharing and make sure not to miss the next episode because people who listen to this also listen to the next episode. See you. Goodbye.
+Thanks for watching.

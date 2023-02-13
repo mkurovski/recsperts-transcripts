@@ -1,0 +1,486 @@
+Note: This transcript has been generated automatically using OpenAI's whisper and may contain inaccuracies or errors. We recommend listening to the audio for a better understanding of the content. Please feel free to reach out if you spot any corrections that need to be made. Thank you for your understanding.
+
+And so we thought, well, maybe we can take a page from the Microsoft Playbook and do behavioral testing for recommender system, which means together with online testing, offline testing and so on and so forth, we can augment the type of testing that we do with some behavioral tests based on the use cases and domain and that we can discuss how to do it.
+This is not about which model is better or which model is worse. It's about understanding that these models are fundamentally different, but this difference is obscured by standard offline tests.
+Instead of writing a doc analysis or chasing down examples and qualitative failures, Rekles gives you a one-stop shop for you to make all this consideration and to immediately see how these two systems are different.
+We found that in production setting, going to production early, you know, carefully but early, is the key to be productive MLP.
+Hello and welcome to this new episode of RECSPERTS, recommender systems experts. This time, I'm happy to be joined by Jacopo Tagliabue.
+Jacopo is the co-founder of Tooso, which was acquired by Coveo in 2019 and he is actually the director of artificial intelligence at Coveo.
+Jacopo holds a PhD in cognitive sciences and he is also an adjunct professor at New York University where he teaches NLP and ML systems.
+And in this episode, we will actually talk about one of his contributions since he also was a contributor to various papers for the SIGIR.
+One of these papers will be the main topic for today's episode since we will be talking about behavioral testing applied to recommender systems.
+Hello and welcome, Jacopo.
+Hi, thanks so much for having me. Thanks so much for inviting me. I'm super excited to be here.
+Great to have you on board. I guess I made a small introduction, but I guess there are many more things to know about yourself.
+So will you just go further and introduce yourself a bit more?
+Sure. I mean, the intro set it all up. Just to do like a brief recap of previous episodes of my life, not that it's particularly interesting, but just to set the stage for what we're discussing today.
+So it's correct. I was, of course, one of the founders of Tooso was a NLP informational company in San Francisco.
+We grew the company from scratch to like an up and running API company in the ML space.
+And we sold it to Coveo almost three years ago.
+And since then, we'll be working on building up the AI practice and the roadmap of Coveo, which recently got public.
+So Coveo became one of the not many honestly public AI company in the B2B space in November, I think, in the Toronto Stock Exchange.
+Together with my team, so we do a bunch of stuff in the recommendation space.
+We are originally more of a search in NLP people. So we kind of found the recommendation space, you know, as we went along in our e-commerce journey.
+And we do a bunch of research and applied work in session based recommendations specifically, and then in how to better testing recommendation, which I guess is going to be a huge part of what we're going to discuss today.
+And finally, we've been recently working a lot with people in the MLOps community with a lot of open source stuff as well, to kind of show people that, you know, it doesn't really matter how well your recommendation engine performs on your laptop or whatever cluster you have.
+You need to actually impact real user in production.
+And so we've been working a bit with the community and some of the new open source and best of the tools to show how you can bring research level innovation to actual website impact natural users.
+I see. During your work at Etozo, you mentioned it was an API focused company. So where there are different ML models that we are basically providing or what was kind of your home turf.
+So was recommender systems the main thing that you have been working on or was it also many other ML problems that you were dealing with during that time?
+At the time, recommender system was actually a secondary use cases. The main use cases was telecommerce, but it was more about the search component of information retrieval.
+It was an API company, meaning that we will provide this 20 commerce, let's say commerce, you know, XYZ. And when you when a user will go there to shop, you will start searching for something.
+And the auto complete the intelligence behind the search, you know, all that feedback loop would be provided behind the scene by our API.
+And then as part of our suite of APIs, we also came to develop, of course, recommender system and so on and so forth. But our first solution, what about language, which is, you know, our original like me, like me and the other technical co-founder, like language people originally.
+So that's where we start and when we built out our first company.
+So lots about, I would say, query and intent understanding what people want to search for.
+Absolutely. Absolutely. Query understanding, query intent, a bit of semantics. It was before, you know, the large language mod like it was a very different time than today.
+So what one fun thing is that sometimes we ask ourselves, what if we rebuild today, and we would do completely different like it's been five years, not a million, but we do completely different things, because the field has been so quickly.
+Yeah, yeah, definitely. Definitely, there's been going on a lot of different things. So how did you transition to recommender systems where I mean, transitioning is maybe not the right term, but how do recommender systems become a more prevalent topic that you that you are or have been dealing with?
+So there are two things. One is, let's say business related, so outcome related, and one is, is one like, let's call it data related. So the business related one, even at the time of two, so of course, this is even to work for Kovea, which is, you know, much, much more massive, is that people tends to prefer to one provider for the entire information retrieval suite.
+So people would rarely have one provider for search API and one for recommendation.
+It makes sense for several reasons. First, because one provider to deal with is better than two, usually, but in a more subtle way. If you have one provider like like like like to Zokova, whatever, that unify the experience between search or recommendation, you're going to get a better consistent experience if you have two providers that don't talk to each other.
+So it makes total sense for a provider to offer both. So this is the business reason. That's the data reason to more opportunistic. So we find out that to be very good at query intent, like a lot of the things he would describe before, you need to collect way more data than just the search data.
+Take a very simple example. If people search for Nike on a sport app on a website, they may mean tennis apparel if they really like Roger Federer. It may be, I don't know, Nima if they want to really like soccer or, you know, or LeBron James if they like basketball, whatever that is.
+The query itself will not disambiguate perfectly in between these use cases. So what you end up doing is to collect what these people were browsing anonymously before searching for Nike. Maybe they were in the tennis section or in the basketball section. And then you adjust the search accordingly.
+So you actually find out that to be good at search, you need to kind of collect way more behavior than just the search behavior and then opens the door to then do all sorts of new machine learning model, you know, like, you know, like, you know, where data people. So if you feed us data, we're going to find ways to work with it. And so that opens up the door to do all the research that we've been doing session based personalization.
+Because now we have session based data. And we can do not just search, but we can also do recommender and so on and so forth.
+So when Tuzu was acquired by CoVEO, what basically changed or what are your responsibilities currently at CoVEO?
+It's a big change in many respects. I'm less hands on as I used to be, meaning that, of course, now there's an entire team that they take care of what the Tuzu was like me at night, you know, like, you know, acting away stuff.
+So I'm a bit more detached from some of the operational stuff, especially in that engineering, especially in things that are not my focus. Tuzu, of course, you know, it's a small startup, you do everything. But at CoVEO, of course, you know, like, you know, not necessary for me to do that.
+There are way better people than me that, you know, whose entire job is doing that. And so I had a bit more time and resources to focus on what I called asking questions.
+So my job now is less about finding problems to solve. Sorry, less about solving problems. It's more about deciding which problems are the one worth, you know, solving.
+And then together with my team, you know, we work together and mentor them to go and actually produce, you know, some working code, a research paper, an open source library, whatever it is.
+I'm just a bit transitioned more of like setting the roadmap of what the company think in this space, special information retrieval in commerce, than about making it happen in the first place.
+I still could quite a bit, but it's more for prototype than for, you know, the entire product as I used to do.
+Yeah, I guess always nice also not to become fully detached from the technical stuff and always also kind of nice for people who are coming from a technical background to go back to that if they really loved it and still love it.
+Yeah, talking about recommendations in e-commerce, you have mentioned already also the topic of session based recommendations.
+I mean, there has been plenty of things going on in the recent years, starting from rather simple approaches like KNN, then going through the application of Word2Vec to the domain of recommender systems with product2vec and then over to additional things that capture sequences.
+Sequences like, for example, we had have seen with LSTMs or gated recurrent units applied to recommender systems. How big is the impact of session based recommendations within your domain and what are currently the biggest challenges there?
+So first, I think it's going to be massive. It's going to be massive for one reason. So if you think about e-commerce, there's a bunch of e-commerce website, the one that everybody knows like Amazon, Alibaba, blah, blah, blah, blah.
+There are two characteristics of this website. People go there very often. So they go there and continue. I mean, I buy stuff from Amazon like every three days or whatever a week or whatever.
+And when you're there, you're always locked in. OK, so when Amazon data scientists need to build a recommender system for me, Yakov as a shopper, they have a huge history of purchases, you know, like, you know, very, very dense.
+And they know exactly why I am like, you know, they can trace my identity to time. OK, and they know that I'm going to come back. This is awesome for them.
+But then if you build a company like Tuzo or Koveo for the rest of the market, for the rest of the of the e-commerce website, you find out that these two factors are not really near, you know, the same level of, you know, the importance for most websites.
+Most website people are not locked in if they don't buy, which is the vast majority of the time. OK, and people may come back, I don't know, one or two times a year.
+So the last thing they did six months ago, it may not even be relevant for the current preferences. And finally, bounce rate is high. So people come there, watch two pages and then they leave.
+What this all means together is that the natural boundary for you to provide personalization, which is something that everybody talks about, but a few people actually are able to do, is the session is not the user history.
+Every provider that is selling you or every model that is relying on user history to do personalized recommendation is doomed to cover a very, very small person, percentage of your user if you're not Amazon or Alibaba.
+So that's a key fact that I think not like a lot of people don't really fully understand because most of the research agenda or the, you know, or the general rhetoric about recommender system is set by YouTube, you know, Spotify and Amazon and so on, which of course do not have this problem.
+They have different problems, but not this one. And I think a lot of the things that my team has been doing in the last three years, like kind of evangelizing even in the research community of the many interesting research problems that you have when you abandon that, you know, big, large retailers mindset and you try to make things that works, you know, in the middle of the tail.
+So this is so why they're important, they're super important, they're going to be even more important, I think, going forward. Like challenges to build them. There's a bunch modeling, you mentioned, like a very good sequence of, you know, from simple to complex, like K&M, then let's say LSTM, then you can do transformer, like, you know, you can make it as complex as possible.
+And that has been explored in the literature significantly with the trade off that this implies, like, you know, K&M may be fast and cheap, but may not be super accurate and transformers may be more accurate, but they're like, pain to train, pain to serve and so on.
+And then of course, the engineering challenge, as in, even if you have a transformer model, now needs to run with 100 millisecond latency to not disrupt the experience of people doesn't need to cost a fortune to retrain it. Otherwise, the gain that you get in revenue may not even offset the amount of, you know, money you spend in training and so on and so forth.
+So I think it's still super hard. Still, and like, it's not out of the box or off the shelf kind of solution to have session based recommendation, but the future is there. And I'm super excited, you know, for, you know, to work to have the possibility of working in this field right now.
+I guess this is also what sets recommender systems apart from some other machine learning problems. If we want to refer to it by that, that these dynamic user preferences and then this disconnect in user feedback that you might be experiencing on platforms that are less frequently used or where users disconnect from for quite a while and then return after a long time is adding a lot of complexity to the problem.
+And then of course also incorporates that there needs to be hard work put into models that kind of anticipate this. And of course, places session based recommendations in a position where this could be a proper model to solve for.
+When I came across your blog post where you mentioned NDCG is not all you need. I was thinking about behavioral testing and how to put it into that framework of testing in general because in recommender systems, we have these three faults.
+Of course, you have standard offline testing and you can argue and discuss a lot about what is a proper metric or the set of metrics. Most of the people focus, of course, on retrieval accuracy metrics, which is not bad at all. But of course, it does not draw the full picture.
+And this is one setting. So offline testing, then you might have user studies. And of course, you have online testing.
+For the whole time, I was a bit confused where to put behavioral testing. What actually made you feel that there is a missing piece in testing for recommender systems and how did you get to the topic of behavioral testing and applying it to recommender systems?
+So first, totally agree. Recommender system has a huge history of good testing practices, meaning that the field taught long and hard about this. And of course, the options that you outlines are like a super standard for most research and industry team.
+Offline testing is very easy to use and kind of repeatable with his own flaws and then user study online testing is way more expensive and requires typically an entire set of organizational practices to do that.
+But they will actually uncover some nuances that offline testing wouldn't do. And so the question like, what do we need more of this? The field itself has taught long and hard about this. What can we do better?
+And the spark for behavioral testing came from NLP, my original field, when a bunch of people from Microsoft published a paper, end of 2020, on behavioral testing in NLP.
+And for those of you who don't know, I'm just going to do like a brief example to give you a feeling of what these people did.
+So if you consider like larger and much more, like people are super excited about NLP these days, right? And so you get this benchmark and this statement of like, hey, BERT is like almost as good as human in sentiment analysis or in this whatever task and so on and so forth.
+And the people at Microsoft did this clever study. Instead of just taking the performance on BERT on this dataset, like you would do for recommendation as well, what they did was built out some input output pairs that we as human, as users of language, recognize as important.
+Okay. For example, they had this super nice test about sentiment analysis and the sentiment, the test is like, let's build out sentences like I am protected now as a template. So I am a black woman, I am an Asian man or whatever.
+Now we're going to ask this model that people say is our state of the art and as good as humans, what they think about the sentiment.
+And it turns out that most of the models, including public APIs from Azure, Google and AWS, feel spectacularly at this test. So they may actually introduce like a negative sentiment when of course the sentence itself is neutral.
+Okay. And so the general guess is that offline testing will go just up until a certain point to tell you how the system generalizes in the wild.
+Why? Because the test set cases that themselves are a small portion of what the system is going to encounter in real life. Okay. So if you take that performance as the indication of how the system is going to perform, it's actually going to be highly misleading.
+And we read the paper and we said, wow, that's a great, great idea. And second way, this problem is also part of our recommender system experience. Like we test things with with with our test set.
+But then sometimes, you know, unexpected behavior pops up. A real case that I can that I can cite is we were working with electronics in an electronic shop and we were doing add to cart recommendation.
+So the query item is what people as adding into the cart and what you need to predict is a good completion for did because you want the people to buy more standard, you know, auto cart.
+And of course, people were buying a TV, a $600 TV and we were suggesting a $9 HDMI cable. Of course, it's a very good suggestion. If you buy a TV, you probably get my cable. But then in production, somebody bought an HDMI cable and the system was suggesting a TV, which of course is a terrible idea because if you're buying a $9 HDMI cable, you don't want to be, you know, like upsold for $600 of TV. Right. But the crucial.
+Very rowdy.
+Very very very very very very. But the crucial aspect of this, of course, you know, everybody has an auto spot about recommender systems. So, you know, everybody's zone. But the crucial aspect of this is that this is something that we assume on shoppers recognizing immediately stupid.
+But the system does not. And if your test set, for whatever reason, didn't contain this option, you never figure out what would happen in this case. OK.
+And so we thought, well, maybe we can take a page from the Microsoft Playbook and do behavioral testing for recommender system, which means together with online testing, offline testing, and so on and so forth, we can augment the type of testing that we do with some behavioral tests based on the use cases and domain and that we can discuss how to do it.
+But that's kind of the idea.
+And we want to promote not just, you know, we want to promote two things.
+First, an explicit discussion about this trade-off in the community.
+Like, even when now we publish a paper, we typically list iterate or mr or ndcg or whatever.
+But then we don't really offer, we don't really go deeper in understanding, you know, why the model performs the way it does on several use cases.
+So we want to feel to be more aware of these cases.
+And B, we also build an open source library to help people actually do this.
+Because behavioral testing is awesome.
+But think about, you know, there's a lot of work to produce them and, you know, and run them at scale.
+And so what we wanted to do is to provide that, you know, a good software abstraction for people to, you know, actually use them in their everyday industry or research life.
+So one side is the philosophy of it.
+And the other is very practical.
+Is it okay, I really like this behavioral testing, how do I go about, you know, doing them in my in my life?
+Okay, so I really like that examples that you brought up.
+And I assume you have it in other domains as well.
+So you are referring to the e-commerce domain with that example of TV and HDMI cable, which just there is a sequence, which is right and a sequence that is bad.
+So this is the difference between that complementary item recommendation and similarly item recommendation.
+But you might also have seen that in other domains like in streaming or a video on demand recommending Harry Potter, the first movie after having seen the second movie doesn't really make sense.
+There are also very rare cases where I believe that this is relevant for people seeing the first part after the second.
+But what what I have been thinking about is you just mentioned it about scaling.
+So these examples, they make totally sense.
+But how do you really go about scaling these tests?
+Because no one wants to handcraft all this stuff and just maybe enable some some more generic rules that are about which sequences make sense and which don't.
+How do you scale it?
+So what do you need to be provided by your data or by by something else that makes sure that you could really run many of those tests and not really or only uncover those, of course, very straight cases?
+Yeah, I mean, very good question.
+So the answer depends really about the type of test you want to run.
+But I'm going to divide it basically into one is, you know, the exploiting the link between prediction and user and item feature.
+And the second one is, you know, doing a bit of, you know, latent space deep learning magic to automate some similarity judgment.
+So let's start with the first one.
+When you do a prediction on the test set nowadays, what you typically have is a golden label.
+Let's say, yes, the user watch the reporter three next.
+And you ask the model to give you five recommendation.
+And then if a reporter three is in this five recommendation is, you know, one more eight or whatever you're using to measure, you know, and everybody's fine.
+One thing that we want to do is to imagine instead of instead of using images of a Panda data frame, we want the prediction to contain not just an ND target item, not just the SKU or the ID, we want it to contain other feature that we may actually leverage to make this judgment.
+Okay.
+So in the case of HDMI cable and the TV, we may want to have the price and the category there as well.
+So the rule is not going to be a specific rule of, hey, TV don't go with my cable if the HDMI cable went first.
+That's too specific and it won't scale.
+There will be, if this is a complimentary use cases, you know, you should have the second item to be in a different category than the first one.
+And typically, you know, to be on a different price level than that one.
+Okay.
+So you're going to enforce the general factor.
+You're not going to enforce the, you know, the singular cases.
+And the game here is not find something that is right all the times.
+The game here is give you a relative sense of how this model that you're building is performing against something else.
+And then you can always go and see the individual prediction.
+It may or may not be correct, but it kind of give you a trend again, like it gives you a way to have this discussion explicitly instead of going after case by case when things happen in production.
+So this is number one.
+Number two, a bit more, a bit fancier is if you have, we can discuss how to build it, but if you have a Latin space on the items and the properties that you have, now you can use this Latin space to automatically generate tests of interest without any human intervention.
+Let's keep, let's kick again, an example from session based recommendation.
+Let's say Spotify playlist, very, very famous data set.
+It's included in the blacklist.
+The problem is simple for people that don't know the data set.
+You got to given the first N items of a playlist and you just need to guess how the playlist continues.
+So standard, let's say sequence based session based recommendation, if you will.
+And what we want from a recommender system is robustness, which means that if we change one of the song in the input to something that is very similar, but not the same, we want to make sure that the output doesn't change drastically.
+We want to ensure that there's some gradients in how the system behaves.
+But what does it mean to be similar?
+And of course, if you have a Latin space of the song, what you're going to do is that you're going to take your first input session.
+You're going to swap some of these items with items that are closer in the Latin space.
+And then you've got to compare how far the new recommendation are compared to the standard one.
+And then you're going to get immediately without human intervention, a bit of a sense about how the, you know, the recommender is overfitting maybe to specific song or specific item or specific sequence versus how the recommender is actually trying to get a bit more of the vibe and the preferences around it.
+Of course, the better the Latin space, the more accurate this is.
+But again, the point here is not to be accurate on all the tests, you know, data points is giving you a new lens for interpreting how this recommender system behaves as opposed to these other strategies that you're testing.
+Okay, I understand.
+Basically your implementation that you are referring to.
+So there's a paper, the paper has been published at SIG IR last year.
+And the paper also came with a corresponding implementation, which is reckless.
+And within that implementation, I saw that you are also basically providing these interfaces for some tests.
+So how easy is it actually to really get started from it?
+So do I really need to think a lot, be creative and put a lot of effort into coming up with the first right tests?
+Or is there already a set of test types that I could start using and also being able to apply them to different domains?
+Or how easy would it be with reckless to get started with behavioral testing?
+You can think of it as you know, as as your you know, as as a as a Lego block, you know, one of the one of the nice Lego that I see behind you.
+So if you if you want if you want to start reckless gives you access to popular data set movie lens, Koveo and Spotify for different use cases, similar items, movie lens, session based Spotify and add to cart.
+So complimentary items Koveo.
+So you already have a Python wrapper that kind of downloads this data set, which are public and give it to you in a way for you that is very easy to use.
+Also reckless give you readymade tests for this data set, depending on these use cases.
+So if you have a auto cart use cases or a sequence based your cases, you can already use what reckless provide you.
+And there's like, you know, as in the Lego example, you can just basically build whatever we give you, you know, out of the box with the instruction that we provide you.
+It's very simple.
+There's also a call up if you don't even want to install anything, you just want to get the feeling of how it is run like reckless, you can just go on the call up and run it.
+But as with many Legos, you can also recombine these blocks in other shapes and figure that we couldn't anticipate to build whatever whatever you want.
+So you can keep the data set that we give you, but add new tests, of course, more you can use this set this test on your data set.
+What a combination of all this, you can start from what we give you and extend it with your own custom test and just use reckless as your let's say scaffolding and kind of like and use reckless as kind of this philosophical underpinning of this, you know, testing routine.
+And then use the out of the box functional view reckless provide you for storing data or plotting data or stuff like that.
+So one thing we're adding soon for the for the beta.
+So the beta has been sponsored by a bunch of like very looking forward.
+So far looking companies in the in the ML space.
+So Comet and Neptune, which I which I say hi now.
+And what we've been doing with them is now we're going to produce open source connector to these tools that people already use.
+So when you use reckless, you're going to end up in dashboard that you already work with with all the results of reckless.
+So if you use reckless to build your own testing suit and use that in your adenoci CD or whatever pipeline, then you can basically leverage this same intelligence into tools that you already use.
+And that's kind of the future of reckless for us.
+Reckless is this piece in your pipeline, but then it connects, you know, in a purely open source matter to whatever you want, you know, to read this, you know, this test on and reckless just provides you like this cuff folding and a way to run this smoothly.
+So that means that reckless already comes with some handy pre made examples across different domains because you mentioned the conveyor data set, you mentioned the Spotify data set.
+So we already have a couple of different domains.
+So that for example, if you are working on some kind of playlist or music recommenders, then the best thing to do would be to go for the Spotify playlist continuation example, the data set and check out the existing tests there and to go from them at more or maybe also adapt your data set accordingly that you could get started more easier.
+Is it correct?
+Absolutely.
+Absolutely.
+If you're working on this type of use cases, or if you're writing a paper on movie lens, the integration is ready made, you can just go there, like the code will download like movie lens for you, you know, we'll do the splits and we run the test that we prepared.
+And you can already include them in your paper or your analysis or whatever it is.
+And then from there, you can start swapping in the Lego blocks and become more and more sophisticated.
+But at day zero, you can just start with what we provided in these use cases.
+And you can get a feeling of, you know, how this works.
+Okay.
+And I also see that I mean, you are a big fan of open source projects.
+So I would also say shout out to the community.
+So if there are people who want to contribute or who want to add new tests, new data sets or something like that, I guess they are welcome to make contributions to the project, aren't they?
+They're super welcome.
+We will we're starting now the what we call the beta phase of of reckless.
+So reckless was was released at the beginning of this year, basically.
+And we started up like a private tour of recommender system shop.
+So to be BBC, meta Facebook, sorry, meta eBay, and so on.
+And we start collecting feedback for people running recommender system scale.
+And we those feedback and, you know, the public thoughts that were they were giving like in this last couple of months, like this one, for example, we're getting all together to build the second version of reckless and making a bit better.
+So everybody wants to contribute, get feedback, you know, please try it out, reach out.
+This is the perfect moment actually to be involved with this because we're actively looking for, you know, for people to join us in the second phase of this of this adventure.
+And we really love open source.
+And we, again, we're very thankful for for our sponsor and people that really understand that the ML community, the access community can advance, you know, even thanks to, you know, the generous time and resources of people in the institution that really believe in this idea of sharing knowledge instead of keeping it private.
+Yeah, I guess we are relying a lot on open source tools.
+And especially if there is a new one that does this interesting challenge or solve it or makes us better understanding what's going on.
+I mean, you you mentioned that term of silent failures where we think something is going right because we just look at, let's say, MRR or NDCG and assume, oh, this is our best model.
+It's known production and also CTR or something like that is behaving consistently.
+But then under the hood, there are some very, very odd recommendations.
+So capturing them would be would be, I guess, a nice task.
+I have come across that evaluation that Microsoft performed when evaluating in-house their checklist performance.
+And I've seen that you have done something similar with Reclos.
+Could you elaborate on that on how you judge that it's adding additional value there?
+Absolutely.
+So if you this is public information.
+So if you look at the paper, you're going to find a real world example comparing an open source implementation, product back in this case for a commander against the Google APIs.
+So again, it's a public provider that everybody can try it out, you know, just, you know, just sign up and you and you can train your model and try it out.
+What is interesting again, this is not about which model is better or which model is worse.
+It about understanding that these models are fundamentally different.
+But this difference is obscured by standard offline test.
+In particular, if you just use two models on the on our data set and you judge it by, you know, and this GM and so on, this model are basically indistinguishable.
+OK, so the naive thing here to do is really stable and say, well, this model are basically the same or one is likely better, whatever.
+But then when you dig deeper with Reclos, you find out that this model achieved this performance in very, very different ways.
+For example, the Google model is much better on popular products.
+So it's very good when when when somebody is browsing in the popular part of the shop while Proptovac tends to be better in the, you know, in the long tail.
+OK, like Google is better with brand A and B and, you know, and Proptovac is better with brand C and D. The job of Reclos and maybe even the job of Practition is not telling you which one is better.
+This is the job of the entire organization to understand what are the priorities of the organization and what does it mean to produce value.
+What Reclos gives you, again, is a principle, explicit way to address the discussion, you know, in a structure in a structure for instead of writing a doc analysis.
+Or chasing down, you know, examples and qualitative failures.
+Reclos gives you a one-stop shop for you to make all this consideration and to immediately see how these two systems different.
+So I don't know if Google is better for you or Proptovac is better for you.
+That's for you to decide.
+But you need to know while deciding this, you know, that you're going to privilege these items instead of this one if you pick A or this item instead of that one if you pick B.
+Yeah, I guess that's very, very valuable insights.
+You are gaining from applying this tool to your recommender model because then this brings us back to the name really gives you the opportunity to understand how your model behaves in different scenarios.
+And as you mentioned, there might be different demands.
+So you might end up going with one model that is doing a better job on popular items or something like that.
+But at least the insight can give you some hint into making better decisions.
+So I really like that point that you are bringing up there.
+I assume that people will soon also have the chance to actively engage in a challenge around this because as far as I as I know, there is an upcoming challenge that is hosted by Koveo.
+So as far as I know, you already donated a data set to the last challenge of SIG IR, which was the Ecom data challenge and also basically the data set that is part of reckless inbuilt data sets.
+But there is a new challenge coming up for this year's CIKM.
+Can you tell us a bit more about this one?
+Of course.
+So people from Koveo and some friends from NVIDIA, Microsoft, Stanford and Boccon University, so like this stellar team between academia and an industry will organize one of the CIKM data challenge in this coming CIKM this fall.
+There's going to be an hybrid conference in Atlanta for people that want to come, but there's going to be virtual for people that want to attend virtually.
+And the cool thing about this data challenge is that it's going to be heavily inspired by all the discussion that like by all the teams that we're discussing today is about you know, rounded evaluation of recommender system.
+So what we're going to do, we're going to invite team from all over the world to submit their models and to compare their models, not just on MIR or whatever ranking metrics that we typically use for data challenge, but we're going to explicitly invite people to compete on behavioral tests, on qualitative assessment to make sure that you know, even when we judge you know, which model is better than the other one, we're going to take into account a bit more of a nuanced approach to all of this.
+So it's going to be if you follow the Reclos website is reclos.io, we're going to make an announcement a specific web page detailing you know, the exact rules of the challenge and how the challenge is going to unfold, we're targeting the first week of August as a general you know, starting period, which will give people you know, two full months to participate in this challenge, submit their proposal, and then you know, write a paper and then come to the to the actual conference to have like a workshop creator and discuss the good findings, you know, about about the challenge and what people like what people didn't and kind of produce together, you know, some sort of the first let's say quantitative plus behavioral testing challenge in the field in the hope to raise awareness, you know, among all practitioners of how important these two, you know, be all together a bit better in evaluating recommender system.
+That sounds amazing.
+So far, we have seen many challenges spanning different industries from Twitter over to Spotify, our data sets from Xing or other ones that have been engaged with the RecSys challenge that has held annually alongside with the recommender systems conference.
+But I've never so far really encountered a challenge where the evaluation of a recommender system or especially the behavioral evaluation is at the center.
+So how are you going about ranking people that are evolving?
+So it's about who is writing the best tests, the best behavioral tests or how are people going to judge on who is doing a better job there?
+That's a very good question.
+We're still finalizing the rules of the challenge because it's a very new way of actually getting people to compete.
+So the simplicity, which is also the flaw at the end of the day of just having MRR, is very easy how to judge people, but then it kind of doesn't tell you your story.
+And so when we want to move away from that idea or sorry, not move away, that's incorrect.
+When we want to extend this idea to a more nuanced evaluation, it also opened the question of like, but how do we make sure to run behavioral tests that make sense that people cannot game?
+Because we don't want people to overfit to the new behavioral test just to win the challenge.
+So it's an open discussion and we're going to release the new rules soon.
+One thing that we're surely open to and that is maybe part of the challenge or part of the workshop finally is for people to contribute new tests as well.
+So in the process of organizing the challenge, we are going to surely work with Rekles as a package to add tests and to add nuances to that.
+But what we want to really have a practitioner thinking with us in the final day of the workshop is what did we miss?
+But irrespective of what will end up being part of the evaluation, what is still missing?
+What can we do to make it better?
+How can we scale it to a different data set?
+These are all the questions that we want to answer with the community.
+So compared to a normal challenge, it's sure part of a challenge, but it's generally also like an invite for the community to come together and kind of like build this knowledge in the open as an open source package that everybody can benefit from.
+Okay, cool.
+So let's stay excited about how we will differentiate good from bad tests and then rank teams properly as an extension to these ideas of judging recommenders only by retrieval quality.
+Okay, so the upcoming CIKM challenge.
+And did I get right that there are many other challenges going on alongside the CIKM because I wasn't really aware of that before.
+So you mentioned that was one of the challenges.
+So last year, I'm not aware of how many will be this year, maybe one or more.
+But like last year, if you look at last couple of years, they may be one more than one challenge.
+Last year, I think it was two, the actual number.
+And that depends on a combination of like organization that can provide support to this, organizers timeline, how the workshop are organized, and so on and so forth.
+So I don't know the exact number this year.
+I know this hours is going to be there, of course.
+But in the last year, they've been different.
+CIKM is a generalist, compared to Texas, is a generalist conference.
+So information retrieval is one of the aspects, but it may totally be possible that there's another challenge related to, I don't know, NLP, like query understanding or like search or something like that.
+So yeah, but the conference is pretty cool.
+And I'm actually for once looking forward to have a conference not on Zoom, like in the last couple of years, but actually be there.
+So if you're there, no, please come and say hi or reach out to Linkery before.
+I'm very happy to meet you in person.
+Perfect.
+We'll definitely include all these references as always in the show notes of today's episode and make sure that everyone who wants to know more or to reach out and connect to you gets the proper references.
+Yeah, Coppol, I actually also would like to check out your extensive blog post series, I have come across some blog posts where you have been talking about the postmodern stack that kind of integrates the modern data with the modern machine learning stack.
+Can you tell us a bit more about what you have been writing there about and what your points are?
+Sure, absolutely.
+So together with two dear friends of mine and colleagues, Chido and Andrea, we have this small series on towards the science, which is called MLOps Without Much Ops.
+And it's like a five part series and the postmodern stack is the last one.
+There is partly philosophical and partly practical.
+And it's basically the journey of our relatively small team with the right open source and such solution can build really cutting edge ML thanks to this growing ecosystem in the MLOps and that of tools that wasn't there five years ago.
+So it's kind of like us after all the mistakes we did, all the problems that we had, kind of going back to the community and say, hey, guys, if you had these problems, this is how we solve them.
+Maybe we can kind of shortcut your journey a bit by telling you what we did.
+So that's the general context.
+And if you guys want to please check out the entire series, there's a bunch of like, you know, hidden gems here and there.
+And the final post, which has been released like four days ago or whatever, is the postmodern stack one, which is a full end to end repository complete open source.
+You can use it today that goes from raw data in case recommendation data in this particular case behavioral data to an LSTM session based recommender that produce prediction in real time.
+Okay.
+And the point of the series, which is exemplified by the repo, but is much bigger is you do not need like a team of 10 people to train these run this or monitor this.
+But you don't need any DevOps person at all to do that.
+If you have an end to end data science, if you have a start sign that we understand this recommendation problem, you can empower this person to work on the data, work on the training, work on the serving, basically just with, you know, a bit of Python and SQL, and then having the infrastructure completely abstracted away from him.
+And it works like it works with millions of data points.
+And it works, you know, with that to make people very, very productive in our experience and very effective as people now are not bound to ask, Hey, can you spin up a GPU for me?
+Hey, can you think this Kubernetes problem for me?
+You know, Hey, you know, where is this data coming from?
+Now you empower people to, you know, go at the source of the data, making sure that it is correct.
+And then do the training and serving basically automatically and see the result of their work in production in, you know, as little as, you know, an afternoon or a day in our experience effective machine learning people are the one that close the feedback loop as soon as possible.
+Like the best way to iterate on machine learning is not going in a cave and do experiment for three months is to ship something in production as soon as possible when you have the full feedback loop.
+So you can track everything that happens from training to model to, to, to prediction to, to feedback and iterate on that to with error analysis, you know, rectal is and all the tools that we want.
+Since you're doing research on a static dataset, we found that in production setting, going to production early, you know, carefully, but early is the key to be productive ML people.
+I see your point there.
+So rather start, for example, with a model that is rule-based first, but directly engage in writing a proper endpoint that can be called from somewhere and do some basic stuff first to have your problem solved end to end, and then make the iteration and not over engineer your model from the very beginning is I guess, a good advice to also get a feeling for the overall system and the complexities there because there are so many things to cover that sometimes make a bigger difference than your, your model performance at all.
+What would be the main learnings that you had throughout the challenge or that you're sharing within these blog posts just to give us a short teaser when people want to want to read it?
+Of course.
+So when you start in these MLOps series, which the company repos, there's a bunch of repos for the community.
+The question we set ourselves to ask was, if we build tools today, what tools would you be used?
+Like, you know, what would be what would be the shape of a startup right now?
+That needs to be effective with some resources, but not unlimited one, but needs to be effective in building great recommender system.
+And the answer was, well, we wouldn't reuse anything that we use five years ago.
+So the short answer is like every we build five years ago is not relevant anymore.
+Okay.
+And in the process of discovering this non relevancy, we cannot build out, you know, the poster, modern stock and the series telling people what we will change.
+And what we will change is not that we didn't do it five years ago, it was very stupid.
+But because we couldn't, but what we would change is this fundamental piece, buy or use from open source, everything that is not your core problem.
+Like the most important thing is never up fronting any research or engineering or time to do things that are not what makes sense for your company.
+So if my company is a company, what I want to focus on was the intelligence of my model or the uplift in the business method that my model provides.
+I'm not an infra company.
+I don't care about infrastructure.
+I don't care about scalability.
+I don't care about owner.
+Not because I don't care about it, but because this is something that people take for granted by using my services.
+But it's not why they pay me.
+They pay me for my recommendation.
+They don't pay me for my Kubernetes cluster.
+So everything that I can offload to my cloud provider, an open source tool, or, you know, like another like a SaaS solution.
+And that kind of keeps me free from, you know, like all of these maintenance is typically a good investment in the early stage.
+If you think about startups or products as our enforcement learning agent, they need to balance exploration and exploitation, right?
+In the very beginning is mostly about exploration.
+You don't really know what's going to work.
+So you need to try different things.
+And when you try different things, you should spend your effort building the thing you're testing that is a recommender system, not the infrastructure.
+So it's much better to pay, let's say, SageMaker.
+Even if SageMaker is a bit pricey for your serving initially, then building your serving solution yourself without even knowing that this is an important part of your startup.
+Okay?
+And then the more you go from exploration to exploitation, so the more you go deep in one aspect that you know that it works, of course, now it makes sense to internalize some of this to lower the cost at scale.
+But you can always do that later.
+Like, if you start with PaaS and open source, you can only decide at some point that you want to internalize this cost.
+But you don't upfront it.
+If you do the opposite, you build all this, let's say, Kubernetes deployment solution from your company.
+And then you find out in six months that this is not really the best, the crooks of the business, now you wasted six months for no reason.
+So the good thing of buying everything in the beginning, if you know how these pieces can be fit together, is that you can always swap one of these pieces later for something that you build internally.
+But at least initially, you get this velocity and this hyperproductivity.
+So this is what we learn, like thinking about products as startups, even inside a large company.
+So when you think about this, you're going to get an incredible amount of speed velocity and also team satisfaction.
+Builders want to build.
+ML people want to see the result of what they do online, having an impact.
+And they don't want to be to do infrastructure.
+And my key point is that they don't need to.
+Up until a certain point, you don't need the vast people to be good at ML.
+And we show that this is the case.
+Go on our repo, download it, run it.
+Be sure that you can build a transformer based recommender system, maybe not state of the art, very close to state of the art, with your laptop and two tools and you know, and Metaflow and Snowflake and whatever.
+Like it's very easy for you to get started today.
+It's really an incredible moment to be in this field.
+Nowadays with that abundance of tools and therefore, I also guess that your comparison is a bit unfair.
+So you are treating yourself a bit too hard because I guess plenty of these tools might have also not been available five years ago when you were starting out with Tuzu.
+But however, I think that's good to know, okay, what's out there and what if we wanted to do the same today and what are the tools that we might gonna use in that case.
+So definitely worth checking out.
+I definitely believe that Reclist would be a part of that system or the parts that you would stitch together and especially also not a system that was available five years ago.
+Yes.
+Yes.
+But thanks God, the field is getting much better.
+The feeling is getting much better, which I think is good for, is good news for people that are sophisticated enough to contribute to the field, which I think there's a lot of them.
+But they for, you know, personal reason, whatever reason, they don't work in, you know, Alibaba or Amazon of this world.
+And while five years ago, it would be harder for them to get their voice heard, even in the research community, I think at least like as more part that, you know, what my team actually was able to do in the last two years is to prove that this is not more the case.
+You can be part of this community if you know how to use your data and your tool, even if you're not Amazon.
+There's interesting thing to say and to do at any scale.
+That's I guess a good remark.
+Also advice for people who are listening.
+Yeah, Coppo, actually, we are always finishing this episode with a couple of questions.
+And I also want to give you the chance to give me some maybe new answers to these questions.
+So actually, looking at the recommender systems field, and of course, I assume that behavioral testing is one of the challenges you might mention.
+What other challenges do you see?
+So this is a very good question.
+I was discussing this with a with a friend, like, like usually last week.
+So another thing about testing that I want to mention, in connection with session based recommendation is the maybe misleading way in which offline evaluation works for session based recommendation.
+Let me let me let me let me explain what I mean.
+So session based recommendation is very bullish about them super important.
+But a lot of the things we do in testing nowadays, even us like, you know, we're guilty, I'm not not accusing anybody else is we take historical data about the sessions.
+And we ask the model to predict again, like what is going to be the next interaction, which you'll find and good.
+But we need to remind ourselves this is a small approximation of what we're actually testing, because in this context, recommender system acts more like reinforcement learning system, meaning that the prediction that you make is going to influence the next event itself.
+So if the only thing we're doing is testing on static data set, we may massively overfit to not just user preferences, but to also the specific structure of the website.
+Because of course, if you look at observational data of past interaction, a lot of the sequence that you observe are not really because of the preferences are because of the fact that a website is structured in a certain way.
+So there are some items that are very, you know, that are one click away from each other.
+And there are some others that are 10 clicks away from each other.
+And so there's this kind of like, it's very hard with observational data only to the couple, you know, these problems.
+So one challenge that I see is, how do we make session based recommender system, which are going to be crucial in the future of the field, you know, tested in a way, not just on the behavioral side, but even quantitative in a way that is not misleading, or that is not prone to overfitting because of this reinforcement learning nature of the problem.
+And I think this is a huge problem, because of course, you can build a data challenge by building a generator of data like imagine, you know, the open AI gym for enforcement learning, you can build a gym for recommender system, I think Kritayo did one two years ago.
+But it's a one, but it's a gym for one data set.
+The question here is, can we take an arbitrary data set on arbitrary use cases, and be able to do this kind of reinforcement learning evaluation, and understand how well does it work.
+So I think this is a super huge challenge and super interesting.
+And if anybody listening to this, wants to, you know, exchange notes about this, we're super happy to discuss this topic.
+Perfect, then I would definitely point you and also other listeners to the episode that I did with Olivier Yunnan, where we actually also talked about reinforcement learning for recommender systems and that whole topic of off policy evaluation, which tries a little bit to solve this problem.
+But I'm with you, it's far from being solved.
+So feedback loops and this setting or overfitting on the historical data is still a problem that needs to be solved properly.
+But I guess there are some good strains of thought going into the right direction there.
+Okay, so this was question number one, but there are two remaining.
+Okay, looking at the RecSys space.
+So what would you deem as your favorite recommender product that you use as a consumer?
+I mean, I would be biased because you know, I work for a recommender system company.
+So I'm not going to mention any any any product because I think would be unfair.
+But I'm going to mention some libraries, if that's okay, which are open source.
+So they're like, they're computer toner.
+So I've, I've seen a genuine interest even from the big guys in recommend in making recommender system more approachable for many people without sacrificing accuracy, complexity and so on.
+So TensorFlow recommender, PyTorch recommender, and especially my friends at NVIDIA Merlin.
+So guys, I've been doing a very good job, I think in democratizing modern to tower, you know, embeddings based recommendation through open source code.
+So I'm happy to mention this effort because they're not commercial anyway, everybody can try them out tomorrow.
+And I think the part of the future of this field is going to be our companies adapt and incorporate this framework to then change them to their own use cases and you know, tweak them to the range use cases, but without the need to reinvent the basics of you know, allow to tower system work.
+Okay.
+So in the same sense that you know, they will use TensorFlow without, you know, worrying about how you know, stochastic grade is and work.
+Okay, we just use it out of the box and use it for our for our things.
+There's a further layer of abstraction that new frameworks will provide, which is very, very helpful for people that want to be productive and still don't sacrifice anything about accuracy in the in the actual in the actual work.
+Think about what I can face did for NLP of basically making cutting edge models, one import away from most people or almost cutting edge model.
+I think what these people are doing is kind of doing what the media is trying to do is kind of do the same but for the recommender system as in you have a use case of recommender system start with importing our library and then you can make it fancier if it needs to be.
+Don't reinvent the wheel each and every time I would append at least two additional Microsoft has also a great repository, which is called Microsoft recommenders or recommenders under the Microsoft GitHub organization.
+So it's also a very nice point to find many implementations of recommenders and maybe apart from it, there is a more recent one, which is called rec bully.
+So R E C B O L E rec bully and they have also implemented quite a lot of the standard algorithms in the Rexa space.
+So I guess more than 70.
+So it's tremendous to see how many different algorithms there are already and which are deemed to be the standard ones.
+Yeah, I guess no one needs to start from scratch when he or she wants to get started with recommender systems.
+Last but not least, if you are to nominate a person who I should talk to in this podcast, who would that be?
+Oh, absolutely.
+I think you should definitely talk to my friend.
+Surya is leading personalization information retrieval at Lowe's and he was previously at Home Depot.
+Surya is kind of one of these larger in the life figure in the space.
+So he's not just an accomplished practitioner, but he's the core organizer.
+He's the mind behind the two most important events in e-commerce for us, which is SIGIR e-commerce on one side.
+See you guys in Madrid if you're there and ECNLP on the other side.
+It's kind of this two event between academia and industry and he's kind of the mastermind, the master organizer between all of them.
+So I think it would be great because it will offer you both a very practical perspective of running some of the biggest e-commerce in the world, but also is really in touch with applied research in information retrieval recommender system and so on and so forth.
+And I'm sure he's going to have great talking points.
+Cool, perfect.
+Then shout out there and I will make sure that this gets on my list for people I reached out to.
+Yeah, Jacobo, it was nice talking to you.
+It was some very great insight, also some very practical insights, which this podcast is also dedicated because it's not only the research, but especially also the practice.
+And you have shown a good record of spanning research and practice with your contributions.
+And if people who are into that direction want to spend time and also some added value on this, for example, with Reckless, then they have now some additional good pointers or maybe ideas to start with.
+Thank you very much for having me again.
+Thanks everybody to spend some time with us virtually.
+And we look forward to your feedback and comments.
+Again, the library is open source.
+Please check it out.
+Other stars share it with your friends.
+If you think it can be useful, you will help us support our new developments and kind of like help support the fields with our work.
+Thank you again.
+Thanks.
+Bye.
+Thank you so much for listening to this episode of Recsperts, Recommender Systems Experts, the podcast that brings you the experts in recommender systems.
+If you enjoy this podcast, please subscribe to it on your favorite podcast player and please share it with anybody you think might benefit from it.
+Please also leave a review on Podchaser.
+And last but not least, if you have questions, a recommendation for an interesting expert you want to have in my show or any other suggestions, drop me a message on Twitter or send me an email to Marcel at Recsperts.com.
+Thank you again for listening and sharing and make sure not to miss the next episode because people who listen to this also listen to the next episode.
+See you.
+Bye.

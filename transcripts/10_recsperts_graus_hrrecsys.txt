@@ -1,0 +1,557 @@
+Note: This transcript has been generated automatically using OpenAI's whisper and may contain inaccuracies or errors. We recommend listening to the audio for a better understanding of the content. Please feel free to reach out if you spot any corrections that need to be made. Thank you for your understanding.
+
+There's a lot of opportunities that come with AI, with recommended systems, with search engines, and it's not all scary algorithms.
+We're recommending humans.
+You're recommending potential next-career steps for people.
+It's kind of much more impactful than recommending the next product for an Amazon visitor to buy.
+We feel very strongly about using technology such as recommended systems as supporting the human process, but never to replace it.
+And then for our talent recommender, we have actually a tree-based model.
+It's a binary classifier, aka a point-wise learning-to-rank approach, where we train the model based on historic placements.
+And here the input is always a talent vacancy pair.
+And for a talent vacancy pair, we try to predict a match or no match, and then we use the confidence score of that decision to rank our candidates.
+So one of our responsibilities as a market leader is also to kind of look at this recommendation job not necessarily as a transactional job, but also as something to help our talents.
+So we're now also looking into career path prediction and kind of trying to recommend someone's next step as opposed to just trying to recommend the job that someone is able to do.
+Hello and welcome to this new episode of RECSPERTS, recommender systems experts.
+In this episode, it will be everything about recommender systems in the human resources HR domain.
+And we are going to talk about job recommendation, candidate and job matching, how we can support human recruiters with recommender systems.
+We are going to talk about the role of fairness in the HR domain.
+Very important things to consider, especially given biases that we see in automated, but also in human curated systems.
+And for this episode, I'm very delighted to have David Graus on my show, who is my guest for today's episode.
+Hi David, welcome to the show.
+Hi Marcel, thank you for having me.
+I'm also delighted to be here.
+David is from the Netherlands.
+He is the data science chapter lead at a Randstad group Netherlands, which provides HR services to clients worldwide.
+David has spent his bachelor and his master's on the media studies domain.
+And he obtained his PhD from the University of Amsterdam, where he has done research on information retrieval under the supervision of Martin de Rijke.
+After his PhD, David worked on news personalization before switching to recommender systems in HR.
+He was co organizer of the RecSys HR workshop that took place for the very first time in 2021.
+And was also again held in conjunction with the RecSys 2022 as of last month or as of September.
+He was also the general co organizer of the RecSys in 2021.
+And to no surprise, he has many papers to the RecSys conference to SIGIR, ECIR and UMAP.
+And in addition, David, and I think that this is something that you are also proud of that you are very active in the area of responsible AI.
+Sure, I am.
+I think in the domain where I currently work, responsible AI is a very important topic as we're recommending jobs to people.
+We're building recommender systems that have quite a direct impact on people's lives.
+So I think it's important to be responsible about it.
+During the preparation of today's show, I was also consulting your well curated personal website.
+And I saw the subtitle and I found it quite interesting.
+Maybe you could elaborate a bit on it because it says in defense of algorithms.
+So what do you mean by it?
+Well, it is still comes from my, my militant youth or well, I shouldn't say, but I can tell you a bit about it.
+So when I started my PhD at the University of Amsterdam, this was at the time where the debate around the filter bubble was very present in popular media.
+And I remember going to my first SIGIR and going to my first ECIR and actually seeing that in academia, everyone was working on diversity of search engine results, diversity in recommendations.
+And I saw that there was this big mismatch between the public perception of algorithms and kind of what was what was happening in academia.
+So I started publishing about it.
+I wrote a small opinion article with my supervisor with Martin De Geck.
+And it was kind of in the first years of my PhD, I was trying to kind of bring forth this narrative of actually responsible AI and of the fact that there's a lot of opportunities that come with AI with recommended systems, search engines, and it's not all scary algorithms.
+Therefore, you call yourself a defender of algorithms because it's not like they would automatically hurt because they are automated because they are, let's say, cold, since they are not humans, but that they could also help or models in the machine learning domain and those algorithms applied there, they somehow resemble what's already in the data.
+And what's already in the data might be already a result of human biases or human unfairness.
+Yeah, so now we're getting right in the middle of the actually the type of work that I'm currently working on.
+So yes, I think it is very important to understand that this bias exists, usually in data in systems, but it's also important to understand the context.
+And that's what we see happening currently at the Randstad where we're building recommended systems for matching job seekers to jobs.
+It's very important to understand that this recommended system is but one component in a bigger pipeline that contains bias.
+So the world is organized in a certain way, which can be considered fair or balanced according to different definitions that you may have.
+Then a subset of that world can be in our candidate pool in our database, which will serve as input for training recommended systems for doing scoring on candidates.
+That scoring of candidates will serve as input to a human decision maker, typically a recruiter, that decides which candidate to invite or not.
+Then again, in our scenario, usually the recruiter reaches out to the client, shows these profiles again, there's another human decision making process.
+So kind of if you look at the whole flow from start to finish, there's many different decision moments, there's many different types of biases.
+And I think it's important to understand how a recommended system operates in that context.
+Yeah, definitely agree.
+Maybe as a starter, can you walk our listeners through your Rexas journey?
+So when did your Rexas or your interest in Rexas start and how did you develop your interest?
+Yeah, definitely.
+So like you said, and like I mentioned before, I did my PhD in information retrieval.
+This was slightly before the era that that's what is it 80% of all SIGIR papers were about recommender systems, but still, there were plenty of recommendations papers out there.
+The domain interested me greatly.
+But back then, my PhD was mostly in semantic search, or I was working on slightly different problems.
+After my PhD, when I decided to pursue a career in industry, I ended up with a media company, the FD media group, mostly because this was a great combination of my past, I did my bachelor's in media studies, and then a PhD in information retrieval.
+So this was kind of a position as a data scientist in a media company that kind of married my two histories, which was great.
+At that company, we actually got a Google DNI digital news initiative funded projects around news personalization.
+And that meant that we had some funding to set up a team and to start working on news recommendation in the context of a financial newspaper.
+So it was basically the right place at the right time for you.
+Yeah, exactly.
+Yeah, yeah.
+Well, working on it, I also realized that what I like about recommender systems is that these are one of the AI technologies that are most widely spread that are most widely used.
+So they're the systems that really can make a big and direct impact.
+And that applied to the newspaper that we were working for.
+And it definitely applies in my current context at Ronstadt, where we work in HR.
+And we're actually this matching job that the recommender system is trained to do is at the very core of our business.
+So is it that a widespread application of recommender systems, like you said, so we see them, especially in your domains like HR and news, but I mean, we have so many more domains like media, entertainment sector, e commerce, and so more.
+Is it about that widespread application of recommender systems?
+Or what else is there that interested you in that field or made you of yes, this is what I what I want to continue on even after after my PhD?
+Well, I think the technology is so widespread because it works, it's quote unquote works and it makes a direct impact.
+And I think it's always nice to work on projects that make impact that make impact at scale.
+So I think that's one of the exciting things.
+At the same time, what's also interesting about it is that they are decision support tools, they can help people find things they can, you know, help people in their daily jobs.
+So yeah, I think I mean, it's just about impact.
+It's about being proven to work.
+That makes it exciting to work on this.
+At the same time, another aspect is that they can be quite complex when it comes to building them to working with this large scale data, doing proper feature engineering.
+So there's plenty of challenges involved, which is also also nice.
+Okay, I understand.
+If I'm right, you started your journey with the FD media group in 2018, and then in 2020 you joined the themselves in this large-scale recommender systems team.
+But I do have to observe now that I don't really think that we're at the stage yet where recommender systems technology is really commodity.
+We're still building lots of tailor-made systems, I think.
+Yeah, I guess this also relates somehow to the interview we had last time where we had Lian and Robin from Frümmel with us, and we're actually also talking about this set for certain domains.
+You could perceive it as becoming commodity, but somehow the great invest that many companies do in this field also proves a bit that tailoring solutions, you really want to become, let's say, best performer in this field goes a bit beyond commodity or using commodity stuff.
+And then, of course, on the other hand, you want to earn somehow the benefits of what you invest.
+So I guess it's a hard decision to make here, but I would also not support the claim that RecSys in general becomes commodity.
+I mean, it might become somewhere, somewhere, but it's just maybe too specific in certain domains.
+Yeah, and I think what you said is definitely true that you'll have diminishing returns.
+So probably with commodity technology, you'll get to the first 80%, but as soon as you want to get more out of it, probably you'll have to invest a bit more.
+Anyway, like I said, that was part of the boring answer to the question.
+So it's a more interesting part.
+There's an interesting part as well.
+So actually, there was a position available at the nonstop and I started talking with people here.
+And only then I started realizing that actually this domain of HR, which initially didn't attract me at all, but makes for a very interesting context for doing recommender systems, because you work with humans.
+I mean, we're recommending humans.
+You're recommending potential next career steps for people.
+It's kind of much more impactful than recommending the next product for an Amazon.
+Amazon.
+Yeah, it can impact your life much more significantly, I guess.
+Exactly, yeah, yeah.
+So from that perspective, it was quite interesting to me.
+At the same time, there's also a lot of technical challenges there.
+I mean, we're dealing with this cold start problem.
+New vacancies are published all the time.
+We want to start recommending them as soon as possible.
+There's also this challenge of the delayed feedback.
+So our ultimate signal is an actual placement of a candidate in a position that may take days or weeks before we have that type of feedback.
+But if it was the real job for the right person, might take years to turn out, right?
+This is true, this is true, but maybe that's a nice bridge for me to give a bit more context about nonstop.
+Yes, please go ahead.
+Yeah, so we're a HR service provider.
+We are actually the global leader in HR services with the world's largest.
+And we work mostly in the staffing industry and staffing industry is different from your typical recruiting that you may have in mind.
+These are not the recruiters that harass you in your LinkedIn inbox.
+We're mostly working on different type of work.
+So staffing is focusing on recruiting candidates for manufacturing logistics and administrative jobs.
+Typically they're a bit less long-term.
+So it's a bit different from maybe the kind of recruitment that you're envisioning.
+So is it somehow that you have some more temporary jobs and some more long-term jobs that you are recommending candidates for?
+Right, yeah, yeah.
+So there's definitely lots of temporary staffing in there.
+There's also still permanent placements and also runs that operates a lot in the professionals market.
+So we do also the longer term and kind of more highly educated careers.
+But the majority of our work is in staffing and it's also the recommended systems that we've been working on are mostly tailored to.
+And it does make a small difference because it does mean that you can be a bit more the quote unquote transactional.
+So it can very well be that you can recommend a single talent, a few different positions, shorter term positions in a time span of a few months, for example.
+So what are your clients?
+I mean, are it both sides?
+So the organizations, the companies that engage you or that let you recruit or recommend candidates for them to hire or is it more about the job seekers, the candidates themselves or how do you see yourself there with respect to these two potential clients?
+So that's a great question.
+We see ourselves smack in the middle, like exactly between the talents and clients.
+So these clients are the companies that come to us that are looking to have positions filled and the talents are the job seekers that are looking for positions.
+And then we see ourselves exactly in the middle.
+It's unfortunate that this is a podcast and I cannot show you this visually, but in our annual report, we have a beautiful graphic that's called the butterfly.
+And the butterfly shows on the left-hand side all the different services that we provide to talents.
+On the right-hand side, all the different services that we provide to clients.
+And in the middle, there's a circle that says match.
+And I think that's the core of what we do.
+But with our show notes, we have plenty of opportunity to also reference more visual materials.
+So I will make sure that we include this in the show notes so that everybody can look it up.
+Perfect.
+Talking about the talents, like you referred to job seekers or potential candidates and the clients on the other side, there is, I guess, a third group, which you could count as the stakeholders of your work in specific, which are the recruiters, right?
+True, yeah.
+So they are not sports of our butterfly, but definitely they are, for one of the bigger recommender systems we built, they are the main end users.
+So now when we think about recommender systems, we always associate with it personalization.
+And now one could think about, I have some job postings.
+These job postings contain certain requirements towards skills and something like that.
+And then you have information about your talents and you have recruiters that are kind of trying the matchmaking there.
+And where and how can our recommender systems help there?
+So can you outline the use cases, which you have identified at Randstad where you want or where you are already making use of recommender systems?
+Sure, so for our recruiters, we have our own IT system that they use for sourcing candidates.
+So for looking for specific candidates for a vacancy that they are looking to fill.
+And in this IT system, there's several ways that recruiters can find these candidates.
+So they can use a search engine, a simple search engine type in a query, get a list of candidates, and they can use our recommender system.
+So we have custom recommender system that given the information for the vacancy generates a small list of talents that our recommender system teams are relevant to that particular position.
+So the input is always the position, a vacancy.
+I'm also thinking a bit about terminology because vacancy technically is a published job request and the recruiters work based on job requests.
+So a client requests a particular position to be filled.
+The recruiter inputs the information in the system and then is able to generate a list of recommendations.
+So if I were a recruiter at Randstad and I would start my working day, these are my positions that I'm responsible to fill.
+So I go to a certain job description, the first one on my list and I say, okay, now I want to get some candidates that we from an algorithmic point of view deem as qualified for that position.
+So, or is it that I start searching first because I have a client on the phone who asked for something and I want to immediately tell them whether we might have someone qualified for the position or not.
+So how do recruiters actually interact with that system?
+At what point and how is the system going to affect them before we go into the details of the system itself?
+That's a great question because I think it can differ a lot and differ per person.
+That's also something we try to stress because we don't want to have too much reliance on a single system.
+And what we see happening typically is that as Randstad, we have lots of offices everywhere in the country.
+So we have lots of brick and mortar stores, so to say, that means that these are also touch points for job seekers to actually get in touch with Randstad.
+So that's one way that recruiters actually source candidates.
+It's by the top of mind candidates they have.
+Candidates they have met because they came into the office.
+There's another source, those are online applications.
+So job seekers may actively apply online through our website to a certain specific position.
+Then there's indeed our talent database which can be searched and which our recommender system can recommend talent from.
+So there's all these different sources.
+And well, indeed, so like you said, depending on whether you have a top of mind candidate available, like you have a client that has a certain job request and you remember speaking to a candidate just two days ago who was looking for exactly this position, that might mean that you're not touching your search engine at all.
+You're not touching the recommender system at all.
+You just get in touch straight away with your candidate.
+So different use cases determine different uses of the systems that we provide.
+But whatever happens, we always try to stress that the search and match are but complementary ways of searching your candidates.
+So you should always think about people that apply online.
+You should always think about candidates that you're in touch with, that you have a top of mind.
+So in that sense, the recommender systems, they aim to support this process and not replace the searching or matching process of the recruiters that we have.
+Okay, so that means that in terms of the use cases, we could identify at least two of them, which is the search and let's say the candidate proposal use case, whereas the first one is one where the recruiter becomes very active because the recruiter is responsible to formulate a proper query, which might consist of certain features that are typed into the system.
+And then of course the system, which we are going, I guess, to detail in a minute, then returns the proper candidate.
+So a typical search case.
+And the second use case is the one where the system by itself, maybe due to some nightly batch process or some online or something like that, looks for candidates that are matching the requirements of a certain job request or vacancy.
+Apart from these two use cases that I would say heavily involve the recruiter, are there also processes or use cases that leave the recruiters out of that process?
+Because I'm thinking about LinkedIn and on LinkedIn I have that jobs section and of course they are LinkedIn recruiters or people who use LinkedIn recruiting tools, but I can also look up jobs myself and apply for them.
+Is this also supported by your system?
+Yeah, definitely.
+How is the system interacting there?
+Yeah, so actually these are two different systems.
+The first one we were detailing is what we call the talent recommender.
+It's a recommender system that we have for our recruiters.
+Then we have the vacancy recommender and this is a recommender system that we have on the website which recommends vacancies to a particular talent.
+So when you're logged into our website, then we ask you a few questions.
+What are you looking for?
+What's your work experience?
+What are your preferences in terms of salary, in terms of travel distance?
+And we use that to recommend a set of vacancies to you.
+Given these two recommenders, so the talent versus the vacancy recommender system, can you share any things you have done there in the past and what you achieved?
+Sure, I can tell you a bit about them.
+So I can tell you that the vacancy recommender combines matrix factorization based on user interactions with a content-based model.
+And here the idea is that we're dealing with this continuous cold start, so we cannot rely fully on matrix factorization.
+So we add a bit of content on top.
+So your typical hybrid recommender system approach.
+And then for our talent recommender, we have actually a tree-based model.
+It's a binary classifier, aka a point-wise learning to rank approach, where we train the model based on historic placements.
+And here the input is always a talent vacancy pair.
+And for a talent vacancy pair, we try to predict a match or no match, and then we use the confidence score of that decision to rank our candidates.
+So it's very similar to the learning to rank scenario where you have query document pair, and you try to predict whether or not the document is relevant to the query.
+With regards to the label for the talent recommender, where you said that you basically have a point-wise ranker, how is that label actually determined?
+So when you say placement, does this mean that the recruiter actually selected the candidate to be proposed to the client?
+Or is this actually like we also, or you also track that the current or the actual talent has also signed a contract with the corresponding company?
+So what kind of signal are you using to determine this label?
+So it is the letter, so the talent was proposed, was accepted by the client, was off the contract and actually signed the contract and had the placement.
+We do have many more signals in our database.
+So we have each touch point, we have the moments that the recruiter looks at a profile, we have the moments a recruiter decides to propose the talent to the clients, we have the moments the interview is spent, et cetera.
+We currently don't use them, we just use the placements, but this is definitely something that we're starting to look into because the richness of the signals definitely, well, warrants to take a closer look at the usefulness of everything that happens before the actual placement.
+I understand so far that you have the hypothesis or have already proven it to a certain degree that this placement, so meaning signing the contract is currently kind of aligning in the best way of whether the client that you're finally working for is being happy with your services so that this is also much more aligned with the long-term goal.
+So for example, might be maintaining long-term relationships with clients.
+This is kind of what you are reaching for or what would be the long-term goal or to put it in another way, you are also having this long-term reward problem.
+So can you relate to that in terms of that signal interpretation?
+Yeah, yeah, so I should say this is currently, to our knowledge, the best signal that we have.
+That doesn't mean it is the best.
+It also means, I mean, that's more of a philosophical or design question because I don't think our recommender system should be optimized to making this final prediction.
+Ideally, you would say this recommender system aims to support a recruiter as much as possible in servicing relevant candidates.
+So by that line of reasoning, you would say maybe we should focus more on signals that happen before this actual placement.
+At the same time, our first experiments here didn't necessarily show that that had good enough performance.
+So we still have a lot of work to do there, but it's more a question on how you, indeed, how you position your system.
+And I think what happens between the first recommendation and the actual placement is a long and fuzzy process.
+And it's a process that you cannot fully capture in data, but I most importantly think it's a process that you shouldn't want to capture in data because a part may be very human factors, a part may be a personality match between the hiring manager and the talent.
+There could be aspects there that are outside of the realm of our data, outside of the realm of our system that I don't think you should want to capture.
+But also actually factors that might bias the overall process.
+So I mean, due to the fact that you are also having offices, quite around the world, people might also come to the office, talk to a recruiter and get a proper representation in the system.
+And then they might become the, I guess you call them the top of mind candidates.
+I mean, it's always nice.
+It's also, I guess, good to do as a person that is seeking for a job to maintain a personal relationship with a recruiter to make a good impression because I guess this always counts.
+But comparing this candidate to a candidate that just maybe, let's say, simply filled out a form on Ranjdatt's website to become part of the same pool as the first candidate who was not able or not willing to kind of create or maintain that personal relationship, is this maybe already some potential source where human bias could arise from.
+So maybe a recruiter might prefer the first candidate due to the maintenance of a personal relationship, which is not, let's say, or which should not judge on the job seeker's ability to comply with the requirements of the job.
+Or what are your thoughts there?
+So that's a thought provoking question.
+Yes, that can definitely play a part.
+I think what we try is to abstract away from that notion.
+So in the end, we try to represent the job seeker in terms of their suitability to that job.
+So we take a few precautions there.
+One is that we model the match between a vacancy and a job seeker in relative terms.
+So that means we don't have an explicit feature that models the education level of the talent.
+We don't have an explicit feature that represents the location or the address of the talent, but we have these relative features where we see whether the education matches with what's being requested for the vacancy.
+We model their address as the distance to the particular client.
+I see.
+So those are ways that we try to abstract away from this more fine grained representation that I think you've been talking about.
+In the end, that aspect of the personal relation that you may have with a recruiter that may help you in being placed, I think to a certain extent, that can also be beneficial for the model because it means that it's getting its labels, its goals optimized from outside of the system.
+And I think this kind of avoids that feedback loop or that self-fulfilling prophecy because it may very well be that a placement happens completely outside of the realm of the system.
+The candidate may have never been recommended, but there are certain aspects to this talent that make them suitable for their job.
+So the recommended system should adapt to it, I think.
+I'm actually recalling the episode that I had with Olivier Jönen, where we were talking about the difference between bandit and organic feedback.
+So that process of a, let's say, personal relationship of a seeker running into the agency and getting his or her job throughout that process might be more of an organic feedback.
+And what we are doing with some kind of algorithmically supported matchmaking might be, of course, then more bandit to what the very specific algorithm's output is, right?
+Yeah, I think that's a good metaphor.
+It, again, awakens my FOMO with all these bandit-based models.
+That's definitely something we are also interested in.
+And this always happens to me at the RecSys conference that you have at the Reveal Workshop.
+And I always, you know, I kind of join there and I get this complete total FOMO.
+Yeah, I definitely see.
+Part of the reason behind this is also to close that offline and online evaluation gap.
+How do you actually perform there?
+I would make the assumption that you don't even have such a big gap between online and offline.
+But I'm also having a hard time, what is actually your online goal and what is your offline goal based on historical data you are training your algorithms on?
+This is hard to define for that area you are applying RecSys to or what are your thoughts on this?
+That's a good question.
+I mean, our whole approach is very much offline.
+So our models trained in big batch jobs, aggregates lots of historic data, lots of historic placements.
+Now, I don't think we're very much online.
+So we calculate predictions when a request comes in, we generate list of candidates, we observe feedback, but until the placement is being made, the data is not part of the model.
+Does that make sense?
+So there's not really an online thing going on.
+I should also say that this particular recommender system has been in production for quite a while.
+I think over six years now probably.
+Wow.
+This was one of the reasons that I also, during my first conversations with Randstad, I was surprised that they had this system in production and that actually in terms of building these complex systems, there was quite a high maturity.
+Whereas I'm quite familiar with the RecSys community in the Netherlands.
+And I wasn't aware that Randstad was a player here as well.
+Silently flying under the radar.
+Yeah, yeah, yeah.
+And now they got much more attention having you on board, I guess.
+Well, I mean, that was also one of the reasons for me joining.
+Yeah, I think since there was a lot of great work being done here since this matching is so central to the work that Randstad does, I think it makes a lot of sense for Randstad to have a bit of presence in our community.
+Yes, definitely.
+Yeah, maybe this brings us to some side discussion from which we can then jump back to talking a bit more about fairness.
+But I find it quite interesting that RecSys in HR was never coined so explicitly during RecSys.
+Of course, you explicitly saw contributions, I guess, by LinkedIn at some former RecSys also before 2020, I assume.
+There was also actually the RecSys Challenge with a dataset by Xing, so platform that is more present in Germany, Austria, and Switzerland.
+But then actually, so the first workshop of RecSys in HR was held in 2021, and you started your RecSys in HR journey as a co-organizer one year before.
+So how did that idea of having a dedicated workshop to that topic evolve, and what were your initial expectations of the workshop, and how did it turn out to be?
+I mean, it must have been to a certain degree successful because you decided to continue it.
+Yeah, definitely.
+Well, first of all, it was very inspiring and lots of fun to work with.
+So I think that was also one of the prime reasons to continue it.
+In terms of attendees and submissions, I think for a first-running workshop, it's been quite successful as well.
+It actually started in the RecSys 2019 Gather Town, where I was just walking around with my 2D avatar minding my own business while suddenly appeared at Von Baucher's associate professor at Albach University of Copenhagen, came up to me virtually, and he proposed this workshop.
+And he at the time was working on the Job Match Project, which was a project in collaboration with Job Index, which is a Scandinavian job platform.
+Anyway, he was working in the context of this job platform, and he actually realized that there was probably some space in the RecSys community to have attention for this domain.
+So he proposed it, and then we started writing this proposal together with a few other people.
+That's how it started.
+OK, and then you basically teamed up and formed the initial cell for organizing that workshop that took place in 2021 for the first time.
+What is your summary?
+So now looking back to these two workshops that were actually held, what surprised you, or what was it that you expected?
+And that turned out to be, for example, the case or not the case?
+Well, first of all, we were hoping that we would get enough submissions.
+We were expecting it because that's also what we wrote in our proposal.
+Over the past few years, there's been quite a few publications on this topic, so we thought it would make sense in a central forum for it.
+So that kind of worked out.
+We had eight papers accepted in the first workshop in 2011 this year.
+Another aspect that we found important while preparing or that we identified was that RecSys in HR touches many different disciplines.
+So we wanted to have space for these different disciplines within the workshop, and we did so.
+So last year, we invited people from a semi-governmental organization in the Netherlands, the Institute for Human Rights, that were also working on the role of AI in the online job market, in particular in the context of job discrimination, of age discrimination, gender discrimination, these kinds of topics.
+And this year, we invited a lawyer because also law, in particular in the context of the European AI Act that is forthcoming, plays a bigger and bigger part also in designing recommender systems in the context of HR.
+So that was one of the things we found important to have space for these different voices, which was nice.
+Another thing that we noticed was that, of course, in 2020, we proposed we have to have a workshop for this because there's not really a place for it.
+In the meantime, there's been a few similar workshops that appeared.
+So there's the FIST workshop, part of ECML PKDD, International Workshop of Fair, Effective, and Sustainable Talent Management Using Data Science, kind of overlaps in theme.
+Last year, there was the Comp Jobs Workshop at Wisdom, first international workshop on computational jobs marketplace.
+So that was kind of good to see that there were more workshops in this domain.
+I see.
+And are you planning to continue the Rexas in HR workshop next year?
+Yes, I think that's the plan.
+Yeah, we'll try.
+Excellent.
+Cool.
+OK, so far for the Rexas in HR workshop, and just a short disclaimer there for all the people that haven't seen it already.
+So Rexas 2023 will actually take place in Singapore, or we all hope that it will take place there.
+Also, again, with the workshop of Rexas in HR.
+Hoping.
+Yeah, David, I guess you already mentioned it, fairness in general, which aligns with ethical, responsible AI.
+And I mentioned it during the introduction that I would refer to you also as a fighter for responsible AI.
+You mentioned gender imbalance, and you also mentioned age, but we can think about race or sexual orientation, and so on and so forth.
+You are dealing with humans, and this, what we actually do, or what you do, is having a major impact on people's lives there.
+So of course, you can inspire people with recommending good music, creative videos, or something like that.
+But jobs, which is also determining to a certain degree what we do in our daily life to a certain amount.
+So what is the role of fairness in the talent recommender, where I try to support human decision makers with algorithms?
+So what is the role that fairness is playing there?
+Yeah, that's a great question.
+So fairness is an important topic in this context.
+We're working a lot on this experimental work on, for example, using synthetic data to make the recommender system more fair.
+We've been working at implementing several methods for doing re-ranking or different methods for increasing fairness.
+This is all from a technical perspective, and there's lots that we can do.
+But what is more important, I think, and also more complex, is this notion of responsible AI from an organizational perspective.
+And the most central question with these recommender systems is, what is fair?
+And I think that's a very hard question to answer.
+So we actually have done a small internal audit of our talent recommender, where we kind of measured the gender bias that was part of the output of the system.
+Now, as you can imagine, the outcomes of this, it's not like a binary yes, there's bias, or no, there's no bias.
+It's a very nuanced picture.
+And it really goes back to the question, what is fair?
+So you can imagine that in a certain industry, in transport, for example, the balance between meal and female candidates will be different than in the health care domain.
+So these are also some of the things that we saw, that we saw this gender balance, age balance kind of differs per sector.
+It can differ per types of companies.
+There's many factors here at play.
+So I think the more important question is to ask, what is fair?
+I think that's a very hard question to answer.
+And while that question has not been answered yet, I think the most important thing, and it's also something that I said earlier, is to understand the context of how this recommended system is used.
+So we feel very strongly about using technology, such as recommended systems, as supporting the human process, but never to replace it.
+And it sounds simple, but that's one way to kind of reduce the risk of bias.
+Because if there is bias, then if you don't rely fully on the system, but you have alternatives to source your talents, then you reduce this particular risk of bias.
+There could be two potential sources of bias in that process of combining algorithmic recommendations with human decisions.
+So of course, the algorithmic bias, but also the human bias.
+So is joining both necessarily reducing the bias, or might there also be the risk that bias might accumulate?
+So touche, indeed.
+So reducing bias maybe is not the right word.
+But that's because you're exactly right.
+There's different types of bias.
+So in the human decision making process, there will be human bias.
+In the algorithmic process, there will be algorithmic bias.
+In the search engine, there may be data bias, because indeed, some people write their resumes in different ways than others.
+So yes, you have all these types of biases, but at least relying on all different methods at the same time, it doesn't reduce bias, but it kind of distributes the bias, or kind of counterbalances bias.
+So I think one of the big risks with these automated systems is that they become a closed feedback loop.
+That there's no other way to retrieve your data, to navigate your data.
+So I believe in this richness of having all these alternatives.
+And that indeed doesn't reduce the bias as a whole, but it at least changes the bias, perhaps.
+So by incorporating the human in that loop of algorithmic recommendations, and by human, we mean the recruiters in specific, you are somehow breaking that loop, because there are also human signals entering the decision making, and not only the algorithmic signals.
+And by that, what you expect from it is that by that mixture, you are reducing bias to a certain degree.
+Yeah, I think you could summarize it like that.
+But it's not even about mixing them, but it's about having alternatives at all.
+So it can very well be that the recruiter doesn't touch a recommender system at all, but picks up the phone or uses the search engine, and those are just different ways that don't necessarily overlap.
+The most recent paper that you were working on and that was published was actually the end-to-end bias mitigation and candidate recommender systems with fairness gates.
+That was actually, I guess, paying towards a talent recommender to support recruiters.
+So if we take this as a context, so this would mean that all the decision making is to some more or lesser degree initially influenced by what the algorithm proposes.
+So then we have already a context where everything from its very start has some, let's say, algorithmic foundation.
+Other signals, organic might enter that system from the data, but not from what is, let's say, decided by the human bound to the system's proposals.
+So how is that what you said before aligning with this?
+So how are we breaking a loop?
+But I think the comparison you're now making is if we look exclusively at the recommender system and we don't consider all the other ways of sourcing, then indeed, I mean, then we can focus on this algorithmic bias and we can come up with ways to mitigate it.
+And I think in this paper, we actually, Adam, that was a master student that worked with us during the internship, he proposed different methods of mitigating this bias.
+And I think this is very important technical work, and I really enjoy working on it.
+And I love the domain, but I think that's not enough in the sense that there was also this story we were saying before, you cannot ignore the context in which this recommender system operates.
+So you can decide, we have this recommender system, we can mitigate bias, it's all perfectly fine, but even then, you need to be able to rely on different signals, and different signals may or should come completely outside of the system as well.
+But that's kind of more an aside and a more philosophical debate.
+But indeed, given a world in which you have this recommender system, you can also take steps into mitigating bias, and that's indeed one of the tasks that we picked up in that publication that you mentioned.
+Can you give us a short overview or what was kind of the new thing that you did in the paper?
+I mean, I have read it, but I guess it would be very nice for our listeners to know it from one of the authors himself, and then maybe we can go into a bit more of the details of the publication.
+Sure, yeah, so the new and amazing thing that Adam, our intern, did was that he actually tested using two different ways of mitigating bias in a single end-to-end pipeline.
+So the idea was there's been a lot of work on different bias mitigation strategies, but we want to kind of see how they operate in the real world, and I say real world with quote unquote, because we indeed used our talent recommender as a base, but we kind of, we did a few things.
+One is we reduced the feature sets to be more manageable for doing experimentation, and the second part is we actually rebalanced all of our data to represent different scenarios.
+We explicitly made very skewed and very balanced scenarios to see how the different bias mitigation strategies operated there.
+When talking about bias, so what specific bias did you look at and how did you measure it in that specific context?
+So in this context, we focused on gender bias, and we considered gender a binary variable, so male, female, because that's what we had available in terms of data at the time, and to quantify bias, we used the demographic parity as a metric.
+So parity means that you inherently were striving for some kind of equal distribution between the genders.
+Right, so actually, indeed, you assumed that total balance is a demographically pair, and you quantify how much you are not completely imbalanced.
+And you mentioned that you have been applying two mitigation strategies in the paper, which was kind of the novel thingy, and that this turned out to be very effective.
+Can you elaborate on this?
+Yeah, so we used two kind of pre-existing methods for mitigating bias.
+One is that we used synthetic data to regenerate your training data in a way that allows your recommender system to learn new things.
+So it kind of allows you to control the balance in your training data, and this actually followed from work that we did previously with another intern that kind of studied the feasibility of using synthetic data.
+That's one.
+The second one is using a re-ranking strategy.
+So the synthetic data generator generates training data to train your model with, then your model generates an output, and we used a really re-ranking strategy based on a paper by folks at LinkedIn that greedily re-ranks the output to achieve more fairness or to achieve demographic parity.
+Okay, I see, I see.
+Yeah, we will make sure that we also include this and the paper by LinkedIn in the show notes.
+And what I found interesting while reading it is that the folks from LinkedIn, actually they reported within their approach to be very effective in four-fold reduction in unfairness and just aligned with a, I guess it was 6% reduction in utility if I recall my notes here correctly.
+So, and utility, I guess, somehow approximating the relevance of the results.
+What was kind of new in your work is that you were actually not compromising the relevance of the results at all.
+Was that correct?
+We found that using both of these mitigation strategies, we increased our fairness, but the utility remained satisfactory.
+I think it's similar to the results of the LinkedIn paper actually, where you see that it doesn't hurt the business metric too much, which is actually, I find this a very interesting and important finding because at some point you have to realize they straight off, right?
+So you can have a much more fair model, but if that really hurts your performance, what do you do?
+And I think this is a very difficult question to answer.
+And it's also not necessarily a question for a data scientist to answer, but this is also an organizational matter.
+And I was inspired by the LinkedIn example because they show that to them, this increase in fairness was important enough to deploy it in the LinkedIn Recruiter product worldwide.
+I guess this aligns pretty well with what was mentioned by Christine Bauer during our interview that common perception that there necessarily needs to be a trade off between utility and fairness is actually not the case.
+Like we see proven by the paper from LinkedIn and also by your contribution here that you can improve one without compromising the other or at least not without compromising it significantly.
+I mean, if you would ignore the regulatory framework and I guess this is not as advanced as they are able to quantify what should fairness be, how should an algorithm adhere to fairness, then it's still a very easy decision to make because there is basically no compromise.
+You can just get better on also achieving other goals that are more or less relevant to your company.
+Of course, this is the best case scenario because what would happen if it wouldn't be the case, then I think you shouldn't need to have to make a decision like how important is this to you, how important is this to your business, how important is this to you as an organization.
+I think actually that could be a very interesting conversation to have, but it seems like LinkedIn didn't have to have it and neither did we partly because this is, of course, experimental work and it hasn't left the context of this paper yet unfortunately.
+Okay, but you say not yet and unfortunately, so this is a path that you like to continue for your work on.
+Definitely, so I cannot share anything in concrete, not because I cannot or I'm not allowed to, because there is not yet anything to be, but we do know that with the upcoming European AI acts, this type of work will become more prominent, will become more important.
+So I foresee that this line of work will start playing a role in the real world soon enough, yes.
+Okay, so you are already anticipating, well, what is coming or in front of us.
+So that's, I guess, great work or a great approach to not only wait before the regulation hits, but to anticipate it beforehand.
+And I mean, I guess we are on the same page that the reason of doing this is not solely due to regulation or adhering to regulations, but I guess it's also for the good to consider these effects that algorithms might have and how we can anticipate them properly.
+And then of course mitigate those effects.
+Apart from the setting of fairness in general, what are other questions that you are concerned about?
+Is there also the general question, how can we do better with respect to our recommendations?
+How can we, for example, try to represent users and job descriptions in a richer setting?
+So is there also some ongoing work there or what is it that basically drives your daily work?
+I guess it's not only work on fairness, but there must be different streams of thought or work.
+Definitely, yeah.
+Definitely, so some of the challenges that lie ahead of us, and I think for many other people, it's the same.
+We're now working on dense vector representation of our talents and vacancies.
+So looking at sentence transformer models, this type of technology.
+We're doing lots of experimental work with transformers.
+So recently I had an intern graduate that was working on data to text generation.
+So actually generating vacancy text based on structured inputs.
+So one of our responsibilities as a market leader is also to look at his recommendation job, not necessarily as a transactional job, but also as something to help our talents.
+So we're now also looking into career path prediction and kind of trying to recommend someone's next step as opposed to just trying to recommend a job that someone is able to do.
+And this kind of also ties in with the current state of the world that we have this global labor shortage and we have to be more adaptive when it comes to working careers.
+So we would like our AI systems and recommender systems to also play a part in that.
+I guess that's a very cool idea.
+And I again see somehow similarities when thinking about recommenders in the media sector, like Spotify reported this in some of their papers that some part of what they learn from the interactions that they see might also be guiding creators, whether it's podcast creators or music creators, artists to see what people like and what might be reasonable to produce more of or similar or something like that.
+So you also try to extend from this in a way that you say, okay, maybe this might enable us to do career predictions or career advice, how do people set themselves properly up for the future?
+Definitely because we also recently started a big collaboration with a large Dutch learning platform.
+You can also imagine that if you combine education and learning with job recommendation, you can create a beautiful application that combines given that you're currently pursuing this job.
+If you add these skills, then you'll be suitable to take a step up.
+So that's something that we're also trying to look at.
+Like how can we combine these different sources into this recommendation program?
+Of course, I mean, this is partly trying to align the daily work we do with the strategic goals we have at Ronstadt.
+So this is more the mid to long term work that we're doing, but it's definitely the direction that we're interested in.
+We're already working with interns.
+This is always how it starts, but with interns, we've had several projects working on career path prediction and trying to figure out how we can learn to recommend next jobs as opposed to just the current job you have.
+Nice work.
+So I guess we can look forward to see more from you and from Ronstadt in that space, maybe further iterations on talent recommenders, but maybe also more about proper career advice, which might also fall into the domain of recommender systems, or at least it will.
+And so, yeah, looking forward to that work.
+And I mean, it's good to know that for that purpose that you are planning to continue work around the RecSys HR workshop.
+Definitely.
+So yeah, David, I guess that was a great coverage on RecSys in HR so far.
+As always, when we are approaching the end of the episode, there are a couple of questions where I would definitely be interested in what your perception is.
+So I mean, we have talked about lots of challenges that are tied to, I would say, the specific domain here.
+What challenges do you think are there in general for the field of recommender systems?
+Well, that's a very big question.
+I think actually this problem of bias and fairness that applies to probably any other domain as well.
+Algorithically, I'm not as up to date anymore, but I know, I mean, there are still all of these open standing problems.
+The discrepancy between your offline and online evaluation, I think this is one that's been chasing me all my career from user accommodation to this context.
+I think what we've seen happening now, and again, mostly through work with interns, is the changes that these transformer models bring, and they really seem to perform very well in different contexts and really make some of the tried and tested methods that we have obsolete.
+So I foresee that's also a development that will have a big impact on the RecSys future.
+There were quite some papers also again around BERT for Rec this year.
+And now with the great advancement in diffusion models, they might also become another interesting field to combine with recommender systems.
+So let's see, I mean, we have seen that sometimes in the RecSys field that stuff coming from other, let's say application demands got applied one or two years later to certain recommender problems.
+So I guess that's going to be interesting.
+Yeah, definitely.
+When thinking about other products, and I'm not letting you answer with product you love the most are the products of Runstat.
+So you need to pick one from another provider, which does not necessarily need to be from the HR space, but what kind of personalized product is it that excites you the most?
+It is an easy question.
+It is definitely Spotify for me, because I mean, I still discover so much new music through Spotify.
+It's incredible.
+I listened to a lot of hip hop, and I have a lot of friends who kind of firmly believe that after the 90s, there's no more good rap music.
+And I can prove them wrong, because my release radar, it's so tailored to my tastes.
+I keep on discovering new obscure artists.
+So I'm very, very thankful for the recommender systems we're seeing done at Spotify.
+Yeah, thinking about potential future guests, what would be the person that you would like to have on this show?
+I want to have Martijn Willemsen on the show.
+There's maybe a geographic bias here, which is not good.
+Yeah, I think Martijn, as he always brings a very interesting and important perspective.
+I think much of his work is really great.
+So yeah, plus one vote for Martijn.
+Okay, I will take a note there.
+Thanks for that.
+David, it was a real good tour de origin with you, and I really enjoyed it to have this new perspective on this show.
+And this is kind of the efforts that I tried to make to get more different voices for different areas here in this show.
+So thanks for your contribution.
+Well, thank you very much for having me.
+I mean, I really enjoyed it, and I love your show.
+Thanks.
+That's nice to hear.
+I have been observing your background, and of course the listeners don't see it, because this is audio only.
+But David is actually sitting in front of a white board, and there are people with certain costumes on there.
+And for me, it looks a bit like the fashion analyst data set just printed out.
+Can you tell me what it is?
+I cannot, I don't know what it is, but there's many small people.
+It looks like there's an audience.
+I don't have a story behind it.
+These are the different representations of our talents, perhaps?
+Okay.
+I don't know.
+Okay, so maybe something that you can think about next week as well, or explore.
+I should get to the bottom of it.
+I should learn where these pictures are from.
+Yeah.
+Yeah, it really reminds me of the fashion analyst data set, but just as a side note.
+Because also there's like one person that has different outfits, right?
+Yeah.
+Interesting.
+Oh, okay.
+Yeah, you were right.
+I don't know.
+But it looks interesting.
+It looks interesting, or it piqued my interest.
+So David, again, thanks for having you on the show, and have a great weekend, and talk to you soon.
+Okay, thanks for having me in there.
+Talk soon.
+Bye.
+Bye.
+Or any other suggestions, drop me a message on Twitter, or send me an email to marcel at recsperts.com Thank you again for listening and sharing, and make sure not to miss the next episode, because people who listen to this also listen to the next episode.
+See you.

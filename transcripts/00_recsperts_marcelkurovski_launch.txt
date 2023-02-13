@@ -1,0 +1,129 @@
+Note: This transcript has been generated automatically using OpenAI's whisper and may contain inaccuracies or errors. We recommend listening to the audio for a better understanding of the content. Please feel free to reach out if you spot any corrections that need to be made. Thank you for your understanding.
+
+Do you wonder how Spotify generates its fantastic Discover Weekly playlist for you?
+Do you want to understand how Amazon is generating a fortune by showing what others like you purchased?
+Are you curious about if and how Twitter is tailoring the home feed to your preferences and interests?
+The brief and generic answer is personalization, more specifically recommender systems that drive personalization.
+Do you want to learn about recommender systems, understand user feedback data and build or improve your own recommender system?
+Do you want to understand the recommendation approaches, algorithms and technologies that power the information filtering that separates the relevant from the irrelevant online content?
+Do you want to experience the experts in industry and academia that shape this field and extend its limits with their research and application?
+Then this podcast is for you and for me.
+I invite you to join me on the journey of experts, recommender systems experts, the new podcast show that brings you the experts in recommender systems from academia to industry from theory to application.
+Let's first start with the formal definition of a recommender system.
+A recommender system aims to support users in decision making by suggesting and offering relevant content.
+And this is done by aggregating information.
+Information resulting from user feedback, resulting from content attributes and other additional sources.
+A recommender system is typically built on top of three different elements, users, items and feedback that links users with items.
+The users, so the people you want to show personalized recommendations to, and you want to personalize their experience.
+The second one are the items.
+So the things that you want to recommend to your users.
+And the third one is actually what links both.
+It's the feedback.
+It's where we say, I like an item, I dislike an item, or I consume an item and by that implicitly show that I like or prefer that item.
+But you may also distinguish into organic and bandit feedback.
+And I guess we are learning much more about this in the upcoming episodes.
+There is actually a broad set of approaches to exploit the feedback data as well as to make use of additional data, which may be linked to users, items or data that even describes the context.
+Everything in order to come up with the right items for a user, which we call user based recommendations, or items that somehow qualify as relevant concerning some certain seat item, which we call item based recommendations.
+The most popular ones are actually collaborative filtering.
+But there are additional ones, since all different methods come with their downsides and upsides.
+And this is also how content based filtering evolved.
+And nowadays, we are looking in many cases at hybrid ones, which incorporate different approaches to leverage different advantages they provide to the system.
+And of course, there is influence from many other directions in data science in general.
+So causal reasoning, deep learning, reinforcement learning, they all have their foot stamp and recommender systems.
+And of course, evaluation is important.
+So do I evaluate my recommender system based on offline user data?
+Do I ask users with an experiment?
+So asking a small group, for example, user studies, or do I perform online evaluation of my recommender systems by, for example, performing a B tests where I try different systems against each other in order to find out which one works better.
+And of course, when it comes to better, it's always a question of different goals involved here.
+Most of the time, we are talking about the relevance of recommendations shown by users that consume actually the items that we recommend to them.
+And this is also what we are going to measure by conversion.
+Or finally, by the retention of users, whether they are staying with our platform, or whether they are engaging with the content or whether they are buying certain products and so on and so forth.
+But it's not the only set of goals that are important in recommender systems.
+It's also about surprise users, so serendipitous recommendations.
+It's about having a diverse set of recommendations about novel things that really inspire people.
+But it's also about fairness.
+Are people correctly represented?
+Do items have a proper chance to be shown to users?
+And so on.
+So there are many more goals that are important to incorporate on recommenders.
+Sequences are important.
+So in which order may I present certain items?
+Or does the order of past consumption has an important saying into what item I'm going to present next?
+What about the context of recommendations?
+Which time, which location, or maybe which mood I have?
+And the research here is by far not finished.
+So I really invite you to join this journey.
+There are many application areas of recommender systems.
+And I want to just name a couple of them to provide you with some example, inspire you, and get you on board for this great journey.
+Dating platforms.
+Have you ever questioned yourself how Tinder actually selects the users and topics?
+So the people they are going to recommend to you explicitly.
+Let's check on reciprocal recommender systems.
+Music streaming.
+What might be happening if you select go to song radio for a specific song on Spotify?
+Let's check item based collaborative filtering.
+Video streaming.
+Which title cover image did Netflix choose when they know that you are a fan of humor Thurman and want to recommend Pulp Fiction to you?
+Let's check artwork personalization that goes beyond the pure personalization of a list of movie and serious titles.
+E-commerce and fashion retail.
+How does Zalando increase customer satisfaction while reducing returns knowing which size probably suits you the best?
+Size and fit prediction for proper size recommendation.
+Social media.
+How to determine the most relevant videos to watch for a billion of users from millions of items in milliseconds on the second most frequently visited website, which is YouTube.
+Or how to leverage deep learning and approximate nearest neighbor search for recommender systems.
+Tourism.
+New to the city want to explore something?
+How might Google Maps come up with the right places for you to visit?
+Point of interest recommendations in action.
+Social networks.
+How to enable less popular users with important messages being heard or dealing with popularity biases and modeling fairness and recommender systems.
+Professional networking.
+How does LinkedIn determine which are the most suitable open positions for me?
+Or content based recommendations and surely much more sophisticated methods.
+Travel.
+Being on a road trip and asking yourself where to travel next?
+How does, for example, booking.com identify your preferences and reasonable destination for the next day?
+Or how to do sequence aware recommender systems leverage patterns that pure matrix factorization can't?
+Human resources.
+How does Randstad match job seekers and job offers in an efficient manner?
+Or how to leverage natural language processing for recommender systems?
+Of course, some applications can be sensitive and there are concerns about privacy and discrimination.
+We will also speak about them.
+So what about ethics of recommender systems?
+What about their impact on user behavior?
+And what about the responsibility data scientists have in this process?
+What about the abundance of different biases in information retrieval?
+And how do proper recommender systems take care of them?
+How does they ensure fairness?
+How does it make it possible that users and items get properly represented?
+How do you make sure that people are not pushed into narrow directions where they don't want to stay into, where they want to be taken out from?
+You see, the field is large and it provides many different directions.
+In this podcast we are going to entertain them.
+And of course, I don't know the details, but I know the people to ask.
+And I'm going to invite them to talk about their expertise and work, the problems and challenges they face, as well as how they join the field, from which background they come from, what motivates them and their feelings about where recommender systems are heading to.
+My goal is to educate and inspire, to provide a regular experience for you to get started and to learn more about recommender systems.
+For some, this might seem as a niche topic, but it's not.
+With an ever increasing abundance of information and human brains that don't follow Moore's Law, I am certain that information filtering is crucial to navigate through the vast ocean of information.
+To distinguish the relevant from the irrelevant, but also in order to inspire, to enrich, to surprise and to engage.
+Whether you are a beginner, intermediate or consider yourself already an expert, I recommend you to engage in this show.
+Embark on the foundations of recommender systems.
+Join the latest news and recommenders from research in academia and industry.
+Become aware of the technologies that are used in recommender systems research and application.
+Get the experts right into your ears and become an expert yourself.
+Therefore, expect a new episode every 2-3 weeks with a new guest and a different perspective on recommender systems.
+I will do my best and invite people from different backgrounds, from academia and industry, from different fields of application or different theoretical directions.
+But who is actually that person that is talking to you right now?
+I am Marcel Kurovski, a data scientist and you probably might assume it, RecSys enthusiast.
+I have been working in RecSys for quite a couple of years now and I feel there is so much more to learn.
+I built recommender systems for online platforms and created RecSys beginners training that you will also find attached in the show notes.
+I am living in the beautiful city of Cologne and I am eagerly looking forward to the next recommender systems conference in Amsterdam as of next week.
+I don't consider myself an expert yet, but I definitely want to become an expert and in order to grow and learn the best is to surround yourself with the right people.
+These people I want you as my listeners to enjoy and to learn from as well.
+I am Marcel, your host and this is RECSPERTSs, recommender systems experts.
+In our upcoming first episode we will be joined by Kim Falk.
+Kim Falk is a senior data scientist and author of the book Practical Recommender Systems and served as industry chair at the annual recommender systems conference in 2019 and 2020.
+Thank you so much for listening to this episode of RECSPERTSs, recommender systems experts, the podcast that brings you the experts in recommender systems.
+If you enjoy this podcast, please subscribe to it on your favorite podcast player and please share it with anybody you think might benefit from it.
+Please also leave a review on PodChaser and last but not least if you have questions, a recommendation for an interesting expert you want to have in my show or any other suggestions, drop me a message on twitter or send me an email to marcel at recsperts.com.
+Thank you again for listening and sharing and make sure not to miss the next episode because people who listen to this also listen to the next episode.
+See you, goodbye.

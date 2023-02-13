@@ -1,0 +1,1467 @@
+Note: This transcript has been generated automatically using OpenAI's whisper and may contain inaccuracies or errors. We recommend listening to the audio for a better understanding of the content. Please feel free to reach out if you spot any corrections that need to be made. Thank you for your understanding.
+
+One of the problems which people are trying to understand is like, why is the user here?
+What kind of information need do they have?
+What kind of intents do they have?
+If you're looking at implicit signals, if you're kind of understanding my interaction data, please keep in mind what my intent was.
+Otherwise, you're going to screw it up.
+When I'm running, I don't want to pause and like skip, right?
+That's very annoying to me.
+But then skipping when I'm creating a new playlist is great.
+It's fine.
+Once you have the intent space, look at the real-time interactions with behavior plus content and then map it back to the intent space.
+Based on that, then you kind of infer what to do.
+How do we leverage it?
+A lot of the metrics which we as an industry and community have focused on are satisfaction metrics.
+Are you engaging?
+Are you clicking?
+Are you coming back?
+But what about detecting dissatisfaction?
+Discovery and diversity.
+They are different, right?
+Just because they are diverse doesn't mean they want to discover new content.
+Just because you're narrow doesn't mean you want to discover less.
+As a platform, we want users to be discovering a lot more.
+Now, some users have more discovery appetite.
+Some users have less.
+So I can kind of personalize that on a per-user basis.
+That hey, some users have a bigger appetite.
+So I can start using those users to expand and grow the audiences of creators and then do this matching.
+This matching is the best problem I love the most.
+Across different languages, the content creators are different.
+The kind of content they create is different.
+The consumption habits are different.
+The behaviors of users are different.
+The expectations of users are different.
+So imagine like, I mean, it's not just one axis you're developing.
+Like 19 different Rexxus systems.
+To me, one of the most attractive parts was the scale, the ownership and the richness of the marketplace problems here.
+Hello, Happy New Year and welcome to this new episode of RECSPERTS.
+A recommender systems experts.
+For today's episode, I invited Richard Marotra and I'm very happy that he accepted my invitation to share and discuss his research in Rexxus.
+Richard is the director of machine learning at ShareChat.
+Some of you might have seen and met Richard already at last year's Rexxus where share chat was also a sponsor of the conference.
+And in this episode, we are having many topics and I guess it will be a very, very interesting episode today.
+Since of course we are talking about what broad reshuff to recommender systems and about his research and industry with two different directions on multi stakeholder recommendations and multi objective Rexxus user intent, user satisfaction and how to learn this from user interactions.
+And of course, we are also talking about India's biggest social media platform, which is ShareChat.
+Rexxup obtained his PhD from UCL, did an internship for Microsoft Research.
+He was also entrepreneurially active founding a startup during his time of research at UCL.
+And in 2017, he joined Spotify.
+And last year he joined ShareChat and he has published many papers at wisdom, rexxus, dub, dub, dub and many other conferences.
+So happy anniversary Rexxup and welcome to the show.
+Thanks so much Marcel.
+Thanks for the invite.
+Love this podcast.
+I know a lot of like people in my team and like a lot of others around the world have been listening to your podcast.
+Amazing set of hosts so far.
+Happy new year everyone.
+Super glad to be here.
+Looking forward to our conversation today.
+It's nice to have you on the show for today and I guess we have a bunch of topics that we can talk about.
+So I'm really looking forward to it.
+First and foremost, you're the best person to talk about yourself.
+So can you share with us, with the listeners, your personal history in research and machine learning and especially how you became an expert?
+Right.
+Perfect.
+Thanks.
+So yeah, I think I started like doing my undergrad in computer science mathematics back in Bit one in India and about this is like close to 15 years ago now and around 2010 is when I interned with a company called Side View.
+And that's when I started working with the PhD in NLP and I did not know what an L NLP means.
+I, for all I knew I thought it's like neuro linguistic programming.
+Apparently it wasn't.
+Uh, so then we started working on some information extraction from news articles back then about 13, 14 years ago.
+And that led me to understanding a lot like research papers in the ML NLP domain that initially was the initial transition towards ML.
+What I did was I decided to kind of pursue a PhD in machine learning.
+At UCL I was working on a lot of problems around user intent understanding, user personalization.
+And if you look at a bunch of like different task assistants or different search engines, mostly like user facing companies, right?
+One of the problems which people are trying to understand is like, why is the user here?
+What kind of information need do they have?
+What kind of intents do they have?
+And if you look at it from a search versus non-search paradigm, right?
+In search people are typing in a query and you know that, okay, this is a query, the user is explicitly telling me what I want.
+But then a lot of these surfaces are not about like user explicitly asking you, right?
+If you go to the homepage of Spotify or on ShareChat, you never tell us like, hey, this is what I want.
+So inferring that intent is gonna be a big problem as well.
+But broadly, right?
+We're gonna go into like specific details in a bit, but high level, right?
+I mean, trying to understand user's intents and trying to kind of understand like what are the different aspects of the intent?
+Where are they in these intent journeys in these task journeys?
+So together with my PhD supervisor, Emina Yilma, she is currently at UCL and Amazon.
+So we were trying to understand that, hey, how do we formulate these task users have?
+So it's like this, right?
+I mean, if I have a task that I have to plan a trip to, let's say Belgium.
+So what I'm gonna do, I'm a vegetarian, I'm gonna look for vegetarian restaurants in Belgium.
+First of all, I need a visa.
+I need to book my flights.
+I need to book hotels.
+I need to find out like what are the nice places to visit.
+So just one high level task will span multiple hierarchy of sub-task.
+So what we were trying to do was we were trying to understand that, hey, given a bunch of query logs, which have no information about explicit task mapping, can I in a hierarchical fashion understand these tasks of task hierarchies and then understand the user navigating across all of these?
+That's when I started like researching into large scale search interaction data, especially during my time at Microsoft Research, got a lot of data from Bing and Cortana, tried to apply like hierarchical machine learning, Bayesian optimization approaches over there, tried to understand these tasks structures.
+And then suddenly it relies, I mean, again, I got the realization that in a bunch of these user facing companies, like if we understand a bit more about user needs and I can do a better personalization and also recommendation.
+And that's where like I started transitioning from the search domain to again, like the point of understanding task is so that I can help the user proactively better.
+So most of these search systems are reactive, right?
+You're gonna type in a query, I'm gonna try to understand it and then kind of give you suggestions.
+But then a lot of the like proactive recommendations are that, hey, I can infer your intent and maybe proactively start providing you ads or recommendations, which are most likely gonna make you solve your overall task, right?
+One of the great phrases which me and M&A used to use that like, hey, people don't want to come to search engines, right?
+It's not that like you wake up, you're like, hey, I feel like typing in a query and then let me go to google.com and type in a query.
+It's more like, I have a need, I have a task, I want to get done with that task.
+And that's why like, I mean, I go to a search engine type in a query.
+So a bulk of my research during your CL was around task understanding, then transitioning to Spotify.
+Wherein I was like that, hey, I mean, if I don't know the intent, can I infer the intent on the homepage?
+Maybe later on, we're gonna talk about some intent and standing and recommendations as well.
+And from intent, I was up until then entirely focused on user needs.
+And then like the kind of problems I faced at Spotify, I mean, luckily I was kind of facing a bunch of problems which are not entirely about users.
+But then like, how do we expand beyond users as well?
+So in the multi-stakeholder recommendations, which you talk about, hopefully we get to dive into detail, we start going in from the user pieces to the other stakeholder pieces and then wrap it all up that, hey, how do we do well for the platform?
+So how do we keep in mind the users, keep in mind the other stakeholders and do well for the platform?
+So that's been like an overview of the journey I've had looking at user personalization and multi-stakeholder recommendations.
+Yeah, so that's the high level summary at least.
+So I guess there are many different terms that we can tear apart in that specific part when talking about what you did at Spotify.
+Since there's a goal a user might be having, the goal is kind of hierarchical and tears down into different tasks.
+So for example, my overall overarching goal might be, have a nice, wonderful, enriching visit in Belgium where I'm intending to spend one week of my holidays.
+And then it breaks down into several sub-goals and sub-goals that I try to achieve by performing certain tasks.
+And then to find out how to do that task correctly, I engage with a search engine where the main different search engine and recommender system, we can do them in a personalized fashion.
+Both rely on similar mechanisms, methods that we have under the hood, especially when it comes to maybe to evaluation.
+But the main thing that I get from what you have said so far is, the one is much more explicit because I'm really trying to phrase my intent and put it in there.
+Even though there might still be a difference of what I phrase and what I have in my mind.
+And then the recommender system, we don't know it so explicitly.
+So we do have to adhere to some implicit mechanisms, especially by looking to the user interactions.
+Is that, would that be correct?
+Yeah, that's totally correct, right?
+I mean, the way I look at it, if you look at search, I mean, the user's explicitly typing in, there's somewhat a difference between push and pull mechanisms as well, right?
+That like in a recommendation system, right?
+I mean, the user's not pulling information, right?
+We have to like push their inclination to the user, understanding their intent.
+So one is the big difference between explicit versus like implicit.
+The other one is even like the task space.
+I can look at, if you give me access to Google search logs or Bing search logs, right?
+Duckduck search logs.
+Again, no preferences, at least for me.
+But if you give me access to that, I can look at the queries, I can look at what's going on and start forming these types of priorities.
+That this is like what users do in a session, across sessions, some of these tasks are like really small, user maybe spend like a few sessions with them and they're done.
+Some of these tasks like planning a wedding, moving a house, buying a new house, all of that, right?
+They spend over like months on end.
+So some of these tasks like, I can look at, put the queries in a sessions in a timeframe, in a time series, and then understand what's going on.
+But if I'm looking at a lot of these like non-search surfaces, right?
+I mean, Spotify, Pinterest, they all have search specific.
+But it plays a minor role there, no?
+Yeah, yeah.
+Like I mean, only a subset of users will go to search on the homepage where the bulk of interactions are coming and you're like that, hey, I don't even know what the space of intent is like.
+Because right, I mean, like you'll have to do a lot of groundwork, a lot of studies to even find like, what are users using my app for?
+Not just Spotify, not just Pinterest, not just Shet, all of this, right?
+Because this is where like, I mean, I got exposed to a lot of user research in combination with like qualitative and quantitative studies.
+So I think like Fernando Diaz at Spotify, when he was there, he started kind of advocating for a lot of mixed methods, approaches of doing the entire holistic process, which is that don't just develop an ML model, do the user research, get these insights, use the qualitative data to understand like, maybe do some surveys, get some large scale data in, and then combine it with qualitative, quantitative mechanisms and then large scale ML models.
+So essentially, right, I mean, even identifying the intents, which is one of the problems we kind of discussed in one of the www papers, I mean, the web conference papers in 2019, which is how do you extract intents?
+And once you know the intent, then I can do a lot of like evaluation, I can do intent level personalization, even in my current company, right?
+I mean, at Shet Chat, we have a lot of like in session personalization modules, which is given us some decent games.
+I can only do in session personalization when I understand what's going on in this session.
+And if you look at, right, I mean, TikTok and Instagram, we use in Shet Chat, hopefully we, a lot of these short video apps, they're doing really well on like real time intent understanding that what is going on in this session and can I look at your recent feedback and then like suggest you more of that versus not do other content.
+So basically, I mean, there's a lot of work on in session personalization, intent understanding and leveraging intent.
+So when I look at the intent problem, right?
+Part A is about like even defining the intent space, part B is about identifying the intent, part C is about using and leveraging the intent to do better recommendations and part D to me is about like using intent for better evaluation.
+I want to take a step back first and ask you about your career decisions so far.
+So if you agree.
+I have seen something interesting that you did an internship at Goldman Sachs before.
+I see basically two points there.
+So the first one was, why did you change gears or where was it points that you said, okay, I want to pursue a PhD.
+And within the PhD where you were working on things relevant for RecSys, but mainly driven by search, how and why did you change gears from more search focus to more recommender systems focus?
+So maybe these two points, why and how did you engage in the PhD?
+And the second letter one, how did you transition from your PhD?
+So from more search orientation to RecSys orientation.
+Yeah, thanks.
+These are great questions.
+Yeah, so I think like, I mean, when I finished my undergrad, right?
+On my job hunt, I looked at a bunch of different offers, decided to go out and join Goldman Sachs.
+I was still interviewing for my PhDs, the decisions were still getting made.
+The decision to do a PhD was already set in stone before joining Goldman Sachs.
+I mean, during joining Goldman Sachs, because I think the interview process for a bunch of US universities and UK universities are different.
+So I mean, I had a few offers from the US universities, the UK university interviews were still going on.
+I actually met my advisor at SIG IR.
+So as an undergrad, I had a paper at SIG IR, I went there and I actually met M&A for the first time in real life.
+That's when I actually did my PhD interviews as well.
+A couple of them, I mean, in addition to all the things which had happened online, and then decided, Hey, this is like really nice fit and let's do it.
+But then coming back to the Goldman Sachs story, right?
+I spent like close to six to seven months at Goldman with a full time analyst.
+And there I was working with like large scale data, but like financial data, and a lot like data related problems, which is like just kind of sanity of data, data correctness, and like the data pipelines, all of that.
+Because again, like they're also like outside detection.
+Suddenly, if suddenly one of the data providers you have, there is some error in the data, which like your path, if you're not detecting it well, then a lot of downstream business decisions, which are very high in revenue and financial impact gets made based on wrong data.
+And that's gonna be like pretty bad for the company.
+Again, 10 years down the line, I'm still dealing with the same problems here, because again, like the data correctness in the ML world, model observability, that's a big piece which my current team is also looking into.
+During my time at Goldman, right?
+I mean, first of all, I really encourage everybody to just go spend some time in the industry, like either through internships or through full-time jobs before you go do a PhD, or even as a postdoc.
+I mean, again, you've had one of these guests on your podcast, I mean, who was a postdoc at Amazon, and like he's recently joined my team all the way.
+But yeah, I think like one of the great benefits I've seen is that during your undergrad, during your PhD, before your PhD, during your postdoc, the more time you spend in the industry, you face a lot of these amazing real world challenges, which means that you don't have to go back to your PhD and invent a new problem, like just like you can do your research.
+There's far more, I mean, I wouldn't say far more, but a lot of like really interesting, really hard problems which a lot of current day industrial people are facing.
+And we need like, again, like we've had this nice collaboration between Academy and research for a long time, but more important than ever, I mean, the Academy needs a lot of inputs from industry, and industry needs a lot of dedicated sincere time spent on a problem going deep from the Academy, essentially.
+Yeah, yeah, so some kind of fruitful mutual exchange that allows both to work on more relevant and impactful problems then.
+Yes, yes, exactly.
+And I think like when we could talk about the course, if we do at this in the next one hour or something, like one of the reasons I started doing one of the courses was also because I was seeing a gap between like the students coming into my team in general versus what's being taught in the universities right now.
+So if there's a gap there, then the industry can come in and fill in.
+But coming back, right, I mean, I spent a lot of time during my PhD doing multiple internships.
+Again, like I had a learning that should, I mean, I went to Microsoft Research like four times in like two years.
+Should I have gone to like other university, other industries, other companies to do internships or like just go back?
+I decided to go back there because again, like I had a great understanding of the problem domains, great understanding of the data, great relationship with like teams in India, teams in London, in New York, Bellevue, Beijing.
+So again, like, I mean, there were instances where I knew exactly what data is there, which team is developing it because there's been a lot of time even in the internships, right?
+So the point is a lot of my PhD work during my PhD at UCL was guided by the real world problems which search engines and digital assistants are facing.
+And not just that, right?
+I mean, at the same time, if you're understanding task, then Alexa skills was starting to become famous and popular in 2014, 2015.
+And then you start realizing, I mean, that's when the transition to search and recommendations started happening for me.
+That in search, if I'm doing, spending my PhD hours understanding search task, but then I see a mapping that hey, once you have these tasks, WikiHow is a great example, right?
+I mean, you go to a website WikiHow, it tells you how to solve some of these tasks with a step-by-step point and plan.
+And then like Alexa task, I had a few conversations with the people at Amazon and Alexa developing that, EVI technology in Cambridge, right?
+I think that's the start of it.
+Amazon acquired to boost up the knowledge base around that.
+It's based in Cambridge, like a few couple of hours drive from here.
+But you start seeing that even Alexa, Cortana and all these other conversational agents are starting to kind of develop that task understanding and not just in a search domain, but also in a recommendation domain and all.
+So that's when I started realizing the overlap between search and recommendations, especially from personalization perspective.
+And then in around 2016, 2017, towards the end, I really wanted to bridge the search and recommendations community by solving this task leveraging problem.
+And once I have the task understanding, then I can use it for better search results ranking, but also a lot of better proactive recommendations.
+That if I know that, like let's say you've gotten a visa to like Shenzhen area, right in Belgium.
+Now I know you're gonna make a visit.
+If I know you're gonna make a visit, maybe two months down the line, I can recommend you ride away hotels or restaurants or other things, or like even places to visit, all of these, right?
+So that means very well in advance.
+Two months before you actually make the trip, I have an understanding of what you might end up doing.
+And that's a lot of like ads can start getting placed, a lot of like other recommendations, which are really useful to me, right?
+Maybe there is a fair going on.
+Maybe there's a tech talk happening in Belgium when you're visiting and I have no clue, but then you tell me that, hey, you know what, there's an amazing event.
+You might just want to hop in there.
+So these are all great, very useful information to be given to users, but this is a recommendation from a search problem.
+I'm not searching for it.
+And then, I mean, I realized that, I mean, this is true even right now, right?
+You look at, again, this is my personal statement, not my employees or anybody's, but I think like recommendations is one of the most like trillion dollar ML models in production at companies.
+At right, I mean, on Twitter, you don't see a lot of like RecSys people making big noises.
+You see a lot of like activity going on from the RL world, from the NLP world, or maybe that's just my limited Twitter interactions.
+I would definitely agree.
+It's far more implicit and quite bigger than you would say than looking from that more explicit computer vision or NLP type of certain things, because it's kind of so embedded in so many different systems and so many different industries to say.
+And then therefore, due to its implicitly, I guess you are far more underestimating its effect and how integrated it is in several systems.
+Exactly, exactly.
+I think if you really sought by the amount of actual money in the industry being used, being made from ML applications, I think recommendations would come at the top.
+Or it's not the top, right?
+But then that's not the current perception of like, I mean, like how many TechCrunch articles have been on recommendations was it like computer vision and other problems, right?
+Are there like categories?
+I'm pretty sure all of these problems are important.
+But as a community, I do feel like, hey, maybe we're not kind of being as talkative in the external world about recommendations.
+And it is really at the top too, right?
+And last year, I mean, when Facebook and Meta was going through their transformation, like Zuckerberg explicitly called out that recommendations on reels is gonna be the one of the top priorities for the company.
+So then that means like now people are realizing how important and big of a problem recommendation there and like putting a lot of like applied machine learning focus on that, at least visibly.
+I mean, for sure, like Google and a lot of other Netflix, Spotify, they've been doing it for.
+Yeah.
+But I think it's getting there in terms of the wider visibility.
+Actually, it's somehow also integrating with the stuff that comes from all the other, I would say application areas of machine learning.
+Yes, so of course we are borrowing a lot also from computer vision because we need rich content, content that is not only represented in terms of, hey, this is a description of a certain video or something like that, or this is the name of the creator or these other texts or categories, but we also want to understand the content.
+So for example, running some computer visions across it to kind of detect the mood of certain things or it's extract the most representative images or something like that.
+And the same, I guess, goes also for NLP.
+I mean, I assume heavily that you are using also NLP models to enrich the information that you have about the items that you are recommending and also to do richer recommendations, but it's somehow that recommended systems kind of integrates all of these things.
+So it's much more, it uses other areas results and also sometimes the methods, I mean, in terms of the methods, NLP and RecSys are also borrowing from similar methods to evaluate or something like that, right?
+Absolutely, yes.
+I think like, I mean, we entirely, majorly rely on computer vision, content and signing, right?
+I mean, in the social media domain, a lot of users and it content gets played out and then like to make the initial recommendation, I have to leverage a lot of like computer vision understanding to understand my content so I can recommend it.
+But just on this note, right?
+It's not just about leveraging and contributing back, but also it's about pushing the frontiers because you have to make recommendations across like a hundred million item set within like a hundred milliseconds.
+And there has been like repeated studies done that even like a 10 millisecond, 20 millisecond lag in recommendations does have an impact on the revenue you're making on the ad side or the latency or the demand retention which users have on your app, right?
+So then that means from an applied machine learning perspective, right, at least on the ML infra front, I mean, that's why like you have NVDA Merlin, right?
+I mean, like amazing set of great talent and like pushing the boundaries on what's possible.
+A lot of collaborations we do with the NVDA people with like the Google TPU teams, because if you have to serve recommendations within a hundred milliseconds, then on the ML infra piece to make these large scale models work in production at the latencies which a lot of these like social media companies and apps have, that means you're asking a lot of hard questions to the ML community back, but hey, I mean, we have these problems, so can we kind of work together and develop solutions?
+So I think there's a nice intersection going on across multiple sub things and then hopefully like making all of it going towards making the users experience a lot more better.
+Now I get a better understanding of, yeah, what you mentioned by tasks and also how it interleaves with recommender systems and search.
+2017, you were almost at the end of your PhD and I guess there must have been some companies reaching out to you or you reaching out to them to wanted to take what you have been doing research on into a more industrial context.
+Of course, you did the internships at Microsoft Research where you interacted more with search-based systems and now you want to transition more to the recommender-based systems and you also mentioned that they were quite more widespread but more silently to say, I mean, you were referring to that search versus recommendation example and there is that great figure, I guess, by Netflix, it's already a couple of years ago, where they claimed that 80% of all video or content consumption at Netflix is triggered by recommendations and only the 20% share of the cake is actually triggered by search, which already says, okay, recommendation plays a much greater role there.
+So you decided to engage in the larger piece of the personalization cake.
+So why Spotify and what was kind of jump-starting your research?
+Yeah, great.
+I think, yeah, I mean, again, like Spotify is one of those companies that I've been using that app since like 2011.
+One of the first apps I used to pay as a student back then, right, in India, like in 2011, when I wasn't making any money but then still using my parents funds to get through my education, then I mean, I loved Spotify as a user.
+So again, like, as you mentioned, like towards the end of the PhD, you've done a few internships, you do have some offers, you do reach out to a bunch of companies, all of that happened.
+But one of the great things about Spotify back then was the establishment of the research team and like a bit more ownership, a bit more like independence on like how do you shape the research chart?
+So I interned with Fernando Diaz at Microsoft Research and we had a nice paper on auditing search engines for differential performance.
+That's a very nice paper which I like, but we've really gone into detail about can you audit systems for fairness across demographics and other aspects?
+And I loved working with Fernando.
+He moved to Spotify to head the research, established the research division there, had it.
+That's when he started kind of a lot of interactions there on that front.
+And actually, SIGIR 2017 in Tokyo, actually maybe I've had a nice history with SIGIR and I started my PhD, did the interviews at SIGIR 2013.
+And then SIGIR 2017 in Tokyo is when like me and Fernando spent a lot of long hours talking about Spotify and then like me making that decision to transition.
+That should definitely be a warning to your boss, never send Rechab to SIGIR all right.
+Or maybe I replicate the process and like get a lot of other people interested to join this and that.
+Another reason to kind of fund those conferences from the industry perspective.
+Again, I think like in terms of having the impact in the industry and where Spotify was, there's a lot of like great recommendations already baked into the product, but also a lot of foundational understanding to be developed, a lot of like nice ML models to be developed, a lot of like foundational research to be done on user understanding and personalization and a bunch of these problems.
+So one of the decisions to join Spotify was also to start influencing the research roadmap, especially if you're joining like Microsoft Research, MSR has existed for like more than a decade now, right?
+More than perhaps.
+And a lot of like establish work culture, establish like protocols, processes in there.
+But then if you join a company slightly early on, at least that's been my personal day, you get regardless of whether you're joining as a research scientist or a staff scientist or like a leader position, you do have an impact.
+And one of the learnings I've had at least from my journey so far, many journey so far has been that if you're stepping into the world where you can have an impact and kind of shape how things happen in the industry and its company, then that kind of enables you to grow in like various dimensions, right?
+Not just on the technical and research and ML front, but also in terms of how do you shape the culture in the team, how do you shape the work, how do you shape the impact of research and product?
+Yeah.
+Because this has been a nightmare of a problem, right?
+I mean, very, very few companies have been able to get it right.
+You spin up a research lab and they start only focusing on like nearest publications with like zero metric movement.
+If you look at the applied scientist, let's say at Amazon or like the supply scientists in Microsoft versus research scientists in Microsoft Research, researchers, all just ML engineers, right?
+So you start seeing that spectrum that I mean, some of these researchers are either just MSR researchers where in like you're not hired into a specific team, you're kind of working across, but then in applied scientists, you kind of hide into team, you focus on some of these problems of that team because your budget is given by that team, right?
+Now Spotify presented this unique opportunity of tech research, which is that, hey, you join a research org, but then you work via embeds.
+You embed with the homepage team for like one, two, three quarters, spending with their production, I do research and assign the problems.
+Then you can step out, do some research, find other customers and then step in, right?
+That sounds for me very similar to what we discussed in last episode when I had Flavian Vasile on the show where we were also talking about, okay, how do you organize that whole thing?
+So then bring those scientists.
+So there's more research oriented people close to the business, let them kind of soak up with business problems, try to solve them there, but also give them the chance to kind of pull back rather to the more researchy side, but with their minds full of those business problems.
+Exactly, 200% amazing episode.
+I highly recommend people to go to that.
+Some parts of those episodes, I had to like listen again and like read the paper and then come back.
+I think great discussion here, but I really like what was getting discussed in last episode there, right?
+That I mean, the embed process, you embed in the team and then step out and then embed again, but just the fact that mentally, right?
+Suddenly you're not like bounded by one team.
+And I think as an ML engineer, I mean, regardless of whether by definition you are or you're not, then as an IC, right, when you join fall lower in the, hopefully not a high hierarchy, but then like right by default, I've seen a lot of people just condition that, hey, I mean, this is my team, this is a problem.
+I don't care about what's going on.
+Yeah, yeah.
+And then suddenly if you're joining a broader org, wherein you have the ability of stepping out, then you're gonna be aware of a lot of what's going on across maybe unintentionally, right?
+And then the biases in your mind are, hey, let me figure out what's going on.
+I think that high level view often gives the researchers a lot of like great ideas, because even though I'm not working on that, but just because I'm aware or because I know that I can step back and maybe embed in that team, then cognitively, right?
+I'm kind of keeping a mental tab of what's going on, what problems are they facing?
+And then I think as a researcher, you can start bridging them.
+Yeah, yeah.
+So if I can solve a problem, which solves like actual problems for like three specific teams, then my impact as a researcher is far more.
+Yeah.
+And I'm able to kind of stretch with this problem.
+Otherwise, if you join a team, and if you don't know that, hey, you can step out, very likely you're just gonna be like bounded by that team.
+And the only interface might be a product manager or a data product manager that is kind of the gate towards the people outside, but you are never engaging with people some directly.
+I mean, there are also nowadays still companies that I would assume also restrict this and tell you, okay, please don't talk to people from other, go through the managers or go through the product managers or something like that.
+And I guess the way that you are describing it, that is standing in big contrast, and that it would also definitely support, is much more productive and healthy for an organization.
+I guess the benefit of it is also that you allow a much more natural interchange of ideas, knowledge, and expertise, and skills, and all that, because also the business people who might not be that exposed to machine learning, engineering, machine learning concepts, data science in general, recommender systems in specific, they also get into better, more easier interaction with you and you are able to learn from them, but they are also able to learn from you and get the data perspective without being, yeah, I mean, what is the other opportunity to do this?
+Yeah, to do some presentations where almost half of the people are sleeping and...
+I...
+Yeah, exactly, yeah, I mean, totally, right?
+I think, like, it does, I mean, not everybody's cut out for that, I mean, in my position so far, I mean, researchers are great at solving research problems and potentially having them, right?
+But then, like, are you aware of all the gossip going on?
+I mean, not gossip in terms of people gossip, but like ML problems, right?
+Where are these facts, right?
+What kind of facts are they trying?
+Where are they, what kind of wins they have had?
+So, I mean, and not, and why just about your company?
+I mean, I spent a lot of time on LinkedIn just looking at what other product teams or people have, right?
+I mean, like, if there's a staff scientist at a new job opening out at one of the companies, there's gonna be like a lot of text, but then there is two sentences about like, hey, this is what exactly is this team doing?
+My point is I'm trying to walk away from, hey, you do that high level view in your company, but also do that in the industry.
+If you keep a tab of like, what are the open positions, then if you start reading through them, right?
+You start understanding, hey, there's a trust and safety team at Twitter or at Pinterest doing this, and there's one line of what the core problem is solving.
+And then if you, again, it compounds, right?
+Right away, you won't understand it.
+If you keep doing it for like months in a row after a year, two years, you start having a very wide perspective in the industry of what's going on.
+And I think like that gives you a very nice flavor, which is very important because at Spotify, right?
+I mean, in the personalization mission, we had like close to five to 8% of people in research.
+By definition, right?
+You're not gonna have like a 50 like research team.
+We had to grow it over the years and still like a very small percentage, right?
+Maybe a org of 500 means that you have like 20 researchers.
+If you have 20 researchers, then you're not gonna be embedding like in 20 problems, but then like they have to have a wider perspective that puts a lot of pressure on these research scientists to actually do a lot of extra work, right?
+Because only road managers and PMs and program managers will have that like wide multi-org, multi-business unit view of problems.
+And this is literally what helped me pick up the marketplace problems.
+Because I mean, like, I mean, the personalization team at Spotify doing like the recommendations on the surface, the creator org, separate orgs, separate the boarding lines all the way up, right?
+They are working on a set of amazing problems on the artist side, on the creator side, on how do we make artists successful, how do we make these labels successful?
+And then you're like, hey, the personalization team, the recommendations you're showing, they have a direct impact on whether these creators are able to make money or they're able to get the audiences, grow their audiences, right?
+So that's when I think one of the things which I intentionally try to do well was be the bridge between the personalization efforts and between the creator efforts.
+And the more you're doing that, the more you're aware of the problems, and maybe like a minor change here will have a major change there.
+And I think like one of the papers which she wrote the first paper in this world, in this world of mine at Spotify, was on the balancing between user and artist goals.
+And that's kind of laid out that effort.
+But yeah, that's been what my journey at Spotify has.
+A very nice handover and brings us to some of the more research topics that we definitely want to talk about that you performed at Spotify.
+And just to summarize and then please correct me there.
+So for me, it sounds like Spotify, just as an organization, is what you were attracted very much to from an organizational or cultural point of view.
+That's somewhat what I get from what you are saying.
+We just said, okay, I'm exposed to the business, but I can still be a researcher and conduct research in a business system being embedded there.
+And then of course you get more feeling of what your impact is actually.
+And how much official accountability and official headache do you have there?
+And that's actually led to my last transition from a staff scientist to a staff engineer.
+That like as a researcher, where you're still embedding, you're still like, do you give like 100% accountability to your researcher who might embed out versus not?
+So then I finally decided that, hey, I really want to own the surface and have like production metric accountability.
+And that finally led me to transition away from the research org to the engineering org, own the product traffic so that I can live and die with my decisions, right?
+And the metric accountability becomes yours and you start taking on more serious roles and actual production systems, right?
+Maybe slightly stepping back from just the fact of doing research, but also like, I mean, making sure that like you're prioritizing even like other solutions, which may not be as research worthy at the time, but then you're kind of tackling these problems, which that really led me to the shared chat role.
+Because in like, I wasn't, I was part of the home team working embedded with them, then working with the sets team on multi objective recommendations, transitioned as a staff engineer to the sets platform team there.
+And then at shared chat, my work owns the production traffic on shared chat.
+So that's been like the journey as a researcher, if you're not owning production metrics, then as a staff engineer, as a core, I see there, you have production traffic responsibilities, right?
+And that led me to the role at shared chat as well, when my team entirely wants to product this back for shared chat.
+I.
+Yeah, you already brought up the term marketplace.
+So most of the people won't directly associate Spotify with a marketplace because they would rather associate from a user point of view Spotify with music streaming, nowadays also podcast streaming that has become very popular throughout Spotify.
+In which kind is Spotify a marketplace and what are the participants of that marketplace and what are their goals?
+I'm gonna talk about this, like not purely in the Spotify dimension, because I think this only applies to a lot of other companies.
+And if anything, like over the last five years, I've been trying to view every of these companies as like, hey, there's a marketplace from here, there's a multi-stakeholder balancing problem in there.
+So when I see marketplace, there are like multiple components, multiple stakeholders, and at Spotify, the stakeholders would be the user primarily, you'll have the artist, you'll have the labels, you have different contract as platform, and then you have the platform itself, right?
+And this is not just Spotify, if you look at Netflix, Netflix has a bunch of, again, like user needs, but also like you're spending money on kind of getting shows on your platform, right?
+What that means is like even Amazon Prime Video, right?
+They would kind of dedicate some budget for like growing the number of series, number of Hindi series we have in India, right?
+And then like, again, like if you have to make that decision, you have to look at like which actors or which producers do I sign up for?
+There's always a limited budget.
+Spotify is doing that for like the podcast host, right?
+That, hey, can I make, should I be making Jorogan an exclusive partner with us?
+And like, if I'm paying X dollars, why X dollars?
+Why not X minus 20, why not X minus 20, right?
+Same on Share Chat or on TikTok, right?
+I mean, there's a bunch of creators you're focusing on, you want to make them successful, and you want to kind of provide them the support, but then why these creators?
+And how much support do you want to give them?
+Same on Deliveroo, right?
+In the UK, we have Deliveroo, Uber Eats, like again, like if I onboard a bunch of other restaurants and deliver partners, then I get some better value.
+But then if I'm only showing a small set of restaurants to users, all the other restaurants are not making more money today.
+So suddenly you start realizing that the economic implication of your recommendation model design is huge in the society.
+If I'm Uber Eats, I mean, or any of these, like Zoomato, Deliveroo, all of these apps, we have Swiggy back in India on that.
+If I start showing one restaurant less and less on the homepage of people, then that restaurant earns less money today.
+Yeah.
+So the, and again, right, I mean, is the recommendations community aware of the economic implications on the society based on some of your model choices or some parameter somewhere in the balancing algorithm, which is kind of really screwing up somebody's like earning potential.
+So I think like, when I started looking at this from this lens, then I'm like, hey, a bunch of everybody is like even on Amazon or e-commerce sites, right?
+You are doing some sort of a heuristic re-ranking at the end, there's a sponsor at there, there's a sponsor search item there.
+So when you look at it, then almost all of these companies are favoring some results or the other for some reason or the other, either the platform makes more money or you're kind of growing that audience or you're growing that creator or you're growing that part of the business.
+Just to clarify there, when you mention heuristic re-ranking, it's like in the first place I optimized for user satisfaction.
+Let's just put that in the room without detailing too much right now what user satisfaction means and specific.
+So this is the first thing that you do.
+And then you do some re-ranking according to other stakeholders interests.
+So you are somehow not doing it in one step, modeling both objectives and optimizing for them jointly, but successively and this is somehow suboptimal or what would you claim?
+Yeah, I would say like you just kind of have a slot, right?
+I mean, on the third slot in my ranking is like a sponsored injection.
+And like again, I mean, and that has nothing to do with like the rest of the user field, right?
+There's a team it's like, yeah, I want to, and again, that would change.
+Today, I mean, growth team is using it.
+Tomorrow, maybe the podcast growth team is using it.
+Like the after tomorrow, somebody else is using it.
+And they have a slot in the feed where you can insert it, right?
+That's a bare minimum you would do.
+And that's what most people start end up doing anyway.
+I think the point I've been trying to convey is that, hey, you can think about this problem from a ground perspective and start designing.
+I mean, start designing the entire Rex stack for marketplace.
+Because again, if you look at the candidate generator, hopefully we'll get to that discussion of, I mean, this is a Rex Yeah, so people should be aware of Kennedy generation.
+Yeah, you have the corpus, you have the candidate generators, you have the ranker corpus is like a hundred million candidate generator gives you a few thousand ranker ranks.
+So in the candidate generation phase, right?
+If I'm not picking up tail creators in the thousand I'm giving to the ranker, there is no amount of re-ranking the ranker can do which will kind of push the tail creators up.
+So then each part of the Rex stack has a huge implication on the marketplace outcomes, right?
+As a platform, I cannot grow my middle-class creators or tail creators if the CG is not doing a good job at showing surfacing these to the ranker.
+So, but then like, you know, in an injection or ad hoc re-ranking, are you really solving this problem in a great way?
+No, you're not.
+Because you have not criticized or critiqued your candidate generation from the marketplace lens.
+So the point I'm trying to make is even the corpus composition, right?
+Like if you have a corpus, let's say you have like two million fixed corpus size, then the corpus composition of that two million is gonna dictate whatever happens downstream.
+Yeah, so then there is even no chance for the candidate generator to pick up one tail items because they are not yet already included in the corpus, right?
+Yes, yes, and this is just on the like very high level surface, the moment you start thinking more, right?
+Now if one of the point, again, this is high level, but then if I zoom in on just one point without hopefully spending 10 minutes on it, but then inculcating habits, if I am recommending content, then in a marketplace lens, right, I won't use, maybe there's a strategy content which is far more monetarily useful to me as a platform.
+I know user doesn't like it too much right now, but then over a month, can I inculcate this habit from the user that they start liking that?
+Then as a platform, right, two, three months down the line, that user will be a very active user in the marketplace for me.
+Even from a pure user perspective, like I mean, Spotify, all these apps, like I mean, people have been using it for decades now.
+So you do get a chance to shape user trajectories in the personalization space.
+Now one trajectory is far more beneficial to the marketplace and the creators and the platform than a bunch of other trajectories.
+As a platform, you want to be able to guide and control that journey.
+Keeping in mind that the user is happy, but then like, again, right, if there is two parts, user is happy in either of them, but then one of them is more profitable for the creators.
+That's a healthy marketplace, healthier marketplace relatively, right?
+What's my point?
+My point is, again, a bunch of marketplace problems, but we should look at the entire access stack and then treat it from that marketplace lens and then start making interventions and adjustments all along the line.
+Yeah, yeah.
+And then I guess it was 2018 where you wrote that paper and I quote, towards a fair marketplace, counterfactual evaluation of the trade-off between relevance, fairness, and satisfaction and recommendation systems.
+So we talked about marketplace, but we haven't talked about fairness yet.
+So how does fairness embed into that notion?
+Yeah, I think, I mean, yeah, I mean, that's the people which actually was my introduction to marketplace in the sense that, hey, I'm actively working on it.
+There's a bunch of problems.
+Let's start.
+We gave a tutorial, subsequent tutorial at KDD and RecSys on these topics.
+In that paper, we were looking at fairness for a creator.
+It's a notoriously hard problem.
+And there's like a bunch of papers, maybe a few PhDs to be done on just fairness for creators itself.
+But at least in that paper, right?
+We were looking at, if I'm recommending playlist to users, then some of these players would be fair across, let's say, popularity buckets of creators.
+Some players are like only focused on the head creators, popular creators, some are not.
+So then how do I kind of balance between showing the most relevant content to users, which they would like versus like each of these content pieces might be more fair to creators versus less.
+So in fairness, in that regard, does it mean kind of equity of exposure, which is a very hard fairness goal?
+So I mean, if every artist, regardless of the popularity of the history of the track record, would be treated equally, some might also say, OK, that might be too hard.
+So I mean, you're hearing that fairness term quite a lot of times.
+And I guess we should soon dedicate a whole episode to fairness and how to measure it and different notions of fairness.
+But in that very specific kind also in the sense of creators at Spotify, what does fairness translate into there?
+Yeah, I mean, again, I want to officially speak on behalf of fairness at Spotify, Ford Spotify.
+But then in that paper, the scientific definition of the paper we took, which is the most politically correct way for me to at least frame my answer, would be that the fairness we use was the diversity across the popularity bins of creators in the playlist.
+So what I can do is I can look at the playlist, look at the artists in that playlist.
+Again, a playlist is a bunch of tracks.
+Each track will have one or two artists.
+And then I can pick up the main artists of that track, look at the set of tracks, create a popularity spectrum, and then quantify that.
+That's the operational definition of fairness.
+The overall insights we mentioned, I mean, we don't want to tackle the problem of how do you define fairness.
+We'll get to that in a bit, why this is such a nightmare of a problem.
+But then regardless of how you quantify it, you're going to start seeing some trade-offs.
+So one of the things we did was we brought it on the x,y axis.
+On the x-axis, you have relevance, on the y-axis, you have fairness of content.
+And then there's nothing in the top right.
+What that is is there are no playlists which are relevant and fair at the same time.
+Just that plot shows you that.
+I mean, we have the plot in the paper.
+Just that plot shows you it's not an easy problem.
+There's a trade-off.
+If you literally optimize for relevance, then you're going to kind of cut down on fairness.
+If you optimize fairness, you cut down on relevance.
+And metrics get impacted.
+But this is somehow of an aggregate picture.
+But I guess you will come to it because that might be different from user to user, right?
+So some users might be more or less receptive to being shown more fair collections of songs and artists.
+Yeah, I mean, that user level inside is like another huge dimension altogether.
+We had a paper, like a short paper at RecSys 2020, talking about user propensity to some of this.
+What's the user propensity or diversity?
+User propensity to consuming non-fresh content.
+We had this project at Spotify, which is consumption diet.
+What is the consumption diet of a user?
+Do you just want popular content or niche content?
+Do you want to kind of diversify your consumption?
+One of the double-letter papers we had with Ashton Anderson, he's a faculty member at Toronto.
+He was visiting Spotify research for an area on a part-time basis.
+What we did was we did an understanding of users' consumption diversity.
+And we find out great evidence that some users have a very narrow consumption diversity.
+That means in the space of music genres, they're only going to consume a small subset of genres.
+And they're not open to wider.
+But there are some users who are far more like generalist.
+So we had this specialist journalist score.
+Specialists are people who have a very narrow horizon of consumption.
+Generalists are people who have a much more wider horizon of consumption.
+And in that paper, we saw great evidence that maybe the organic programming of these platforms are hurting users.
+What do you mean by organic programming?
+Let's tease about the work.
+Organic and programming.
+So organic is like, again, if I go to my playlist on Spotify, then this is what I want.
+Programming is Spotify's recommendation.
+Ah, I see.
+So essentially, we found differences that maybe some users' organic consumption is more diverse.
+And their programming is less diverse.
+And in that paper, we identified that users who are more generalist, they spend more time on the app.
+They're churning less.
+And they're converting to premium users more.
+What that means is we found solid evidence that if users are consuming diverse content on your platform, then they will have a much better subscription revenue impact and all those from the user engagement perspective, long-term user engagement perspective.
+And again, very interesting.
+At ShareChat itself, with the last two, three quarters, we have adopted these diversification approaches on ShareChat.
+I mean, not just in video, not just in music, but in short video and image consumption as well.
+If your consumption is more diversified, we have very solid causal evidence that's going to increase your retention on the app.
+Ah, OK, I see.
+So from a marketplace lens, right, at least if I am the marketplace platform owner, I would love my generalist users because they have a wider horizon.
+So then they are more likely to interact with the tail creator.
+And if I have to grow the audience of a creator of an artist, then these are great users because they are generally open to more recommendations.
+And I can shape their journeys.
+If you're a narrow user, you're not going to be much more open to me playing around with it.
+So one could say you love your generalists because they are much more open to diverse recommendations.
+And this leads, if you tailor to that demand, which you also want to from serving the other stakeholders' demands.
+Because if you are into much more diverse lists, and if you are much more open, then it's much easier to show those users also diversified sets that might be more fair with regards to content creators.
+And this effectively leads to users showing higher loyalty and showing less churn.
+So what are you doing about the specialists?
+Because in one regard, you could say tailoring the specialists because they have so specific demands might be easier.
+But on the other hand side, they are much more, how to say, sensitive towards fair content, towards diverse content.
+Yeah.
+I mean, let me throw in another range in the problem here.
+I mean, discovery and diversity.
+And they are different.
+I mean, just because they are diverse doesn't mean they want to discover new content.
+Just because you're narrow doesn't mean you want to discover less.
+The differentiating factor between discovery and diversity is very important.
+So discovery is like, hey, I want to discover new content.
+To me, Spotify or Apple Music is not just a music catalog.
+I mean, it's a music catalog.
+I can go to any app and get that content if I want.
+But if it's a discovery platform, you have to as a platform enable discovery because people are relying on you for discovering new content.
+100 million music tracks on Spotify, right?
+I mean, 100 million short videos on ShareChat every month.
+There's no way I can kind of walk through that space on my own.
+I need the models.
+I need machine learning to understand me and then make discover those new things which I might like.
+So I think we had this paper at Sikkim, which is like algorithmic balancing of familiarity, discovery, similarity, and a bunch of these aspects.
+That's where I was getting the consumption diet, that users love familiar music, but only familiar music doesn't cut it for me.
+So I want to discover new genres, new artists, new music.
+And then again, I might still be a specialist in that new discovery genre.
+So I think there's a interaction between discovery and diversity.
+As a platform, we want users to be discovering a lot more.
+And when I was talking about 10 minutes ago on habit and calculation, let's spend two minutes on this because I can tie it together and then present the bigger picture.
+Please.
+So let's say that user have a propensity of 0.35 to discover.
+Then that means like 35% times maybe they're open to discovery.
+I want to fulfill that need.
+Great.
+But if I want to inculcate a habit, I want this 0.35 to go to 0.4 by the end of the year, to go to 0.45 by the end of next year.
+Why?
+Because now I'm inculcating the habit of discovering the user.
+This is going meta, right?
+This is not just recommending and fulfilling the current user appetite for discovery, but this is inculcating the habit of discovering more, which means that I want you to like more discoveries, want more discoveries.
+Why?
+Because then I can truly serve my marketplace platform in supply demand world, right?
+That is a lot of creators.
+Fresh Finds is an amazing place at Spotify, which is dedicated to the new creators and making their audiences grow on these LinkedIn, ShareChat, TikTok.
+Audience growth for a creator is very important.
+So users who have a high propensity for discovery, they really want to discover that content.
+And these are the nice users from the marketplace perspective.
+Now tying it back together.
+And this is where the hierarchical ML problems are kind of coming out, which is I want on my platform to grow the tail creators.
+I want the user to drive more value.
+Now in aggregate, I want to do that.
+That means like my in aggregate, right?
+Some of these problems that aggregate at the platform level that I want my overall middle class creators to be more wealthier now.
+If it's a very high head distribution, I want to flatten it out a bit.
+That's the aggregate problem.
+But which users do I use for that?
+Now some users have more discovery appetite.
+Some users have less.
+So I can kind of personalize that on a per user basis.
+That hey, some users have a bigger appetite.
+So I can start using those users to expand and grow the audiences of creators and then do this matching.
+This matching is the best problem I love the most.
+You spend a lot of time understanding the users' discovery, diversity, how much familiarity do they want, and how much of the consumption diet do they want over a period of time, habit and calculation, all of that, which is personalization.
+A lot of search companies, a lot of recommendation companies have done a lot on user understanding.
+Now there's a creator understanding.
+You have to retain creators as well.
+Again, you don't want to kind of just, I mean, if a creator goes to your competitor, then that's going to be a problem for you.
+So then you have to grow the audiences of the creator, give them some boost, make the platform useful, supply demand, right?
+Again, like in a supply demand world, you have to balance the supply and the demand and grow both for the marketplace to be healthy.
+So you do spend a lot of time understanding the creators, spend a lot of time understanding the users, then you do the matching at the high level.
+That's where the marketplace objective problems become far more fascinating.
+And this is really important, right?
+Because again, if you look at Spotify, just for example, even on Apple Music, new music is generally very costly because you have to have a lot of like marketing spends.
+Old Music is generally cheaper for platforms, right?
+So then like if there's always a strategy content, if you look at Amazon Prime, Netflix, HBO, all of these will have some sort of their own content, Netflix, for example, right?
+So on the homepage, if you're recommending your original content, then you're not paying a lot of money to other partners.
+So there's always that strategy content on your app, which is gonna be more revenue centric for you than others.
+But then do users want it, do users not want it, and then matching it all together is where a lot of like very, very juicy multi-objective problems lie.
+There's a lot to unpack here.
+This rather translated some kind of specification of what we said before.
+So it's not really that only diversity would drive loyalty, but it's like successful discovery drives loyalty and successful discovery for some users stems from successful diversity or engaging in diverse sets of recommendations and for some others to allow them within some narrower preferences to find what they have already engaged with but still be able to discover.
+Okay.
+Okay, I see, I see.
+Okay, so it makes sense for me.
+What I find pretty interesting in the title of that paper and I guess that might be also a good handover to the second one where we talk about need and intent.
+I mean, we have already talked about need and intent to a certain degree, but how that all fits together is the difference between relevance and satisfaction.
+So, I mean, sometimes we treat them as equal citizens in a RecSys context where we would be inclined to say what is relevant, what the user clicked, listened to, and so on and so forth, is also directly satisfying the user.
+How would you separate these two terms or why did you separate them?
+Yeah, I mean, I think we spent a lot of time just writing the section three definition, right?
+But hey, relevance is not satisfaction.
+I mean, just because it's relevant, what is relevant, right?
+I mean, the user is never explicitly telling us they are happy or not.
+Most of the time.
+Or that this is relevant or not.
+Very often it's just our quantified understanding of what is relevant to them or are they happy or not.
+So, essentially, I mean, relevant is like, hey, I mean, I have a user profile, maybe a vector for the user.
+And if it's like matching to their interest, our understanding of their interest, right?
+Our understanding of their interest may not be their interest as well.
+So, this is the best case user embedding, best case user understanding I have about what they want.
+And based on the current behaviors in the app, I think this is more relevant because they have engaged with this amount of content.
+But if you tie in together the discovery aspect we've been talking about, then hey, this is, again, and part of the relevant is also not things which are familiar, but also which are like new content.
+So, new content is gonna be relevant on some other dimensions.
+Not in terms of relevant of my, based on current consumption habits.
+If I only currently consume three joiners, the fourth new joiner is not gonna be relevant based on this definition.
+But satisfaction is more richer, right?
+Satisfaction is that, am I getting the value?
+Are my utilities getting fulfilled from the platform on earth?
+So, satisfaction is a much broader, like a broader definition and like a much bigger umbrella term.
+That satisfaction is like, am I driving value from the platform and value could be like multiple things.
+I love familiar music, so you're recommending familiar content to me, which is more relevant to my profile.
+I love discovery, you're kind of making me discover new artists, kind of expand my taste horizons.
+Again, like different intents means different things to me.
+And again, satisfaction could also be like short term, within session, you're filling my intent versus long term.
+I think like you've discussed with your past guest, some of these like long term satisfaction problems as well, which is a nightmare of problems anyway.
+Is short term satisfaction is hard enough, now I'm asking long term.
+What if user come back to my app, right?
+And kind of reduce their churn, increase their retention, D7 retention, D14, D28, all these problems.
+The way we operationalize this in the paper was, if we think based on the current profile, if certain content is relevant, which means that like the content, cosine distances and all are like smaller, that means it's relevant to your current profile.
+But satisfaction is much more bigger.
+Satisfaction is a lot of implicit signals on time spent on the app, return rate, short term, long term, all of that.
+So again, if you look at music consumption, so on music consumption, it's like, again, you might want to click on a lot of songs, save them to your playlist, come back later, right?
+So this is again, if you're discovering new artist, that's great, that may be more satisfying to you than just kind of listening to five songs right now.
+So one of the pieces of satisfaction we interpreted in some different work was that satisfaction is again, very, very different for different users.
+I'm going to talk about the Spotify piece and then the share side piece in like two, two minutes.
+Yeah, please.
+So on Spotify, right, I mean, one of the things we realized that maybe skips are not as bad in general, like skips usually think that you are not liking content.
+But if I want to create a playlist, like today, tomorrow, for next Saturday, I have a kind of party in my house, I want to create like a nice playlist.
+I'm going to sample a lot of songs and add it to my new playlist.
+That means I'm going to skip a lot.
+Just because I'm skipping a lot doesn't mean that I don't like the content, right?
+I'm just sampling the track and then adding to my playlist, perhaps.
+But if I want to listen to some music right now and if I'm driving, I don't want to be skipping a lot.
+That's like a very strong dissatisfaction signal.
+So what that means is our interpretation of these interaction signals has to be conditioned on user intent.
+Again, if I use Spotify when I'm kind of going for a run, I mean, I should go for more runs than I currently do.
+But again, when I'm running, I don't want to pause and skip, right?
+That's very annoying to me.
+But then skipping when I'm creating a new playlist is great.
+It's fine.
+If you're looking at implicit signals, if you're kind of understanding my interaction data, please keep in mind what my intent was.
+Otherwise, you're going to screw it up.
+Yeah, that's one like platforms like music, Spotify.
+Before we hand over to how you are doing this at Shared Chat, just a couple of questions already there, which might be also relevant for the Shared Chat case, I do understand that viewing satisfaction always in light of intent should be the primarily concern or it should be primarily done.
+So you should never look at satisfaction in isolation, which makes the whole thing quite more complex, of course, because you have quite a couple of assumptions.
+You have to interpret data.
+You have to estimate this and that.
+So my question is as follows.
+How do you detect the intent of a user?
+For example, at Spotify, that when I'm in that scenario that you just presented where I'm trying to prepare a playlist for an upcoming party at my house, that I say, OK, if we see you within a session at the very start of the session creating a new playlist, then we directly make a switch.
+And it's a very reliable signal for us to know how this user is going to skip in the following session quite many times.
+And this is not a bad signal.
+So in the more downstream reporting of metrics and so on, this won't be held against the recommendations or against something that we tailored to the user.
+But if I somehow see that a user starts a session right off with clicking on the first item of a certain playlist and then does nothing at all, then we say, OK, the user might be out for a run or something like that.
+So if we now see the user skipping, then this is viewed as much more negative or even as negative.
+Because then it might be, I'm running and I'm just listening to songs and I'm not that picky about the songs.
+But if I feel there's a certain song that I don't like at all right now, I skip it so that I really have to pull off my smartphone, unlock my phone, and skip the song, that this is kind of much more involvement of the user and therefore much a stronger signal.
+But then how do you identify, is it really that you have this starting interactions at the very start of a session or where do you see or make the hopefully reliable assumption of what is the intent to then view the interactions in the right light to interpret the satisfaction?
+Yeah, great question here.
+I think if you refer back to what we were talking about about 40 minutes ago, we were talking about when you look at intents, you have four parts of the problem high level.
+One is defining the intents bit itself.
+What are the intents?
+I mean, in search, you can do it relatively easily because you have query logs.
+But then on Spotify homepage or Pinterest homepage, defining the intents space is a much harder problem.
+And you have to do that.
+And then once you have that intents space, in one of the papers which we had, we were looking at how do we quantify intents space.
+We did a bunch of user research, started inviting people, conducted in person interviews, extracted insight.
+And we did some large scale surveys, released it to let's say a million users.
+You get close to 3% CTR on these surveys.
+That's still giving you a lot of data.
+And then you combine it all together, vetted by the quantitative analysis, come back with a refined set of intents, like idly and higher.
+And I think there's a nice paper from us, but also a nice paper from Pinterest in W.gov 2017 talking about the intents space.
+And there they are talking about gold specificity and temporal aspects of intents and all that.
+So assume that you have identified an intents space.
+And that might look like a list of maybe 10 intents, let's say, or maybe hierarchy of 25 intents, whatever for you.
+Once you have these intents, then the problem you have to do is look at, let's say, a 10 minute interaction data.
+Again, it depends.
+10 minutes on Spotify means three songs.
+Or maybe one shift of a podcast.
+But 10 minutes on ShareChat is going to be, what, 20 videos?
+That's a lot of items.
+So we're going to get to the social media part, maybe, perhaps.
+But again, 10 minutes on one app is five items versus 50 items.
+You look at that interaction data and content data within that time span.
+And then if you have these intent clusters already identified, then do that mapping.
+So I think you'll need a model, which is, first of all, identifying the intent.
+That's great.
+Identifying the intent space.
+And then you look at the real time user interaction data.
+This is a combination of user behavior plus content.
+Because just user behavior is not enough.
+Because again, if you're skipping a lot of familiar music, that's a very different skip than skipping a lot of discovery content.
+So I have to look at the behavioral plus content, condition on user's historic behavior patterns, and then use this to map to my intent space.
+I mean, on these recommendation apps, I mean, more likely, your intent space are also latent.
+So this is where, I mean, you can imagine eventually a huge neural model, which is doing that latent intent identification.
+It's not going to be deterministic.
+You'll always have a distribution over it.
+And then you use that distribution to inform the next set of recommendations you do.
+So I think what I'm talking about is, once you have the intent space, look at the real time interactions with behavior plus content, and then map it back to the intent space.
+And based on that, then you kind of infer what to do.
+How do we leverage it?
+OK.
+OK, I see.
+First of all, this identified intent space, map the user engagement with content to one of those intents, and then leverage it to do something else, which is intervention.
+But this means that's the first requirement to even engage in satisfaction estimation or prediction, is always, since you need to do it tied to certain intents, to have a model, to have a mechanism at least in place that is able to reliably detect the user's intent, that you then use as some input for your satisfaction estimation or prediction model.
+Yeah, let's dive on this last sentence you mentioned.
+I mean, again, if I'm starting my ML research in a company, I'm not going to do all that intent.
+Maybe I put a team together, and they're also not able to crack the problem.
+So when I look at satisfaction, I look at high level, very provable metrics, like time spent on the number of sessions you have in a week, D1 retention, D7 retention, and all that.
+So they hold regardless of intent and not intent.
+So there are some of these, again, there's a pyramid.
+There's a very nice tutorial from Muni, my ex-manager, on KDD and on user engagement metrics.
+And that tutorial goes into, she also has a book on that topic.
+So that goes into great detail on how do you look at metrics?
+How do you look at satisfaction metrics in a hierarchy in different forms?
+So again, platform-wide, if you're coming back to my app more or spending more time on my app, that's great.
+I mean, I don't have to interpret it in any light whatsoever.
+But then once you go from the platform-level view to a more session-specific view, then I have to start looking at more of these intent aware, maybe not directly, on a home page.
+I want you to do this reach depth retention view, perhaps.
+Let's look at three metrics for any home page.
+Reach depth retention.
+Reach is, are you actually coming to my home page using it?
+Or are you just going to my library or somewhere else?
+Same on the shared chat.
+I mean, you might just go to Explore or Search and not use the mow-in feed for recommendations.
+So you're not even coming to my surface.
+My reach is low.
+But if my reach is decent, then I want to optimize for depth of engagement.
+You're coming there.
+Can I make you spend more time on this surface than others?
+And then retention, do you come back?
+Do you come back to my playlist?
+Do you come back to my surface?
+Do you come back to this specific form of recommendation surface we have created for you?
+So you can apply it for the whole surface on the home page.
+Or you can apply it to a specific playlist.
+Or on shared chat, we have these audio chat rooms in Live.
+Do you come back to these chat rooms or not?
+So on eSurface, you can have this view of reach depth retention.
+And then that would review some local metrics.
+And hopefully, you have a measurement team, which is tying in these local metrics to that overall platform retention or time spend.
+So I think the view satisfaction is also more granular.
+One last piece before I shut up, at least on this front, would be that, again, right now, if you talk about retention and all, these are human defined functions, which is easy.
+But I think the industry has long done predicted ML models for metrics as well, wherein I'm predicting whether the user was happy or not.
+And again, at Microsoft Research, a couple of my interns have literally went on that.
+If you search in Wimbledon 2022, you're not going to click anything, because Google is going to show you the results.
+You're just going to consume it.
+There is zero engagement here.
+Web search has been built on user clicking, spending 30 seconds, dual time.
+And then we think, oh, users are happy with my recommendation results.
+But on Wimbledon 2022, I don't click at all.
+I just get the information and I just go away.
+So abandonment, right?
+There's a series of papers on good abandonment versus bad abandonment.
+You type in a query, you find the results.
+You don't do anything you abandon.
+That's a good abandonment.
+You got what you want without even clicking.
+It could have been a bad abandonment.
+It's again like a nice ML problem to identify.
+So what we're getting to is that a lot of these advanced measurement practices in good companies have a bunch of predicted satisfaction metrics.
+And that's what we did in the satisfaction paper as well.
+That look, understand the intent and then use it, not just it.
+I mean, you're using a bunch of other engagement signals, a bunch of whatever.
+You're training the model on explicit data and all that.
+And then you're doing a prediction of whether we think the user was happy or not.
+And this is a differentiating factor, right?
+Because a lot of academic papers are going to talk about explicit metrics, but a lot of industrial systems are built on predicted metrics of satisfaction.
+I have a satisfaction model which is predicted.
+And like, I mean, as an intern, right?
+I mean, it blew my mind away the first time I saw it.
+That, hey, I think these metrics were humanified.
+Now they have an ML model to get the satisfaction, which is a metric which you're using for all your shipments, for all your promotion budgets and all that, right?
+I mean, in the industrial recommendation systems, our systems, people are using predicted metrics as well.
+So all of this intent leveraging and all is easier to do in this predicted metric world.
+I have to think about churn prediction.
+I mean, there we classically do it because predicting the churn is kind of the inverse of happiness, I could say.
+And then, I mean, this could already be leveraged to not only interact when churn likelihood is already pretty high, but to check for basically the changes in churn likelihood as evidence for decreased happiness, for example.
+Yeah, I mean, I'm glad you mentioned that.
+I mean, like Hitesh and Madan and my team, right?
+We're writing a paper for SIGIR on fatigue.
+So churn is like you're churning, and then you're not doing anything.
+Fatigue is like, can I detect local churn, like intention to churn, essentially?
+Ah, OK.
+And then can you detect whether you have fatigue or not?
+And based on that, we've literally, like in Q2 2022, we developed a fatigue model, and we were able to reduce ad loads for the user, which gave us like retention and revenue gains.
+So again, like, I mean, like the more real time you have this fatigue detection, the more you can intervene.
+Maybe in a marketplace, I'm showing you a lot of the illustrators, your fatigue increases, then I know I have a signal that, hey, I mean, let's not do it.
+And I think broadly, right, I mean, I've been meaning to compile a bunch of metrics on this umbrella of dissatisfaction metrics.
+And again, I would love it when I'm able to finish that paper, which is like a lot of the metrics, which we as an industry and community have focused on our satisfaction metrics.
+Are you engaging?
+Are you clicking?
+Are you coming back?
+But what about detecting dissatisfaction, explicitly, right?
+Churn and fatigue are the examples, but there's a lot more.
+It's a lot more useful for me to detect dissatisfaction rather than detect satisfaction.
+And I mean, coming from a quantitative background, you are quite well aware of regret minimization.
+So why not focus on the satisfaction metrics?
+Yes, and then you can, I mean, and that also gives you a nice flavor of where your ML model is not doing a good job, right?
+That is a lot more informative to me as an ML engineer than just looking at satisfaction and improving it.
+Because that doesn't tell me where my model screwed up, right?
+I mean, it seems like we started looking at quantile difference metrics at share chart.
+Like Nithi is one of the decision scientists in our team.
+We're looking at that if I'm doing interventions, especially in a multi-objective world, then we're not looking at what's going well.
+But this segment of users is really heard the most.
+You're not going to get it up in your aggregate metrics view.
+Most of the metrics in most of these companies are aggregate.
+Every as you're doing stats results and all that.
+But then the moment you go into that quantile difference metrics world, you're looking at how are the different quantiles of user impacted.
+And then you're like, hey, this might be great overall.
+But screwing up with that specific segment of users who really never cared about diversity in the first place.
+Just an example.
+So I think the view of measurement is going to be very important.
+And I think we've created that team of measurement sciences at share chart.
+OK, so there's a whole team only focused on measuring things and how to measure what I want to know more about.
+Yeah, yeah.
+I mean, like supply side experimentation.
+I mean, again, in the marketplace world, create a centric test.
+Again, whole different problem more together.
+Yes, at Microsoft Research, I saw that Ronnie Guwahavi's team on experimentation, but somebody else is on measurement as well.
+Because again, in my view, it's an adversarial scenario.
+I mean, as an ML engineer, I could easily game the metrics.
+Yes.
+But then it should be somebody else's job to kind of fine tune and make that metric much, much better.
+How do we define session success rate?
+Now as an ML engineer, I will be paid more if I am able to improve session success rate.
+But I can game it.
+What that means is the measurement people have to be one or two steps ahead of me so that I cannot game the metric.
+And they're improving the metric one year, one quarter after the other, right?
+So I think in the ideal set up, given enough funding, in any company, you don't want to have an ML team, but also a measurement team, which is like slightly more ahead of the ML people so that they can create better and better metrics, which are harder and harder to game for the ML engineers.
+No, that makes totally sense for me.
+I mean, I guess the whole topic of measuring when a measure becomes your goals, and it ceases to be a good measure, and all that stuff.
+So therefore, I think it's really great to dedicate a team or certain resource.
+It must not be a team, but really to acknowledge that measuring the right things and measuring them right is definitely of a big concern because you basically want to know where you are steering your ship at and also doing experimentation and learn from what you're doing.
+Yes, especially in a marketplace world, right?
+Where I'm especially picking on OKRs that I'm going to make the other stakeholders a lot more happier versus just focusing on users, right?
+If I'm focusing on users, then at least my focus is on the user, right?
+Maybe the metrics aren't.
+But explicitly, I've taken goals and OKRs around, hey, I'm going to make life better for the other stakeholders.
+I have to do a much better job at measurement on detecting dissatisfaction because it might just be easy that you're kind of making it could be a zero sum game, right, that you're making the other stakeholder better at the cost of your users, which is not sustainable.
+So how do we deal with this?
+Is it a zero sum game?
+Is it not a zero sum game?
+And some of the work which we did in 2019, 2020, we published the KDD paper at 2020 on.
+Nianan was interning with me and Mania on bandits, multi-objective bandits, essentially.
+And there we showed that it's not a zero sum game.
+You can make it better for creators and the user.
+And there's not a, I mean, if you do it well, then it's all boards rise at once.
+So it's basically a Pareto improvement.
+Yes.
+Yes.
+And in the multi-objective world, if you're on the Pareto front, you get to dictate where on the Pareto front you are.
+You want to lean more here or there.
+And then, I mean, I think that's the measurement thinking, which is not different.
+And especially, if your current rec system is not as good, then it's very easy to get minimum win scenarios.
+But if your current system is really good for users, it becomes harder and harder to get a win-win scenario.
+Yeah, of course.
+And that throws in the governance problem a lot more, which is the absolutely big problem in any measurement marketplace problem, which is if I have a bunch of tests, and I care about three stakeholders, am I OK with shipping a method which is neutral on users but then gaining on the other two?
+Or maybe like a 2% gain on users, but a 7% gain on creators?
+Or a 3% gain on users, only a 4% gain on creators?
+How do I do this exchange rates?
+Which is an absolutely amazing problem.
+Yeah.
+I mean, look at what happens in the finance industry.
+I mean, people do, they don't do pay-advice currency conversions.
+I mean, hopefully they'll end up doing now with the Russian Drupal and the Chinese currency coming in play.
+But up until 1971, everything was backed with gold parity.
+US dollar was backed with gold, and everybody was doing a pay-advice with the US dollar as its central currency.
+But what does that mean in my recommendation platform when I have five metrics?
+Do I need a user LTV value here, which I can optimize and do every, or do I end up doing five C2 combinations of these metrics, understand the exchange rate, and then make a decision?
+Now, this is science impacting an ML engineer's job.
+I run a bunch of A-B tests.
+I run a bunch of offline experiments.
+Which one do I A-B test?
+Suddenly, right?
+Maybe the product owner, the product director, they don't even get to make that call if the ML engineer on a team has taken some decisions.
+I'm not going to A-B test these three variants.
+Maybe that's a much better trade-off for the platform.
+This is where the practical disconnect happens.
+As an ML engineer, unless there is a governance identified to me, unless you explicitly write down, this is what the platform governance is, I'm going to focus more on maximizing satisfaction, then keeping the creators happy, or something, whatever that ordering is, and whatever that angel metric is.
+If you don't do that, then your ML engineer is going to have a huge bias on your product, unintentionally.
+Why? Because every parameter change will present a different set of trade-offs.
+Unintentionally, they would have taken a call to only try these three in an A-B test, and that's what the offer presented to you to make a decision.
+Should I ship this versus that or not?
+Again, just operationalizing the platform governance piece, and handling multiple metrics, it's a huge nuance.
+I mean, I've heard people and teams just quitting that, hey, as a software engineer, I don't want to deal with this nuance.
+Because, I mean, software engineers are more used to deterministic work.
+If we do this, it happens.
+They're not used to dealing with trade-offs, and making somebody's life better versus worse.
+If it's evident to everyone that there are trade-offs, and I would definitely say that these people were aware that there are trade-offs at hand, then just make sure that you are putting figures at these trade-offs.
+It's like in a binary classification problem where you are having false positives and false negatives.
+Just make clear how costly these two scenarios are, and then you can come up with, for example, some cost-aware accuracy metric that balances them off because you basically want to minimize your cost or maximize your profit.
+But therefore, you need to go through, I would say, the sometimes difficult task of really saying, okay, this is how much it costs for me because then you can also solve for the trade-off if you want to minimize the problem, right?
+Yeah, at the aggregate.
+At the aggregate level.
+It's all simple as...
+The moment you throw in the quantile differences, then you're like, oh, yeah, that makes sense.
+At the aggregate, I can decide a governance, but then on a per-quantile basis, per-user basis, these trade-offs may not be as easy, right?
+I mean, again, this is my request to the academic community as well, that there's a bunch of very hard exchange rate problems, governance problems, not just aggregate, but looking at differential impact across different users, different creators.
+I think this deserves a lot more attention from the research community because a lot of current engineers who don't want to write papers, who don't want to do the state-of-the-art work because there's still a lot of hard problems, which they are blocked on.
+They're blocked on deploying their method and production because we are not able to take a very firm call on what trade-off is actually preferred.
+Wow, okay. I mean, pretty dense.
+A lot of information so far, but I guess also highly interesting.
+And I like that we did not only talk about Spotify, which is interesting enough for its own, but also that you were able to also relate all of that stuff to your current work at Shared Chat.
+Taking this as a chance to hand over to Shared Chat more explicitly, I mean, we have mentioned it now a couple of times.
+I mean, I would also assume that a couple of the listeners are already aware of Shared Chat.
+I mean, I don't have my bottle here, but I do have a bottle, and I also have one of your great notebooks there, and I don't want to reduce you to your great merchandise.
+Shared Chat has become India's biggest social media platform, if I'm correctly informed.
+Can you explain to us what Shared Chat is actually doing?
+And I mean, what is more interesting for our listeners, how you laid out the personalized recommendations roadmap there since you joined.
+Perfect, great. Yeah, I think like...
+So Shared Chat is the largest content ecosystem in India, in Indic languages.
+So the goal over there is...
+We have two apps. One is Shared Chat, the other one is Mod.
+So Shared Chat is more of an image, video, combined platform in 19 Indian languages, and there's a lot of multilinguality problems and all those which you're going to get.
+Mod is a short video app, similar to TikTok, and together, right, we have close to 350, 400 million monthly active users, like close to 100 million plus creators on the app, and the scale of the problems are really very, very different than what I was used to.
+So let's talk more about Shared Chat.
+On Shared Chat, we have, let's say, 150, 200 million monthly active users, 50 plus million creators, and about 100 million items getting generated per month.
+I usually like to do that.
+If you look at video movies apps, right, Netflix, Disney+, Hulu, all of that, right, there we see maybe like 50,000 movie items, or maybe 80,000 movie items created in the last 200 years of human screeching content only.
+Yeah, yeah.
+It's modified by talking about 100 million music item, music tracks overall in the last 150 years of digital music, 200 years maybe.
+On Reals, on TikTok, on Shared Chat, you start seeing like 100 million items per month, right?
+So the scale is very, very different.
+Yeah, 100 million newly created videos per month.
+Yeah, I mean, short videos, images, short videos, medium videos, long videos, all of that, right?
+And again, this is not just unique to Shared Chat.
+I mean, it's very, very similar on a lot of user-generated content.
+Because suddenly you're going, it's stepping into like not just professional-generated content, and that's why the creator democratization is kind of playing into it.
+Again, I was working on creators in the music world as well, and suddenly when I faced these problems that, holy smokes, this is gonna be a very interesting problem domain because suddenly, when I was opening up the creator space, literally anybody creating any content.
+Create content, crappy content, like I, if suddenly you start recording your fan rotating for 15 seconds and upload it, I have to deal with that, I have to leave it right.
+I'm gonna make it successful.
+I don't want to make it successful unless there's a niche set of users who are only interested in fans.
+So there's a bunch of very, very interesting nuances when you get to this, right?
+But coming back to the core point, so again, like Shared Chat, the scale is amazing.
+The problems is amazing.
+And especially in the, in an Indian context, right?
+What's happening with a bunch of global social media apps, they're tailored to the US audiences, and then like all the other rest of the world is like very, very like, hey, it's an extra, others.
+You're optimizing models on the US market, maybe like once you have a dedicated team, as for you start kind of doing that for them.
+But if you look at the internet, right?
+So language is the geographic boundary on the internet.
+Yeah, yeah.
+Because again, like if you start zooming in, we're kind of compiling results to maybe submit to ICWSM perhaps, but across different languages, the content creators are different.
+The kind of content they create is different.
+The consumption habits are different.
+The behaviors of users are different.
+The expectations of users are different.
+So imagine like, I mean, it's not just one RecSys you're developing, like 19 different RecSys systems all have to kind of play out well.
+And we see huge difference between like Hindi and Tamil.
+Like Tamil users will consume a lot of long form videos.
+Maybe Hindi users won't.
+Maybe creators won't create it.
+Maybe the kind of categories, the kind of content they're creating, even the phones they have, again, like the, what's prominent in one part of India is not gonna be prominent in the other part of India.
+There's a lot of heterogeneity across languages and we have to tackle it all.
+So it's very, very interesting on many, many dimensions.
+To me, one of the most attractive parts was the scale, the ownership and the richness of the marketplace problems here.
+Because I mean, I was used to like the stable content space in my like experience so far, wherein like I could develop a nice track embedding, live with it, and it's gonna be there for me.
+Here I get like 15% content new every day.
+And the shelf life of content is maybe two, three hours.
+And by shelf life, you mean the moment where it is not really reasonable to recommend it anymore or where people just stop interacting?
+You go to like a cricket World Cup, right?
+I mean, a T20 World Cup or any of these, like where do you have two matches a day, right?
+So each match goes on for two hours.
+Within like six hours, you have both the matches done.
+Now by the time, in your traditional recommendation platform, user kind of generates a content, you give it some views, get some representations, get it to your CGs, get it to the ranker.
+The match is over new matches going on.
+I am not interested in the old scores now.
+Again, the shelf life, I mean, what's the shelf life, life cycle of a content?
+I would assume the fan might stay for a bit longer, right?
+For its special community.
+Yeah, I mean, like for the niche users, yes, definitely.
+But yeah, it's very hard to find like niche users who are really interested in fans.
+Maybe I should spend some time digging there.
+But I mean, but again, like if a famous goal from Pele, right, that is gonna live far longer.
+The problem I'm trying to get at is, there's a lot of like content lifecycle problems here, a lot of like supply demand problems here in the marketplace world.
+You still have to grow your creators.
+You still have to make the users happy.
+You still have to incorporate this user creator relationship.
+All of that are in a much, much more bigger content creator space and the dynamic content space.
+And on the ML infront front as well, right?
+Like handling this scale, the codepus here is gonna be much, much bigger, much, much more dynamic, much, much more real time.
+And because of real time trends, you're gonna have to do a lot of in session personalization.
+The ML infront is like a lot more kind of challenging to me personally as well.
+So again, like we're painting a picture that all the marketplace problem plus versus more in this world is like very attractive.
+And that's exactly why, again, like I'm still as excited, maybe more than when I was like about 53 weeks ago.
+It's not like this one year.
+And it's a week.
+Okay, I see.
+Almost.
+So looking back to that almost one year that you have already spent at ShellChat as a director for machine learning, which is interesting from certain points of view since it somehow implies that you are not only focusing on recommendation problems, but also assume on different machine learning models that are systemic from computer vision and LP.
+What was kind of the status as far as you can talk about it of recommendations at the point when you joined the company and where did you say, okay, this is the very first thing that we should do and this came second and third.
+So how did you kind of derive a roadmap of recommendation and all that is needed for facilitating recommendations there?
+Yeah, I mean, like very honestly, right?
+I mean, I had some biases coming into the company within the first year all destroyed because the amount of ML models in production and like the sophistication of some of those like just blew me away.
+I mean, I was like, hey, I mean, this is like another world altogether.
+Like, and I've been attending RecSys and KDD for like quite a few years now.
+And just that like some of these problems just didn't hit me as a consumer from the outside.
+And I think this has been my sales pitch as well to a lot of other people that look, I mean, some of these problems are like really challenging, really hard.
+And I don't think like a lot of RecSys communities like focus very intentionally, unless you look at like one or two papers coming in here and there, again, it's not as mainstream.
+So when I came in, right?
+We had some good, let's say field of a factorization machines, models, candidate generators in there, multiple predictions, multi-task style, recommendation models in there, some weight tuning, weight combinations going on.
+I came into kind of initially, right?
+I was very biased towards marketplace.
+How do we make money?
+How do we make more creators happy?
+So we started some problems on the ad load balancing on other like strategy content balancing.
+And we have had a nice journey in like a quarter and a half we were able to develop and deploy contextual bandwidth models for ad load balancing.
+Again, I can give more details in a bit.
+And then we've kind of slowly evolved each part of the stack one by one.
+And here, right?
+I mean, like if you look at the entire stack, you have to have focus on the corpus side, scale the corpus, but then if the corpus is big, but you're, if this bottleneck later down, which is like candidate-generate ranker, corpus improves are not gonna give you great results otherwise.
+Again, like, I mean, starting to look at what does corpus look like?
+How do we scale the corpus on the intraside, on the look back period?
+Like, do you just have maybe one week look back of content?
+Or do you look at like 14 days, 30 days, 60 days?
+How much, how does each of this kind of practically impact your request system?
+One example, right?
+Very unharming from the outside look.
+The moment you expand the look back, look back is like how long ago should the content be created for it to be live, alive on your platform?
+If you look at, let's say, if you go from, let's say 14 days to 30 days.
+Now suddenly the content which came in in the last two weeks of the month, right?
+Which is like close to 30 days.
+We don't have embeddings of them anymore, right?
+And I mean, the embeddings are stale, the embedding space has moved on.
+I mean, I cannot just kind of make content come alive on that platform.
+Because again, like, it's outdated.
+Now users are not consuming it.
+So then I don't have real time near about signals of user comma post, which I can use to boost up the embeddings again.
+So just to bring back content from the dead, make it a live platform.
+This is not a nightmare of problem to solve.
+This already implies that we are talking about models that embed content together with behavioral signals.
+Because on the other hand, if you would, for example, take some typical standard NLP embedding model, and for example, take a transcript of what has been talked about in a certain video, then I would still assume that what I have created as an embedding one month ago should still be relevant since it's still relevant or similar to the embeddings that I would create nowadays.
+So this, what you are talking about goes somewhere for these models that use hybrid signals, so content and behavioral signals.
+Yeah, yeah.
+I mean, let's focus that for the next five minutes.
+So if we talk about post lifecycle, right, and that's been one of the big revelations for me from the outside when I joined ShareChad, is that the amount of respect we have to give to the post lifecycle, which is the lifecycle of content on your app is much more important here.
+And here's why.
+I get a post, I mean, like 15%, 20% of content is new every day.
+Now we have to make sure that some content gets some visibility.
+Maybe let's give it 50 views, 100 views, see how it performs, based on how it performs, it gets like 500 views.
+Based on how it performs, in 500, it gets like 1000, 5000, 10,000, 100,000 or millions, right?
+So there's a journey of a content.
+At this end of the journey, I have zero behavioral signals.
+They are entirely relying on content understanding.
+That, I mean, like what's going on in this?
+Is this a prank video?
+It's like how many gods are in the picture?
+Like what's going on, right?
+I mean, and again, there's no text, right?
+It's entirely on understanding the semantic content of the image or the video.
+And again, some of these like long videos, short videos, medium videos, just images across different categories.
+But then you do have some creative signals, right?
+I mean, that some creators are like really good.
+They've had a high success rate.
+So you have some bootstrap views equal to zero understanding of content.
+Now, but then you realize that the moment a post gets 50 views, we've accumulated a lot of behavioral signals and they are a lot more useful to predict downstream success than just understanding content.
+So basically content understanding for cold start items, but then quickly switching over to behavioral signals as a much stronger feedback signal to tailor for the recommendations of that item.
+Yes, yes.
+And again, like here you're looking at like, let's say blind video quality assessment score.
+Like, I mean, I mean, just looking at the video with zero interaction data, can I predict a quality?
+Now this is a very hard problem.
+How do you define semantic quality?
+I mean, let's say like there's a famous creator, Dhoni, I mean, hitting the six to win the World Cup, right?
+Or like, I mean, let's say Ronaldo hitting that goal, right?
+That video is great.
+But then similar to the fan video, right?
+If you just pause the video before Messi hits that goal, that's a crappy video, I don't like it at all.
+It just wasn't really stated now, right?
+And so how do we understand that?
+Like, do we have the tools and models in place to understand the semantic quality and the perception value of a video?
+We don't yet, maybe not in the industry that exists, right?
+Same, like, I mean, if I'm rotating is not as useful versus something else, I mean, at least right now in production, we don't have methods which are kind of giving that to us.
+Creative value of video is very hard to quantify.
+There's a series of workshops at New York's and ICM and on like machine learning for art.
+Maybe we get to quantify the creative value of content in a bit, and then we can start consuming it to understand how successful one content could be.
+But then unless you quantify those creative value, then just looking at user behavior data is gonna be very, very important.
+And what that means is if I have zero views, I'm relying on content and sending, the moment I have 10 views, I have to start using in the behavioral settings.
+Now this is where the real time update really comes into play.
+A content will get like maybe hundreds of views within like 15 minutes.
+You don't have a lot of time to kind of sit back and like get the content evolve because by in the next two hours, maybe the content is dead anymore already, right?
+What that means is it's not just about having embeddings, but a real time update on embeddings.
+One of the things which we've deployed in the last quarter and we're seeing like absolutely amazing wins is if you have a user ID, core post ID, you get the embeddings.
+Now can you update these embeddings in real time?
+And by real time, I mean like with each view, imagine like a post, right?
+A post is getting consumed by let's say 25 people right this second.
+Some of them are liking it, some of them are sharing it, some of them are just skipping it, some of them are completing the video play.
+Now what we have to do is it's a mix of great engineering animal problems.
+Like I have to put a distributed log in the embedding.
+Suddenly 25 events are competing to update this embedding.
+I cannot have all 24 of them updated immediately, right?
+If I do a batch update, I wait for like two, three hours, like get 50 interactions on this video, then update.
+I've lost the chance to personalize in these 50 journeys, right?
+And maybe the content is kind of just lost the appeal.
+So I don't want to wait in a batch update manner.
+So we're not even talking about like three hour, four hour update, right?
+I mean, that's not the update cycle which we will have.
+I mean, most of these other stable content platforms will have like 24 hour update of embeddings.
+So we are rather talking seconds.
+Yeah, we're talking like each engagement, not even seconds, right?
+Each signal.
+What that means is we have an embedding.
+We put a distributed log on it.
+We pick up a candidate to update the embedding.
+After that, like maybe the user liked it or user to shared it.
+We go back, update the embedding, release the distributed log and then give the chance to the next view, next signal to update the embedding.
+Okay, I see.
+Now suddenly the embedding is updated.
+Now this is the latest update embedding which you are using for recommendation.
+So in a patient manner, the very first embedding that you have for an item might be your prior.
+And now with every feedback that comes from a user, you have a little likelihood, but the likelihood has always sample size one and is then used to merge with the prior.
+In the very first case when we don't have seen any behavioral feedback towards them, and then you have basically the posterior and then there comes the next event from a user.
+What is included as signals as features?
+So I mean, okay, it's embedding, so it's not explicit features anymore, but what is kind of the signal?
+So when you say a user feedback signal is changing, let's say an item embedding, how is that going to change?
+So is it like there's a user that you have kind of classified implicitly as being interested in chess or something like that, and then you see the user interacting with an item.
+And so now that item becomes more chessy, or how can I think about that?
+Yeah, I think like, I mean, the topic prediction is something like whether it's a chess video or not, right?
+I can do it like even at beauty, because that's more about the semantic, but whether this is good or not, I mean, the engagement signals we look at are let's say a combination of like, share, video play, comments, all of that.
+And there's going to be some biases on each categories, some users, some content, it's just for sharing.
+Some users more about like, same on LinkedIn.
+Why just look at chat, look at LinkedIn, right?
+On LinkedIn, if suddenly somebody updates that, hey, I gave a nice tutorial at KDD, here's the link.
+People are gonna share it more often.
+But then if you are changing a job, that is, I went from company A to company B, people are not gonna share it.
+People are gonna like and comment congratulations.
+That's a good example, yeah.
+There's a very different heterogeneity of signals.
+And the success rate will be different.
+Like some content are more share worthy, some content are more like worthy, some content are more like engagement on comment.
+Some are like more video placing, like video play complete and all, right?
+So, and this becomes, this makes it a lot more harder for us to understand satisfaction.
+And again, we're talking about satisfaction in like half an hour ago.
+Now imagine like users spending five minutes on share chat.
+There could be a bunch of very nuanced problems.
+I'll give you an example.
+If you're spending five minutes in a session on share chat, you can consume one five minute video, or you can consume 10 30 second videos, right?
+Or you can consume five one minute videos, or you can consume 14 minutes, awesome combination, right?
+So what that means is the content heterogeneity in terms of short video, short video, what is the success signal?
+Do you watch like 90% short videos?
+For a 20 second video that 18 seconds.
+For a three minute video that's close to like, whatever, like three, for a five minute video is two, 70 seconds, right?
+So the definition of success is hard to define here because our 90% success rate is gonna bias your overall content on the app towards shorter content.
+Why?
+Because shorter content have a better chance of hitting that 90% threshold of video consumption.
+Longer content are gonna take harder to get to the 90%.
+But still, if you spend a minute, which is one third, maybe that's sufficient enough.
+So again, the nuances which are heterogeneous content space throws at you, not just in the real time update of embedding, not just in the engineering ML challenges, but also in just purely understanding the value and debiasing it based on content, based on engagement signals.
+It's a goldmine of a problem altogether.
+And I mean, now imagine defining session success rate for such an app, right?
+Wherein you have such heterogeneity in engagement signals, such heterogeneity in user needs.
+In the morning I come in, I get a container, I share it in my WhatsApp group and I'm happy, right?
+In the evening, I come in and I want to watch a video play and watch long videos, short videos and all of them.
+So there's a, again, like a bunch of very, very hard, at least it's still unsolved by us, problems on like understanding engagement or signing content heterogeneity and then making it all work in the recommendations as we want to do.
+So that means for me to answering the question of how that has changed within the last year, that I would say definitely about the scalability from what I hear you saying that due to the requirements to the freshness of content being recommended and the high amount of videos that are created constantly, you need to be or have really scalable models that do that very instantaneously.
+If you want to update a video embedding after basically each behavioral feedback you got from a single user, right?
+Thinking about that, how does that item embedding change?
+So what are the underlying latent variables that we are talking about?
+Then this is also not exclusively, but rather in some dimension about whether it's a rather shareable or a likable or a savable item for certain users and not really about the content because the content you have already understood at the very beginning, since you have, I assume, powerful content understanding models in place there.
+Yeah, I think coming back to the core question you asked, which is what has changed in the last one year?
+I mean, I'm hoping my CEO and my boss gets to look at this content and maybe judge me based on that.
+But I would say that it's about some bit of new models, some bit of new problems, some bit of new measurement.
+And let's take some examples.
+We've just talked about the new measurements, like signals which are more engaging versus heterogeneity.
+That's like going deeper on the measurement aspects.
+Going deeper on the new models problem, everybody is showing ads.
+How do you decide how many ads to show?
+So we started with fixed slots, like three, seven in your feed of 10, we show these ads.
+And that's typically what the default solution is.
+We had a very nice quarter and a half long journey.
+We started with like, hey, this is on the category of new models to existing solutions in the last one year.
+Just one example.
+That let's say, how many ads do you show on the feed?
+We had fixed slots.
+And then we're like, hey, let's personalize it.
+So we developed like a user fatigue model, not churn churn is long-term user fatigue, which is like very real time.
+Are you getting fatigue?
+Why do I show like same number of ads to everybody?
+Let's kind of personalize it.
+Again, don't do anything for core users who are like in the middle, but some users who are extremely unhappy, extremely happy you can start changing them as a first step journey, right?
+Users who are extremely unhappy start showing less ads.
+Users who are happy, maybe you can afford to show one more.
+Maybe, maybe not.
+So then you walked away from a fixed slot, fixed number of ads, then at least like a V1 of personalization.
+Just like in a few weeks, you've done some experiments and deployed this model, development model, then all that.
+But then why just stop here?
+Why just fatigue?
+Look at a lot of other signals.
+Look at how good is my feed?
+If the feed is not good, maybe the user might churn away anything.
+So go upstream and see, okay, what has been leading to fatigue in the first place, not only detect fatigue, but why is the user fatiguing?
+Yeah, and not just fatigue based, right?
+Fatigue would be then one parameter.
+Then we walked towards like a contextual branded formulation problem, because there's no, we cannot treat it as like, hey, predict how many ads we show.
+Because the moment you predict like two, three, four, then you have to place it.
+If you have to throw two ads, is it like two comma seven, two comma nine, three comma seven, three comma six, where do you show them in the feed?
+And at the end of the day, it's about balancing retention and revenue.
+You show more ads, you earn more revenue, retention goes down.
+You show less ads, retention goes up, revenue goes down, which comes back to the marketplace problem in any way what's interesting.
+And then we develop, hey, I mean, let's try a bandit approach.
+It's not a prediction problem, right?
+I don't want to predict where to show them.
+I want to maximize the multi-objective reward.
+And that's what we did.
+We said that, hey, let's put a contextual bandit in place.
+The contextual bandit model is trained using rewards, which is multi-objective to objectives, a combination of like retention and revenue.
+Revenue is simpler, retention is a long-term signal.
+So how do I train a bandit model on that long-term signal?
+I can't.
+So then we look at like the within session signals, which we can attribute retention to some local signals, then put that in your reward function.
+So again, we had to deal with the like attribution problem, look at short-term signals, which are predictive retention, get them into a reward, treat it as a bandit problem, contextual bandit problem, define the number of arms.
+One of the things we did was we said that, hey, let's put the number of arms in the bandit to be how many ads to show.
+Okay.
+One, two, three, four, five, six, whatever, right?
+Now the bandit is optimized for that, it tells you three.
+Now the problem is, okay, what do I do with this three?
+I'll have to then decide whether it's two, three, five, two, seven, nine, all of that, right?
+It's not an end-to-end solution anymore.
+And if it doesn't work, it doesn't work because the bandit did wrong, or whether I use the data to find out the slot's wrong.
+So then you're like, hey, let's get rid of it.
+Let's train it as an end-to-end bandit, which is the bandit arms are not how many ads we show, but the configuration of the ads, which is showing just one, two, one, two, three, four, five, six, seven.
+If you're showing two, two, three, two, four, two, five.
+So again, we ended up with a arm size of 21, and then we train a bandit, which is end-to-end, because this is deciding on where do you show the ads entirely, not just how many to shoot.
+And then again, that started giving us some great results.
+We ended up productionizing it like in Q2 itself, which is like just a quarter and a half after I joined.
+And that gave us like 2.2%, retention, revenue gains, with like slightly retention gains, as well as revenue retention both.
+But the best part was this model was figuring out all the heuristics which you have been running, that if you are a longer session, maybe I can show slightly one more ad, right?
+So again, it's not just about like for a user, but then user in the journey on the app, you can start showing more and less.
+How that happened, we started adding more real-time feed level sessions, signals, and they should manage more.
+The context signals are not just everything which has happened up until today, but real-time, right?
+I showed you two ads, you skipped a lot after that, right?
+That means, hey, maybe I shouldn't, and then I should decrease.
+So we started seeing like the, all the other heuristics we've been running, that let's show more ads later on in the feed when the user is happy and all that.
+The bandit started emulating that all by itself, which is an absolutely amazing thing for me to see.
+Given the scale of the platform already, I mean, single-digit figures always sound a bit small, but you have to multiply them with the large scale of the platform, and then the absolute figures are, I guess, tremendously.
+So therefore, please don't send back at that point.
+But I also really like the second point that you're making, that you learned a lot of things that the contextual bandit found out and then could derive further steps you want to take from there, right?
+Yes, and I think like one of the great learnings, which is like more of a process learning for us, was that don't directly jump to the bandit.
+We never directly jumped to the bandit.
+We were like, hey, let's go in from slots, to personalize slots, to add a signal, use that signal for production, then add a bunch of heuristics, which means you're adding more features, suddenly those features become the contextual signals.
+I mean, it's a very nice team of ML engineers, product analyst, and me and all together.
+The product analyst with the SDs trying a bunch of signals, coming up with heuristics which are performing better, these heuristics become part of the contextual bandit, context signals of the contextual bandit model eventually.
+So then you're not just relying on, hey, we're going to pick up a bandit solution and go with it, right?
+Because then you might just end up failing and have nothing in production at all.
+Like baby steps, right?
+With the long-term implant, that hey, let's try one signal which you're predicting as fatigue, one ML model, that becomes one of the features in that large contextual signals eventually, right?
+All along every week by week, there's like many, many tests going on with many heuristics, many signals, some of it I learned models, some of just random heuristics, they all accumulate towards us getting and deploying the bandit in production, right?
+Just the fact on how we got there is a great learning for us, right?
+It's not just say, we want to deploy a bandit model, why? Because Rishabh thinks it's nice to have a bandit model in production, and then you pick it up, you don't solve it, and there's nothing, right?
+So here, it's more like you're walking towards a better solution, very incrementally, with the right heuristics, and then seeing that the model is actually able to replicate all the heuristics with Shri Kuttaing, and maybe more, because me as a human, I won't be able to identify all these heuristics by myself, and hopefully the model learns more of it.
+So I think it's a nice learning, not just in terms of picking the right solution, because this is not a prediction problem, this is a reward maximization problem, so bandits are better suited, but also how do you operationalize getting there?
+If your goal is just deploy a bandit and success is like, do you have a bandit or not, then you're gonna most likely fail, but then incrementally every two weeks, we have like a new production method, which is incrementally within like four months, a contextual management.
+So I think like great learning in terms of models in terms of problem solving on long term, such and success in short term reward signals, and also like the process of going about a nice sophisticated model, and walking from baby steps to that.
+Okay, wow, sounds like a lot of great works that you have already done there in the recent year, and I guess there's more to come in the future.
+I see that we are already talking for almost two hours, but I enjoy it because there are so many things that you're sharing, and so many things that I already learned up to this point, and I guess that definitely qualifies to be continued in the future, so you are greatly invited to be, I mean, I guess the general invitation for a follow up is out there for you and also for all the others.
+But handing over towards the end of the episode, maybe you have already listened to and know that there are a couple of questions that I used to ask each and every episode.
+This time, I will spare one of them, which is a question for your favorite app or something like that, because I don't want to put you in the position to choose between something that you have been happily using for more than 10 years, and the solution that you are now in charge of.
+However, I wanna do something differently and put in some other questions to address on a higher level to at the end of this episode, which is actually, so you have elicited many challenges in the Rexel space, however, I guess nowadays, there are also people that are challenged to a certain degree.
+So, I mean, we are somehow in the midst of an economic crisis.
+However, I mean, we have seen the layoffs at several big tech companies in the past month.
+What I want to know is, what are your recommendations for people who want to get even if they are more junior or if they are more seasoned to get into the Rexels field or to take the time now to prepare themselves and bring them into the right position to then jumpstart their career again when more and more of the companies are switching more to hiring than firing?
+Yeah, thanks for the great question.
+I think in terms of upskilling, right?
+I think the two learnings I have had recently is that if I expose myself to a bunch of these problems, then just the fact that I'm exposed to these problems, I face them, mean that I'll have to spend brain cycles and trying to think of a solution and then just appreciating the problem a lot more.
+What that means is if I'm an MLE in a team, right, I shouldn't be exposed to just the problem my team is facing but also overall, right?
+What are the other MLEs doing?
+What are the staff engineers solving problems?
+What kind of roadmaps are getting discussed?
+How does each of these solutions actually impact the business?
+And just having the general sense of what's going on in each of these companies, which is exactly what we were talking about at the start of the episode as well, high level view, right?
+So that you're just not like a frog in a well, but then you're aware of what's going on otherwise.
+That's one.
+But also I think a lot of the other, a lot of talks, a lot of podcast discussions, a lot of courses coming in from industry practitioners, talking about these things on how they solve these problems, whether it be it in the previous podcast episodes, you have like, I mean, talking about criteria or all we're talking about is like causal impact work or a lot of like other courses going on in the industry, different platforms now, but like a lot of staff engineers, a lot of like practitioners are really talking about how do you solve these problems at scale?
+So I think just acknowledging that there's a disconnect, unfortunately, between what gets taught in the school versus on day one as an MLE one, what's your expectation is, right?
+So bridging that gap is one of the key hallmarks which has to be done if I'm a junior, I see, right?
+Just because I know a lot of how some of the sequential models or like how some of these like class solve models work doesn't mean that I can use it to solve a production problem, right?
+There's a lot more engineering, a lot more like metrics understanding, measurement understanding, practicalities, and a lot more to it, which also, I mean, the governance piece, right?
+It's very practical science-driven problem, which as an MLE one has to solve if he has to deploy his own ML model in production.
+So I think acknowledging that gap and then reaching out, taking those courses, that's the best bet, right?
+Either you talk with some of those engineers or you kind of listen to their talks and podcasts or take up a course.
+I think a mix of that would be a nice solution.
+So shout out.
+Please stay on board and listen also to the upcoming and recent RECSPERTS episodes.
+Just as a follow-up question to that one, I mean, the whole ML field has grown in complexity tremendously over the, I would say, past five to 10 years.
+And I keep seeing more and more of these remarks, comments, especially on LinkedIn, and also when exchanging with others and looking at the market is that specialist versus generalist discussion.
+So do you think that there will be plenty of space or enough space for generalists in the future, or is it right to specialize on certain topics, rather become an expert, whether it might be a methodological expert or a domain expert to be successful in the future?
+Yeah, that's a very hard question.
+I mean, I don't think, like, I mean, if somebody has an answer to this, I would love to be in the audience and like, can you answer and apply to my.
+But I think like, generally, I think it's a function of, I mean, my best take on this is, it's a function of like, where you are in the trajectory.
+I mean, at the start of the career in the MLE, one, two stage, right, senior MLE, maybe you're like, you're not hired to solve like very specific problems, right?
+Again, solving a good problem in detail is far more useful because you're gonna face a lot of these challenges.
+And it's more like a PhD, right?
+I mean, PhD is not just like, hey, you're an expert on this topic because you have a PhD, it's more like you have developed the skillset to persevere with the problem and dive deeper, stay with it, despite a lot of like failures, and then come out and get a solution, right?
+So I think to me, a PhD is more about like, getting that experience versus like just kind of being good on solving one type of problems, right?
+So as an MLE, what that means, at least at the start of my career would be that, hey, stick with the problem, go deeper, don't context switch a lot, right?
+Because if you context switch a lot, then maybe you're kind of, you're learning wider, but then like you're not harnessing that brain muscles on like facing the problem, staying with it for a few weeks and then solving it, and then getting that ability to do it for any new problem.
+But at the same time, right, if you're just diving deeper into one of them, and you assume that there's gonna be an SDE who's gonna deploy my model, there's gonna be another SDE who's gonna give me the features and I'm just developing model, that's not transferable at all, right?
+Because I'm not hiring you as a staff engineer to solve this problem.
+I'm hiring you to be an independent engineer in my team.
+And that's exactly how we've done a lot of onboarding projects.
+That in the first month, your onboarding project is just to be very devilishly selfish and get to be a independent engineer so that if nobody is around, can you get a model out in production, launch a test and make it all work, right?
+Something like what that means is there, I'd rather focus on all the problems which are also not my headache, which is that if there's a data pipeline to be built and there's an Airflow job to be written for that, I will do that.
+Like if there's a Scala pipeline on some data processing transformation, I'll do that.
+If there's a model deployment on CELD and our ML TensorFlow serving, I will do that, right?
+What that means is getting to that minimum level of end-to-end ML engineering and also the database.
+A lot of the people, they think that, hey, there's a data scientist or a product engineer, product analyst who's gonna understand my data and understand my metrics.
+If you are doing that, you literally that's getting suicide for you as an ML engineer.
+Because if you're not looking at your own metrics and your own data and finding out where it sucks, looking at where the users are unhappy, then you're not gonna have the next idea.
+So at least maintaining that minimum level of end-to-end engineer, full stack ML engineer essentially, right?
+Which is the data analysis, which is productionization, feature pipeline, SD work.
+Once you have it all, then you can afford to focus on one bit.
+First, that's the more engineering related foundation, which is end-to-end.
+And then if you have that and associated with this more independence, then you can grow into a more specific area and direction.
+Yes, yes, and again, I've had the journey, even within my own mini-career, right?
+That if I have a dependency for sure that this is high priority to me, it's not high priority for the stakeholders.
+It will take me like two X more time to get it out.
+I mean, that's exactly, I mean, at Spotify I took a lot of like data engineering courses all by myself because I didn't want to have a dependency as an engineer, as a scientist.
+Just because I'm a scientist, somebody has to spend their sprint cycles and helping me out, that's never gonna happen.
+If it happens, it's gonna happen one month from now.
+I don't want to wait for a month.
+So just on a selfish level, right?
+If you are able to kind of unblock yourself by reducing dependencies and get something out in production, then you are far more productive for yourself, right?
+And then once you have a team, you start using that team in a great way.
+You have a lot of support from other engineers, other designers, you're not necessarily dependent on them essentially.
+And that gives you a lot more applicability in any company because the kind of problems you're working here, they're slightly different, but then like the broad spectrum is very similar to a lot of other jobs you might have in the next few years.
+So I think like optimizing for that end-to-endness and then focusing on some of these problems.
+And then as you go to senior staff mode, and if you have a skillset for some of these, then I think like that's the nice T shape.
+I was already thinking about that typical consultant term, T shape, yeah.
+But yeah.
+Yeah, I'm not proud of using that word, but yeah, exactly where I ended up here.
+Cool, no, I think that's a really great advice.
+I guess it facilitates another point and that is actually also communication because if you have really done certain things yourself in the past, then it's far more easier to also communicate and collaborate with data engineers, with ML engineers that have also at some certain degree focused.
+So maybe there might be the Kubernetes or Docker expert that you can deal with in a much better, more productive way if you have done that stuff to a certain degree yourself.
+And not only always said, okay, this is somehow engineering related, so I don't do it, but rather be open to it.
+Of course, you can't be a specialist in all of it, but at least kind of step into these steps and do something end to end.
+Yeah, I mean, like if I'm an ML engineer, right?
+Then I mean, literally one example, just another one minute detour.
+I mean, again, like three weeks ago, we realized that some of the scene post service was falling on our app.
+But that means like, again, we have a pipeline where in like, if you've seen certain videos, we don't want to show them again.
+The video feed, like the metrics really went down.
+The problem was that the scene post Redis was already full and then it wasn't performing well.
+What that means is my feed on videos were showing a lot of like already seen videos, my retention engagement all dropped.
+As an Emily, if I'm not aware of what that pipeline looks like and what's going on there, I will be clueless about my surface, right?
+And I'm not as good as an ML engineer as I should.
+You can't have a very niche, very limited view.
+And then like assume that everything else is everybody else's headache, like end to end headache, end to end ownership, accountability, that's a lot more appreciated, right?
+And when you get a bigger charter, if you're able to do that in a wider and wider spectrum, and that's exactly what my expectation from the staff engineers in my team are, that hey, you have slight, this horizon of headache, how can I make you deliver a wider horizon so that you can also kind of grow in your personal trajectory?
+Thanks for the great advice.
+And I think that will definitely be something that our people can resonate about.
+As one of the other questions that I don't want to let you go away without having asked is thinking about the recent guests, thinking about future guests.
+What might be the person that you want to have on this podcast?
+So yeah, I mean, for the future guests, right?
+I mean, right now, if I look at the podcast, then we're still in the early double digit numbers for the number of episodes.
+I'm waiting for the day when you hit the early triple digits.
+Oh.
+A lot of like very, very exciting podcast guests to be had on the platform.
+But just biased from my personal current set of problems, right?
+I would love to kind of hear some people talk about the ML infra needed for making recommendations work at scale.
+Like, I mean, like looking at TPU embeddings, looking at dynamic, I mean, like the Merlin architectures, all of those, right?
+So what does it take from the deployment aspect of ML engineering needed to make recommendations work?
+So again, like there's a huge list of like potential podcast episodes I would love to kind of hear on your podcast, but then like, I think like more immediately if somebody is on the ML infra side to make the excess work, I think that would be like, very, very good.
+Because you've already had like a pretty decent diverse coverage in terms of puzzle impact, in terms like revenue retention modeling, short term.
+Yeah, we had that episode with Even Oldridge actually from Nvidia.
+I'm not sure whether I can just go and let you off with that answer, even though it's totally legitimate in terms of the topic, but if you would just impose a random uniform distribution over the people, which tail us more to the fairness, who would that be?
+So is that like a specific person or a topic you would rather prefer the answer on?
+A specific person.
+So for example, if you would constrain it to the ML infra space, so in terms of recommendations, who would be the person that you would like me to invite?
+If you allow me to change the topic entirely, right?
+Then like, I think like I would love to hear Sean Taylor talk about a lot of like things coming together, not on the ML infra side, definitely, but on the causal impact, on the interventions, on the marketplace, on the supply set experimentation.
+So there's, I mean, like, I think some of the work he's done at Facebook, but also recently and Lyft is a combination of causal impact, but also like causal understanding for intervention design in a marketplace.
+Which is a combination of three topics, right?
+You've had all the way talk about causal impact.
+I'm hopefully I'm slightly talking about marketplace, but then like the intersection of it all together, right?
+Especially on experimentation set up as well, which is like understanding causal impact of your decisions, using them to make an intervention, and then having the right experimentation set up to prove the value of it.
+I think the work which I think like he has done at Lyft is like, is phenomenal.
+And I think like that's one topic which touches upon like three different domains and he's like uniquely positioned to, I mean, talk about this at the industry scale.
+So, I mean, if he's talking about it, I would love to.
+Ha, just do it.
+Okay, cool.
+Then I will do my best and put him on my list and also reach out to him.
+Yeah, and thanks for hoping for the three digit numbers some when.
+I definitely agree that there is still plenty of space for many more topics to come in the future.
+Yeah, I definitely really, really appreciate that you, for this episode, contributed with all your knowledge, your experience that you bring to the table and also some more insights about what is going on at Spotify and what is going on now at Shared Chat.
+And I guess for Shared Chat, we will also be hearing more, maybe in spring, Q1, Q2, because you have already announced that Shared Chat is going to host the upcoming RecSys Challenge.
+Maybe just for the end as a short teaser, can you already shed some light onto what we are going to expect there?
+Yes, I mean, definitely.
+I think one of the aspects I love about joining Shared Chat was the friendliness with the academic community.
+We've already released a bunch of data sets even prior to me joining on the RecSys last year, as you mentioned earlier.
+One of the things we are doing is hosting the RecSys Cup for RecSys 2020 3.
+And I mean, that's gonna be about little interactions, information on social media data, love like ad click behavior on our platform.
+And how users can look at social media user interactions on that and kind of make some nice predictions and really solve like an industrial scale problem with the data set we share.
+So very excited about the collaboration with RecSys this year on that.
+And again, it takes a nightmare to kind of release some of these data sets because of the legal we have to go through.
+You've done that at Spotify.
+We've done that a few times at Shared Chat.
+And I think, again, I feel very proud of the public interactions which we are having.
+We have a lot of like great relationship with like universities and academics in general.
+We're gonna plan on doubling down on this this year with one like RecSys Cup being one of them.
+So hopefully we can kind of use a lot of the work and do like two-way transfer of knowledge between industry and academia, with just like Shared Chat being the facilitator on some of these.
+Yeah, yeah.
+Cool.
+And we can be pretty excited about when you're going to release it.
+Reeshaup was really a wonderful experience.
+And I, again, learned so much because you were responsible for filling up my reading list of RecSys paper to quite some extent.
+And this time again, it was really enlightening.
+And I hope it will also be for the listeners.
+So thank you for attending and sharing.
+Thanks, Master so much.
+I think I love the conversation.
+I mean, time flew by without even us noticing.
+Thanks for the great questions.
+Love the podcast.
+And we'll look forward to hear about a lot of the upcoming guests here on your podcast.
+Thank you.
+So have a wonderful rest of the day.
+I mean, here it's already dark.
+I guess in London it will also be dark soon since we are not so far apart.
+Yeah, I think I just have like 20 minutes of, 20 minutes of like a slight light before it starts going down.
+It's been a long chat to almost two and a half hours.
+Great.
+So thanks for the amazing questions.
+Cool, then thank you.
+And as I said, have a nice rest of the day and a nice week.
+Bye.
+Perfect, thanks a lot.
+See you, bye-bye.
+Thank you so much for listening to this episode of Rexxperts, recommender systems experts, the podcast that brings you the experts in recommender systems.
+If you enjoy this podcast, please subscribe to it on your favorite podcast player and please share it with anybody you think might benefit from it.
+Please also leave a review on Podjazer.
+And last but not least, if you have questions, a recommendation for an interesting expert you wanna have on my show or any other suggestions, drop me a message on Twitter or send me an email to marcel at rexxperts.com.
+Thank you again for listening and sharing and make sure not to miss the next episode because people who listen to this also listen to the next episode.
+See you, goodbye.
+knowledge like sells 

@@ -1,0 +1,839 @@
+Note: This transcript has been generated automatically using OpenAI's whisper and may contain inaccuracies or errors. We recommend listening to the audio for a better understanding of the content. Please feel free to reach out if you spot any corrections that need to be made. Thank you for your understanding.
+
+We want to become the starting point for fashion in Europe.
+We really also want to put the customer in the driver's seat, so that is not something that recommendations and personalization is not something that they passively have to endure, but they should be able to really say, oh, I don't want to see things like that.
+I don't want to see this brand.
+I'm not interested in this brand.
+You need to look at long-term things like how often do customers return?
+How many sessions do they have in a certain period of time?
+With what kind of things do they interact in those sessions, right?
+And so on.
+And that requires a lot more, let's say, domain-specific modeling and domain-specific design of experiences.
+Then we need to balance between, does the system want to convince me that I should buy this thing or does the system want me to be happy long-term?
+Those are maybe somewhat correlated, but not exactly the same objectives.
+And now I believe, again, that ratings or at least distinguishing positive and negative feedback is the right thing to do.
+Only working with this kind of positive, only implicit feedback is not the right thing.
+Hello and welcome to this fifth episode of RecSys.
+For experts, recommender systems experts, this time I'm joined by Zeno Gantner, who is a principal applied scientist at Zalando, working a lot in fashion recommendations.
+He obtained his PhD from the University of Hildesheim, where he has been working on supervised machine learning methods for item recommendations.
+In addition, he has been co-chair at RecSys and currently is a senior program member for the recommender systems conference.
+And this time he is actually the guest in my show.
+Hello Zeno.
+Hello Marcel.
+Thank you for having me in your show.
+It's an honor.
+I listened to the first three episodes of your show and I found it all really, really interesting.
+So I consider it a big honor to be here as well.
+Yeah, thanks for joining me this time.
+And also nice that we or you can bring a new topic to the table with fashion recommendations.
+So I'm really looking forward to it, especially with regards to the most recent developments in a more practical way.
+So a couple of weeks we have seen H&M actually launching a Kaggle challenge, where they provide a large data set and a competition where your task is to predict the relevant items for users.
+Now we have also actually seen the launch of the RecSys challenge that goes every year hand in hand with the recommender systems conference.
+This time sponsored and organized by Drasypy also within the field of fashion recommendations to be not unfair in this regard.
+Also Zalando I guess quite a while ago sponsored fashion analyst data set not 100% tailored to recommendations, but maybe there will be something in the future.
+It's the right time to talk about fashion recommendations.
+Before diving into fashion recommendations in specific, can you give us a bit more of background on your person and how you actually joined the RecSys field?
+Yes, of course.
+So where do I start?
+So let's start with my current position.
+So I'm principal applied scientist for fashion recommendations at Zalando.
+Zalando is for the non Europeans in the audience, the biggest online fashion retailer in Europe.
+We have about 45, 48 million monthly customers.
+I think one in 10 Europeans last year has ordered something from us.
+So what is a principal applied scientist?
+First of all, so I'm an individual contributor in the leadership team of my department and there I'm responsible for applied science, data science standards of our teams.
+So in this case, machine learning.
+So I participate in projects, help with reviews, also do concrete hands-on work, help with like I give inputs for strategy, I do mentoring and so on.
+So you basically navigate the field of recommender systems and watch out for newest developments or do you also actually sometimes program and design new algorithms, new approaches on your own or is it kind of both or what is the degree of time or effort you're spending on these two sides or different sides?
+I'm not so like, of course, we are always watching the field, what is going on there, but this is not the main focus for me.
+The main focus is concrete work, concrete projects.
+And there, let's say I have a 50-50 split.
+One part is let's say high level work projects with others planning with others aligning with different stakeholders and so on and the other half is concrete hands-on work, usually not on my own, but also with my colleagues.
+This can be machine learning topics in the sense of modeling or coming up with ways to evaluate things, but also really then programming and implementing the models and putting them to production.
+So it's quite a wide variety and this is also something that I really love about my job.
+So I'm not a manager, right?
+So I'm an individual contributor, so I kind of help mapping the territory, mapping this field of recommender systems and our managers then decide basically where we go.
+So but I help them, I give them input.
+And so sometimes I do stuff myself, sometimes I try to tell other people what to do.
+Ideally it's not that I'm going there and telling them what to do, but rather let's say asking the right questions at the right time and helping, for example, our product managers to express problems in a way that makes them solvable by data scientists by setting the right constraints and so on.
+Is this right that you also somehow serve as a translator?
+Or sometimes you have that problem that you say data scientists that should of course be product focused, which I guess we would both agree on, but it's always not that easy because you need to talk to many people.
+So there's a lot of communication involved there, not to say that data scientists are too shy to communicate, but nevertheless translating what the customer needs into what I need to approach or come up with can sometimes be a hard challenge.
+So how do you deal with that?
+I like the term translator, so I'm very much a translator between different parts of the company.
+So I talk to analysts, I talk to product managers, I talk to engineering managers, I talk to applied science managers and applied scientists.
+And I'm very much responsible to make sure that there is the right kind of understanding on all sides.
+So it's very easy in data science and machine learning to get caught up in details of math formulas or details of the implementation.
+And those things might be important for the people working on it, like for the data scientists.
+They might also be important, for example, to get the right kind of scalability and then also to make sure to learn the right models, so to have models that make sense and that deliver the best possible results.
+But if we get too much caught up in those details, our other stakeholders might have problems understanding what is going on.
+And this is really not the right aspect that they are interested in.
+They are more interested in like on a high level, how do those things work in the sense what kind of data goes in, what comes out, what is for a specific model or for a specific service, what is possible to capture and what not and so on.
+What are limitations, what are principle limitations that will not go away soon?
+What are things that could be modified and so on?
+So this is an ongoing dialogue and this has to be done.
+And I'm not talking about dumbing down things there.
+So sometimes one can really have like a simplified story and this often does not do the matter really justice.
+So one has to simplify in the right way.
+However, you need to simplify correctly.
+So sometimes some detail orientation or how to say zero defect execution is of course a valid point because there are so many things one can do wrong in building data products.
+But however, there is that point of not getting lost, especially for example, when it comes to improvements.
+So better start with something that is correct, but simple instead of something too fancy that easily gets wrong or something like that.
+And simplification also is not only about communicating it to let's say non data scientists, but also when working with data scientists, there's a set of complexities that we don't want.
+And this is accidental complexity and this also comes up from time to time.
+It can be there from the very beginning or it can be there for historical reasons.
+And we also want to get rid of this so that we can stay, let's call it agile or that we can react to changes and then not have to deal with this accidental unnecessary complexity.
+Because that also again makes it complicated to then explain things to outsiders.
+In your current position, how many people are there that you are mentoring, currently advising or collaborating with?
+Data scientists, there's about five that I'm working with and two teams.
+Those are my closest collaborators.
+I'm not limited to that.
+I'm also working with other people with this kind of profile in other parts of the company.
+But my let's say day to day work is mostly there.
+And then of course, they're managers and engineers and product managers.
+So my peers is the leadership team.
+And that consists of applied science managers, engineering managers and product managers and other principles.
+As also principle engineers.
+And organization wise, how is this actually working?
+I guess about the detailed topics and recommended topics.
+I guess we will be talking in a minute, but organization wise.
+So are you having some kind of daily check ins where you really do some deep dives on the current progress with certain people?
+Or is it rather a pool of the people ask your advice, you drop in and help them set out the topics or how can I imagine be a applied scientist under your supervision or under your mentoring?
+This is different.
+It depends a bit on the season.
+So sometimes I'm embedded in a team and there I'm participating in whatever rituals the team has, which can include daily standups and so on.
+For the same more strategic work, it's the cadence of meetings and rituals is maybe more on a weekly basis, not on a daily basis.
+And a lot of the work that we do is also writing base at Zalando.
+So we often write documents to make sure that we really understand problems and that we have them in a format that allows people to understand later what is going on or people coming in from the side from other parts of the organization.
+So that not so much as kind of hidden knowledge, hidden knowledge in the organization, hidden knowledge in the team.
+And I spent a fair amount of time writing these things.
+Also maybe to clarify, we are not a research group.
+So our goal is not to write papers or something like that.
+We build actual experiences for our customers and the things that we build are seen basically by every single customer of Zalando.
+Is there research evolving from your more practice focused work that might be ending up in papers or something like that?
+I would see possibilities there, but it's a question of priorities and a question of bandwidth.
+So in the last year, I didn't see it so much as a goal for myself to do that.
+Like it's also a bit, let's say personal preference.
+Personally I find working on concrete experiences that affect millions of people way more satisfying than writing research papers.
+I've done both in the past, but this is what personally motivates me more.
+And then it's also more of my job here.
+So if we write nice papers, it's okay, but that also means opportunity cost for us.
+In that time we don't work on improving our recommendations.
+But I don't exclude at a later point that some of the things we do might end up in papers.
+But I must also say we don't do really, let's say strategic or fundamental research, like super high risk research.
+This is not our task.
+Okay, but maybe with that being said, nowadays, as you mentioned, you are more oriented towards stuff that really impacts customers.
+But there was a time actually when you were rather on the other side, so the side of research, of writing papers.
+So can you elaborate a bit on what sparked your interest in recommender systems and what you actually did throughout your PhD thesis and maybe also what changed since then?
+I'm going to start even a bit earlier, so maybe to explain where I'm coming from.
+Please.
+So first, I would agree.
+I feel like someone who just returned to the field of recommender system, but it has been two and a half years now that I'm back in that game.
+I've always been very broadly interested, but I decided to study computer science and it was in Freiburg.
+And back then as an undergraduate, I had to focus on classic, like symbolic artificial intelligence.
+And I also did a minor in computational linguistics because I'm fascinated by human language.
+And back then, computational linguistics was more or less 50-50 based on machine learning or the statistical approaches and symbolic things.
+Tell me about symbolic AI, please.
+Maybe 15 years ago or so, if you said AI, nobody thought about deep learning because the term deep learning didn't exist yet.
+And not many people necessarily thought about neural networks, even though neural networks for sure were a part of artificial intelligence.
+But a lot of the artificial intelligence, 15 years ago, 20 years ago, 30 years ago, was so-called symbolic AI.
+So that was methods based on logic, Boolean logic, propositional logic, predicate logic, higher order logic, modal logic, et cetera.
+And planning, so deterministic planning, you have plans that consist of steps and you manipulate a world and maybe a simulated world and want to achieve things in it.
+Then there's theory improving, so automatic or semi-automatic proving of mathematical theorems, spatial reasoning, temporal reasoning, and so on.
+Game theory, all those things were under, let's say, symbolic AI.
+The difference to machine learning, those were programmed solutions to very specific problems.
+There was a big focus on getting the method right for a concrete use case, but it was not very flexible.
+It was a lot of method development, both in the mathematical abstract sense and then also in the implementation.
+Whereas in machine learning, maybe some people work on implementing methods there and so on, but actually the big magic in machine learning comes from the data.
+So you have a lot of data and our programs or the neural networks, they figure out what to do.
+Symbolic AI didn't do this.
+Only towards the end of my undergraduate studies, I really discovered machine learning or data mining or however you want to call it or pattern recognition.
+So as said, the symbolic AI methods, they are often very clever, for instance, I don't know, for chess playing or so, but they require a lot of analysis and implementation effort.
+And then they solve only one very specific problem.
+I also had some lectures on machine learning method and then I had an entirely different impression.
+So that stuff could be applied for so many different applications and it's robust to noise.
+But in a way, all you need is to do when you move to another application domain is you swap out the data, but you use exactly the same methods, exactly the same problems and so on.
+And one could see that with more data and more computational resources, it would even go further.
+So there was basically no limit to that.
+So there were a lot of potential applications and research wise, it was interesting too.
+It started to really fascinate me and I said, like, oh, maybe I'm going towards finishing my studies.
+I at some point maybe want to have a job for doing master's thesis about modal logic, which is kind of a logic that allows you to reason about belief states or temporal aspects.
+I don't know to which employee I could go with that.
+It was kind of during your master's studies that your perception changed a bit.
+So you were turning from symbolic AI more to data mining or the beginnings of modern machine learning that we saw there.
+And this was when you were thinking about, hey, this is something really, really useful that I can apply to many different applications in the wild.
+Exactly.
+Exactly.
+Okay.
+What did I do, for example, in symbolic AI?
+Like I've worked on theory improving, which is really cool.
+I mean, also it's being used, right?
+It's one of like Microsoft invested in back then a lot in that and that's why the device drivers on Windows are way more stable now than there were 20 years ago and so on.
+Like this stuff has applications.
+I also worked on spatio temporal reasoning and they were like I implemented a generic solver that could do this for different kinds of formalism.
+So there was a kind of a generification.
+It was cool.
+It could be used, for example, for modeling the right of way between vessels in like boats and ships.
+And so that's fun.
+But then I saw, okay, there's machine learning and it's so much cooler.
+And so towards the end of my studies, I said I wanted to do my master's thesis on recommendations and I did.
+And actually it was content based recommendation for news recommendation.
+Where actually did this happen?
+So when during your master's thesis did you encounter recommender systems?
+Was there something?
+I mean, wasn't it at the same time when Netflix was running its famous Netflix challenge?
+Was this somehow how you came across that field or what was it that you said?
+Because of course, I guess there must have been classification of images like, for example, MNIST.
+There must have been maybe some detection of certain words or why recommender systems at that point?
+Huh.
+So this was before the Netflix price.
+Other datasets existed.
+There was like there was a book crossing dataset and there was a joke dataset and there was movie lens.
+There was the movie lens dataset, which structurally was very, very similar to what then became the Netflix dataset.
+So it was also movie ratings.
+It was a bit more complicated actually how I got there.
+I don't fully remember how I really got into that.
+So it was one of those machine learning applications that were discussed and it was interesting because it was a bit different from your normal classification and regression stuff.
+I also with a friend back at the time we thought about maybe doing a startup about news recommendation.
+And so part of my thesis should work towards that startup idea, but it didn't.
+That's clever.
+Yeah, we didn't get funding, but on the other hand, we didn't really try hard enough.
+It was good that we didn't get funding.
+As a side product, the thesis came out and it was a content based recommendation.
+And so the application was for news recommendation because we didn't have enough data there.
+The experiments were actually on movie lens.
+Okay, I see.
+And then we didn't get funding and then we said, okay, let's get a PhD instead because all that stuff is so interesting.
+And in Germany, if you do a PhD in computer science, you get basically you become an employee of the university, so you get funding.
+Great, you get paid to learn about really, really cool stuff.
+So it's a bit what Olivier said in the third episode, right?
+So what he likes about being a research scientist, you get paid to learn about super exciting things.
+And I had a similar impression.
+I said, oh great, let's do it.
+And then Rico was on the table there.
+So basically, instead of getting the funding for a potential company, you get funding to learn, yeah?
+Exactly.
+And then you see later what happens with that, right?
+And so I started a PhD and my professor moved from Freiburg to Hildesheim.
+It was the same person like Lars Metim.
+He's a great guy.
+He gave me so many opportunities.
+But he moved from Freiburg to which is might be a bit unfair to compare cities or towns, but Freiburg is just this great university, lovely city, close to France, close to Switzerland, like forest nature is amazing.
+And Hildesheim is a bit like, you know, a bit rural in northern Germany, you know, but he became a professor there.
+So I decided to come with him.
+However, there's also an advantage in Hildesheim.
+You don't face the risk of stepping into a small river and having to marry a person from Hildesheim, right?
+Exactly.
+I avoided that.
+Yeah.
+And also maybe it's good to be in such an environment because it allows you to really focus on all your work.
+If you're like, like, I think maybe a smaller university town is not so bad, actually to for your focus.
+And then so Riku was a topic because I had worked on it.
+But initially in my PhD was also not my main topic.
+So I wanted to work on text mining, not really NLP, but like doing stuff with text data.
+But I didn't really lose track of recommendations.
+And then was the time that the Netflix press came out and we dabbled with it a bit and we tried out a few things and tried where we could get on the leaderboard.
+We were not at the very top, but yeah, we participated there as well.
+And we learned a lot.
+So within your research, you actually teamed up and participated?
+Exactly.
+Yeah, but still not with the goal of getting my PhD in that or even publishing in that.
+Later into the PhD time, I switched to recommend us again, and that was again kind of accidental because a colleague of mine went abroad for some time and had worked on this European project and I had to take this over just as part of my work duties.
+And suddenly it was a lot of my time was spent on recommendations again.
+I also saw more potential to publish there.
+This is how I got there.
+And that was the time of the Netflix prize, which was of course exciting.
+And it was another signal like, okay, this is something that a lot of people are interested in.
+Or suddenly there's this company and they give a million dollars to whoever approves their thing.
+That sounded just crazy and exciting.
+Yeah, it was totally ahead of all that public competitions and Kaggle wave, right?
+During your PhD thesis, so what was kind of your research field within the Rexas field, of course, I guess maybe nowadays it's much more diverse than it was back at the time.
+What was kind of the focus back then and what is it today or what were kind of the surprises if you would compare these two periods?
+So back then it was kind of very much dominated by the Netflix prize, but not exclusively.
+The field of recommender systems was very diverse.
+And I think it was already back then the body of literature was so much that as a single person you had no way of knowing all of it.
+And of course, this has gotten crazier.
+And nowadays I think every month there's so many papers that come out, you can't read them all.
+Right?
+But even back then it was super big.
+But because of the Netflix prize, a certain focus was on rating prediction.
+Given a user movie pair in this case, how much would a user say they like a movie?
+And this was because of the Netflix prize, but it was also because of movie lens, which had been around before.
+But the availability of those datasets and the attraction of that competition, they meant that a lot of focus of at least of the algorithmic work went into that.
+And one can find this good or bad.
+I think overall for a field it's net great to have a dataset or a set of datasets that people rally around for a certain period of time and really try to push the limits.
+Overall it's really good.
+Of course there are the limitations, there's this overfitting on this thing.
+You might lose track of other important problems and so on, but I think overall it's really, really good.
+And this was the case back then.
+But if whenever one worked with, let's say with other industry users of recommender systems, there was often a problem.
+Many systems didn't have this user interface that asks the user to rate things.
+And a lot of the data was just like logged events, user clicked on this or that, or user bought this or that.
+And even much more implicit than that explicit ratings you had with movie lens or with Netflix, right?
+Yeah, implicit expressions of interest.
+Like I click on something that it doesn't even really mean that I'm interested in it.
+If I buy something, well of course I'm interested in it, but I didn't tell it to the system in the sense I express my preferences here.
+It's more like I just do this.
+Often only those things will log, right?
+Like a system would, maybe it would record what was shown to the user, but maybe it wouldn't log this or at least it would not end up in the dataset.
+Of course every rating dataset you can just erase the ratings and just say like, that means the customer has watched the movie or something like that, or the user has watched the movie.
+And then you have an, you can turn this explicit dataset into an implicit dataset and so on.
+So from the project work in this European project, I became aware that actually rating prediction is not the most interesting thing for many companies that use, that want to use recommendations.
+So I said, okay, let's then look at this positive only implicit data and let's not try to predict those single data points, the single rating events also, but rather let's look at the problem of giving a user which items, so which movies, which products do we want to recommend to that user, right?
+So this is that, that was for me, the most interesting question, the main question.
+And of course I was not the only person to do that.
+There was also already a lot of work around this.
+It was just overshadowed a little bit by the, by the rating prediction work.
+For me for a while, implicit, like learning from implicit feedback and making item recommendations, in my opinion was the right way of doing things and actually looking at ratings somewhat even I considered wrong and a waste of time.
+But the funny thing is now that I'm back in the field, I've gone kind of full circle.
+And now I believe again that ratings or at least distinguishing positive and negative feedback is the right thing to do.
+Only working with this kind of positive only implicit feedback is not the right thing.
+Not the right thing is maybe a bit strong.
+Like it leaves out a lot of potential.
+So I think the right way of doing things, if you have control over, over the things that you can log about your users is that you also record what you showed to your users and what they, for example, what they ignore them.
+There you have ratings like binary ratings, but they are not positive only or implicit.
+They're implicit because the customer does not see this as necessary as an expression, but they are positive or negative.
+Like I show something and you click it or you buy it or you don't do it.
+Yeah, we actually do a lot about implicit positive feedback, but somehow we disregard all the abundant implicit negative feedback.
+So for example, data sets in which we would have, for example, a list of impressions and the users click, for example, on the fourth or fifth position, which we could infer that the user was not actually implicitly interested in the first items before clicking the item would be very interesting and good points that could definitely enrich current recommended models.
+When you have that kind of data where you have, let's say plus and minus one or zero and one, then suddenly which models are the right models to work with that?
+Oh, it's almost exactly the rating prediction models.
+Okay, tell us a bit more about that.
+Well I mean, so the rating prediction models are basically regression models, right?
+Or you could say maybe multiclass classification, but the implicit positive only models, they are weird.
+They are so weird because you don't distinguish between the customer has seen this and decided not to do something about it versus the customer has never seen it.
+So we really have only the positive only data and that requires the models to make very strong assumptions and do things very differently.
+Whereas if we have the three different options, like has never seen this, so we have a crazier question mark in the user item matrix, or we have a one and a zero, this is again, this is like a rating matrix, right?
+It's also you could see it as a regression problem or classification problem.
+Basically binary classification problem I would say, and then let's throw, for example, logistic matrix factorization in it.
+Exactly.
+And this is very similar to the rating matrix factorization.
+And because suddenly you do this only on the observed data points.
+Whereas for the positive only methods, they kind of assume that all the data points were somewhat observed, right?
+And so, and there you have suddenly like a scale, you have the scalability problem, right?
+But now we don't have it anymore.
+And so there is the similarity.
+What we talked about, we are kind of in supervised learning, in the supervised learning world, right?
+So we have a data set and we want to predict it.
+We want to be able to, let's say, take certain data points out there and see how well our models predict those.
+But actually, this might not be the best and most natural way of modeling those things.
+The best, in my opinion, the best and most natural way of modeling a recommender system problem is reinforcement learning.
+Because reinforcement learning is about collecting rewards.
+And you can put in whatever reward you're interested in as fashion recommendations.
+We might be interested in selling things and have customers that return to our shop.
+But what is reinforcement learning?
+Actually reinforcement learning is learning to make decisions under uncertainty.
+And this is exactly what we do, right?
+We do not want to fill gaps in a data set that we collected, but we want to learn how to make the right decisions.
+And the right decision we want to make is decide what kind of thing to put in front of our users.
+And for reinforcement learning, you again need positive and negative feedback.
+Because it doesn't really make sense.
+Yeah, I somehow remember that at the RecSys Challenge a couple of years ago, where Trivago was kind of donating the data set and the aspect or the goal of that challenge was actually to predict the accommodations for certain users and that they might be interested in.
+And there you actually had that information of what were the impressions at the very time a certain interaction occurred.
+And for me, that seemed very natural.
+And I was always thinking, okay, why aren't there more data sets?
+Of course, it increases the size of the data set.
+Maybe you might also be able to infer assumptions about the system that provided these impressions.
+But however, I guess you could make much more of the data where you really see these impressions and can then say or infer, okay, this is negative feedback that we see there because the user basically skipped those items.
+So the user has seen them, but not explicit any interest in them.
+Yeah.
+So if you're a practitioner in a company, if you have control over what you log, what kind of events you log, what kind of data you use to train and evaluate your models, I would always try to also log this.
+And this doesn't mean you need to go full reinforcement learning or even partially reinforcement learning even if you stay in the supervised learning area.
+And you also can find data sets as an academic, of course.
+There are some data sets or you can just use rating data sets to work with.
+And again, I also don't want to say that what we and what I did in the middle, like working on this implicit data sets and having those positive only models, I'm not saying they are useless or so.
+So they might still make sense in the overall context as a component of those things.
+Of course, you might want to compare your approach against such models.
+Maybe they are better.
+Maybe they are capturing some things in a better way.
+And so one should always also respect those things.
+I think you are making a very good point there because as practitioners as well as researchers, you are always also interested in how you can do better.
+And if you find that there is somehow a missing piece in these models that, for example, just focus on the positive only feedback, even though the positive only feedback might be something valuable, if you could do better by also incorporating the negative implicit feedback by taking into account those items that have been skipped by the users and why not.
+There is a totally valid remark there and also shows that there is still lots of further work that remains to be done there.
+Going into fashion recommendations, what you do today at Zalando.
+Can you, starting with the golds show or tell us what the use cases are for fashion recommendations and what you are trying to achieve there?
+Oh yeah, that's a big and wide question.
+So first of all, I want to clarify because we also talked about the number of people I worked with and so on before.
+So we are not the only team at Zalando that does personalization and even recommendations.
+So there is other teams that do personalization in the context of search, in the context of ultra generation, content composition.
+So that means like, for instance, composing the content of the homepage when you go onto the fashion store, then there is a huge department that does just sizing and fit, right?
+Because in fashion with respect to returns, this is both in terms of economics, but also in terms of sustainability, this is a huge question.
+And personalized navigation is a thing everywhere on the website.
+And then we also have like an off price variant of Zalando called Zalando Lounge.
+They have their own personalization and so on.
+So there's many other places where personalization happens.
+It's not only my department.
+So of course there must be many people working on that topic because not only there are many use cases, as you've just mentioned, but also it's always for me, a very nice role model for Germany, and I think also at least for Europe that we have Zalando as a major player in that field because you are doing good work that you are presenting at Rexas.
+There's a fashion Rexas workshop since quite a couple of years.
+And of course there must be many smart people that work on these topics.
+So I definitely see your point.
+Yeah, good that you mentioned the workshop.
+I think there will be another one at this year's RecSys conference, right?
+So there were three so far.
+So like our sizing people, for example, are very much involved there.
+So I think there's a, let's say a small goal and a big goal.
+The small goal is kind of the usual suspects in e-commerce recommendations.
+I call them the usual suspects.
+It's like the thing that you have on virtually every serious online store and no matter whether it's a fashion online store, clothing or other things.
+You have a customer who either clicked like viewed products in the past or even bought products or put them into the shopping basket or onto some wishlist and they returned to the store, to the online shop and you show them recommendations just when they enter, right?
+And those recommendations, they can be reminders more like that help retargeting or they can be more serendipitous, more inspiring, like more risky, more diverse.
+That's the one thing.
+And then of course you can use similar recommendations in things like newsletters or other kinds of commercial mailings.
+And then when customers look at the details of products because they're interested in them, you can show them alternative products, you can show them similar products or you can show them matching products that are often bought together with that or that for whatever reason might be a good idea of being bundled together or bought together.
+So we call this cross-sell and you might also have other kinds of recommendations there like stuff from the same brand or in the same color, like all kinds of things, right?
+That might already be a bit domain specific, but cross-sell and similar products is definitely not domain specific and you can just apply standard algorithms.
+And then things like cross-sell, you might also have like at different points during the checkout flow or with like reminder emails and so on.
+And this is what I call those are the usual suspects like it.
+They are not fashion regulation specific, but they are the starting point, right?
+You want to start with those, you want to have those.
+It's basically like, would that be valid to say it's more simpler intuitive models because one could say showing the most popular products from the same brand is not something that is very sophisticated, but however, it might be very relevant for a user.
+Yes, this can always be done, right?
+You need to find out.
+I would hesitate to say this is better or worse than showing, for example, collaborative filtering similar items.
+And this depends very much on the context.
+This depends on your customer.
+So I would be hesitant to say like in general, one thing will work better than the other and there might be specific cases where one thing works better than the other.
+As always, there's a lot of experimentation in the specific case required to find out what really works.
+And it also depends on what is your goal.
+Is your goal helping the customer to convert, make money right now?
+Or is your goal to inspire the customer?
+And this is kind of where I want to move away from the usual suspects of e-commerce to what are our aspirational goals.
+Tell us how you inspire the customers.
+Well let's first talk about how it could look like.
+So Salando wants to like this is our corporate or public corporate strategy, right?
+So we want to become the starting point for fashion in Europe.
+It means not only if I want to buy a certain jeans, I should be thinking as a European about Salando, but everything fashion should at least for a relevant number of Europeans should equate Salando.
+And there's of course a gap, I mean for buying specific stuff that is covered right now.
+But where do people go for if they want to have fashion inspiration?
+Maybe if you sit at a doctor's office, wait for your appointment, you look at the fashion magazine or you go to certain websites like Pinterest or Instagram and get your inspiration there.
+You don't necessarily open your Salando app to get inspiration there, but we want to change this.
+What we want to do is we want to generate experiences that are meaningful and interesting in a way that will make our users come back to us also for inspiration, not only for buying.
+Of course, this will not be achieved by having the same old KPIs that you have for the usual suspects of foundations, right?
+For example, that would be I don't know, conversion rate or something like that.
+You need to look at longer term things like how often do customers return?
+How many sessions do they have in a certain period of time?
+With what kind of things do they interact in those sessions, right?
+And so on.
+And that requires a lot more, let's say domain specific modeling and domain specific design of experiences.
+We are only starting, like in the last few years, we have started to embark on this journey to make our recommendations more fashion specific.
+There are several aspects to this, right?
+So there's, they should be fashion specific so that they should make use of data that we have about fashion attributes, the kind of fabric, the brands, the color, the pattern, certain details of clothing, certain styles, certain trends, certain use cases, occasions for clothing and so on.
+All of that, our experiences that we show to our customers, they should take such things into account and they should also communicate this to our customers, which brings me to a second thing that's kind of explainability.
+The explainability of like why does the model show the specific thing, which is kind of model debugging and sometimes, but sometimes can also help to build trust in a system, but there's also the explainability on like what am I seeing there, right?
+So like we have all kinds of customers.
+We have customers who are fashionistas who know the things.
+We have people who have a very pragmatic approach to fashion, but we also have a lot of people in between and they say, yeah, I'm interested in fashion.
+I want to upgrade myself, but I don't even have the vocabulary for it.
+And so we would like to show them like, hey, you had a look at this here.
+Maybe you're interested in that.
+And this is also how this is called, right?
+This is how this trend is called.
+This is how this element of your piece of clothing is called and so on.
+So we kind of teach our customers.
+I already had education in my mind when you were talking about this.
+So about this people that are in between.
+So you somehow detect that they are interested, but they are lacking the background or the vocabulary and thereby don't really often get the connections between certain items.
+And by kind of showing these connections, by describing and explaining, they somehow get more into buying also the relevant stuff.
+Exactly.
+And if we go back to, let's say the product, what we have on the product detail page, cross sell, for example.
+So items that go along well with the product that we are currently looking at.
+That is a nice example.
+So a standard cross sell is just, it just learned the correlations there and it's, it's kind of a black box for the customer.
+But if we now go and look at all the different dimensions of the fashion domain and use those dimensions to generate recommendations and generate explanations, it's suddenly very different.
+So you look at something and actually the same holds for similar items as well.
+Then we say, okay, yeah, more from this brand.
+Or this color goes really, like if I painted this color, it goes really well with shirts and discolor.
+Or is that this is trendy here and there and so on.
+We are currently working on experiences in this direction.
+Is this something that you come up purely algorithmically or is this also incorporating to a certain extent kind of editorial support?
+So for example, fashion experts, I would maybe assume you are not a fashion expert, but you are an approach or tech science expert.
+So is there some kind of a collaboration in coming up with these explanations or how do you actually achieve this?
+Yeah, there are all kinds of levels of expert input.
+So first of all, we do user research, which is kind of, I mean, in a way, those are one of efforts that inform future directions.
+We have product managers who are closer to the fashion domain than let's say most of our data scientists.
+And then we also have fashion experts that for instance, provide input about attributes of products, they provide input about compatibility of certain products and so on.
+And there's always this balance, right?
+We have a catalog of more than a million products.
+So you can never capture everything that you would like to capture with human labor.
+So we try to automate as much as possible, but also make best use of human experts.
+It's hybrid artificial intelligence or however you want to call it.
+There was a term framed by Spotify and their product podcast, they called it algatorial, which I really loved.
+Yeah, this is a really good one.
+I mean, so our team, we don't really work on outfits, but for outfits, this is really like a strong thing.
+They have two different kinds of sources actually, they have in-house experts, but they also have influencers that create outfits, right?
+And they have the brands that have a default outfits.
+They do stuff there.
+And on another level where you have expertise input is you might decide on a bunch of candidates, like candidate dimensions you would like to show for matching products or for similar products.
+I don't know.
+Should it be the color?
+Should it be the pattern?
+Should it be the category of clothing or what combination of those should it be?
+And so you would come up with a bunch of candidates and that is something that the specialists would do.
+But then you would run experiments, either experiments or you would dynamically on the fly decide which of those things to show in which context.
+So meaning that the candidate set would be chosen editorially and from the candidate set you are choosing the stuff that is shown to the user rather algorithmically?
+Exactly.
+Or you say, for instance, did I mention like whether we should use the brand or the pattern that is decided by a product manager, but then we have a model that learns which are very compatible, which to show, like which brand to show for this stuff, which color to show.
+And so this might be very hard to also specify exhaustively by a human, but we can learn this from our traffic.
+If we take into account what we have been discussing before that you or one should also take into account much more of the abundant implicit negative feedback.
+Is there a way of how you are doing this or if you can talk about it, how you try to solve for it or besides a very obvious thing, which is that people return certain products and then not reorder the product in a different size.
+So besides that, how are you making use of negative samples or how do you draw a conclusion about what the user is not interested in?
+So there's a good question.
+I want to later say something about the returned things.
+Well, it depends always on the model.
+Like we have different models that do different things.
+We have models that do candidate generation.
+So that get from our entire product that decide on which subset are the candidates.
+And then we have reranking, which decides like how to sort, how to order the, let's say maybe five products that the customer actually sees.
+And all these models, they could use this kind of input.
+They could either use positive only input or they could also use this positive and negative feedback.
+I would call it information theoretic argument of when in doubt, you should always use more data, right?
+When you can use more data, you should use more data.
+Unless there's a good reason, maybe scalability that keeps you from doing it.
+And so for example, if you know what has been shown to the customer, it's always better to also use that data, right?
+As long as you have a model that can deal with it.
+I mean, we have both kinds, right?
+We have both kinds of models.
+We also have models that are used positive only data, but we do have models that do both.
+And we try over time, deploy more of those models.
+And more importantly in our offline evaluation protocols, we try to use more scenarios where we take and also negative feedback into account because we have found that this is a bit less biased, right?
+You have certain presentation biases in your positive only data.
+And some of that is even outside of your control.
+It's not even from your algorithm, but maybe you collected the data somewhere else on the fashion store and so on.
+This can provide robustness to certain things, but it can also give you certain biases in your offline experiments and you at least need to be aware of it.
+We try to use that.
+The other thing returned items that it's a difficult question.
+When do you return something?
+It could be size related, right?
+And then the other size is not available.
+If I already ordered something or if I put something in my shopping cart, it usually means that there must be something about this product that I'm interested in, right?
+So I wouldn't use this as negative feedback, at least not for our interest-based models, right?
+A return might be a negative feedback for the size recommendation component, which is a very, very important aspect in fashion recommendations.
+This is not what I'm working on, but it is very, very important.
+But it's also interesting, another issue with a lot of the typical models that I discussed in the literature is that they look at one kind of interaction.
+This is clicks or this is purchases or this is an attributionist events, but in a real system you have all those different kinds of events and then you need to think about should your model throw them all together and treat them the same or should they weigh them somehow or should they treat them separately and each of those decisions has different trade-offs and different consequences.
+Something that I also have been thinking quite a lot of, maybe in streaming you have this signal about consumption and maybe I guess there is a paper from YouTube where they said that to avoid clickbait they are only considering as positive feedback those videos that have been fully consumed by a user.
+Even there and especially also in e-commerce, as you said, you have that different signals, I would say signals of a different intensity of positive feedback.
+So for example, you could put an item to your bookmarked items list or save it for later.
+You could just click it.
+How do you trade off if I click the same t-shirt once or five times in the same week and then of course I buy it.
+Maybe I'm also going to share it with others.
+So is there some kind of a golden rule?
+I mean you were involved in that BPR paper and a couple of years later there was a paper that was called a multi-channel BPR where they actually tried not only to kind of compare those positive against that negative samples but also the positives across different channels.
+So where you would say, for example, buying is a high intense or a large positive feedback and it's larger than just a simple click.
+So I might even rank items that I bought against items that I clicked.
+Is there somehow a golden rule or some advice that you can give or how are you approaching the problem of merging?
+If so, feedback from different channels if you merge it because you mentioned you could also treat it separately by separate models.
+Yeah, you need to make this decision at least twice even.
+So if you have those things as inputs for your model, so when your model does inference and then the second one is if when you do training or evaluation, what is kind of the score that you would give to what kind of action or do you see those?
+Do you see it as a multi-task learning problem or are those different rewards in reinforcement learning or do you ignore them all?
+Because almost all and in reinforcement learning, you really just observe the events that you are really interested in with your true KPIs and so on.
+So you have to answer that question several times.
+I would hesitate to give a definite answer because it also depends on how reliable for instance your instrumentation is of what you observe.
+It also depends on how dense your data is and how much time you have to come up with a good model.
+So depending on the context, you might have very different answers to that.
+In the end, I would always advise to try out different things and see what works best for you.
+I have a preferred approach I would say and that is a model should have for the main user feedback mechanism, it should treat those different kinds of feedback differently.
+I do not think that one should merely use a model that puts like all items together no matter whether they were clicked or bought.
+I also do not think that one can easily say a purchase is 10 times more valuable than a click or something like that, which does not mean it is invalid to ever do that.
+I just do not think that it is the clean way of modeling it.
+There are always downsides to doing that.
+But then one can do those things very differently.
+You can formulate it as a multitask learning problem.
+This is about how to use this stuff as ground-force data, but then you still have to question what do you put into the model.
+But there I would say there should be different things and then maybe you want to think about how you inside the model, maybe you have different kinds of types of embedding for different action types, but maybe you want to somehow regularize or constrain or link the embeddings for the same product for the different kinds of user actions.
+That is my opinion there.
+I also do not claim that this is the definite wisdom.
+I would love to experiment way more there to really have more definite answers, but maybe let's talk about it in two years again.
+So definitely already one of the potential future research directions, how to somehow have a unified framework for feedback from different feedback channels.
+You already touched on it a bit, the problem of size and fit recommendations.
+What actually is the difference between size and fit?
+Sizing and fit is a big area.
+I'm not the best specialist for that, but I heard some things.
+So I can maybe share some things that maybe people on the street don't know or at least haven't thought about.
+So something can be in my size in the sense that it's okay on my shoulders, like it's not too small and not too big on my shoulders and regarding to the height of my torso, but it still doesn't fit well.
+It either is too loose or not loose enough, but that again is also a bit depending on style and personal taste and current taste and so on.
+So this is complex, right?
+And sizes are sometimes one dimensional when in reality they correspond to several dimensions.
+I mean, for pants, for example, you have like waist size and the length of the legs or other kinds of clothing you don't have that even though you should have it.
+So shoes usually have just the length when in reality the width of the feet also plays a role and so on.
+And so sizing and fit tries to capture both those things.
+And there are many, many challenges in this area.
+For example, clothes are tailored for a certain standard size and then scaled up and down for the other sizes.
+So that usually means they are particularly good for the size they are tailored for, but when you scale up and down, you have more problems.
+And you have the problem that sizes are not consistent.
+Different brands have different sizes.
+They use the same sizes, but they can be vastly different.
+It can also be vastly different within the same brand.
+It can be different from country to country within the same brand.
+That is something that I didn't know two years ago.
+And that is quite interesting, I think.
+This can be that the same piece of clothes has quite different sizing behavior depending on the color because the color depends on the fabric and different fabrics behave differently.
+So there's a lot of things you cannot assume when you work with sizing.
+Okay, so it's way more complicated when you mentioned the dynamics.
+So people might somehow have periods where they turn their body in a more unfavorable direction and thereby order some different clothes and then they turn back because they lose weight.
+Oh yeah, that's another one.
+They again order somehow clothes that have smaller sizes or smaller waist and then you have these dynamics and you have the dynamics of trends involved, like you mentioned, and how different sizes of different brands map onto each other because an M of brand A might not be the same as of brand B.
+Well, I have another attempt of describing the distinction and that is something that you often cannot answer even if you're very good at estimating how big I am.
+You cannot even answer by measuring me or simply measuring me, like taking two or three measurements.
+I really need to wear it or we really need to have very good simulation, visual algorithms that project that thing onto me in a realistic way.
+Then we need to balance between does the system want to convince me that I should buy this thing or does the system want me to be happy long term?
+Those are maybe somewhat correlated, but not exactly the same objectives.
+So talking about this, yeah, what kind of exciting research directions would you see for the future and future research or also of course application endeavors at Zalando?
+For example, if you think about the biggest challenges you are currently facing.
+I think first and general for fashion recommendations, we are at the point where fashion specific recommendations could become their own field, at least for the group of companies that are working in this area where we go away from just like generic recommendation and adding a bit of sizing or something like that.
+So just like doing the step, I think is the next big thing for us and for many others as you can see by the proliferation of public competitions in this area, like on Kaggle and at Vexus.
+For Zalando, it is using this like taking everything to the next step and helping customers not only to convert, but also to really inspire them.
+So for us, our goal is to change the answer to the question, where do people go for inspiration?
+And that the answer at least partially in the future is Zalando.
+This is where we want to go.
+This will require work, let's say on the fashion specific front and working with, let's say visual aspects of that thing, really understanding our customers and so on.
+And we also, of course, we want to make personalization throughout our fashion store more consistent, more coherent by, for example, using enough input data like we discussed before, like the different kinds of user actions, maybe sharing embeddings in many places and so on.
+So this is, of course, easier said than done.
+It involves many teams may require introducing central data assets, data sources and models.
+Again, to make such things work properly for different use cases and in a really reliable and sustainable way is much easier said than done, but at some point needs to be done.
+And another thing is we really also want to put the customer in the driver's seat so that this is not something that recommendations and personalization is not something that they passively have to endure, but they should be able to really say, oh, I don't want to see things like that.
+I don't want to see this brand.
+I'm not interested in this brand.
+Like you can say on YouTube, I don't want to see stuff from this channel.
+This has two reasons, right?
+The first reason is that the customer then can steer the system towards more relevant content.
+But the other thing is also a psychological aspect and that is to really establish trust with the customer that they understand that we are there for them and that we don't want to push something there.
+And it's really what could get people upset.
+So it's nice that you bring that up.
+And I really liked that term of putting the customer in the driver's seat.
+I remember that there was a tweet recently by Michael X strand where he also mentioned something very similar that he want to gain more control in returning or also communicating somehow with the system that comes up with recommendations or with advice, because in the end, it's kind of systems that should facilitate making decisions.
+And if I just feel that there is something pushed on me, then of course, I'm not inclined towards following any advice.
+And as you mentioned, building distrust instead of trust into the system.
+Could one think about some way of interacting while I'm receiving the recommendations or how would something like that or could possibly work?
+Oh, there's many, many ways of doing this, right?
+I mean, we have things like people can follow certain brands and so on.
+We try to customize the experience towards that by also using that information.
+But there's other things like you can have this kind of filter options.
+This can also influence like when people browse the product catalog that there are certain default settings could have.
+How do you call that?
+Like on Pinterest and Facebook and LinkedIn, you have like the stream of content customers give feedback right away there.
+You can curate this in real time based on the feedback that you give.
+So for example, by saying, hey, I want to see less t-shirts recommended with my stuff, please show me some sweatshirts because my wardrobe is already full of t-shirts or something like that.
+Like for example, you can say on Twitter, I don't want to know more about this topic or from that person or from that kind of area or something like that.
+So not even on item specific level, but rather on a category specific level or something like that.
+Exactly.
+And there, of course, the challenge is that those categories, etc. must be understood by the customer.
+They also must be able to undo things and so on.
+So this is something that, let's say, a data scientist alone or a team of data scientists alone cannot for a complex fashion store cannot do on their own.
+But again, it's a bigger thing.
+But we have the processes in place to achieve such things as a company.
+And another thing is diversification.
+So some recommendations are very topical and they're on purpose and that is good, but some want to be broad and you can, there's interesting literature on ensuring this in a way that really increases engagement or other kinds of success.
+And this is an important topic for us.
+Also think about it, if a recommender model kind of overdoes it, it shows you a lot of things that you exactly don't want to see for whatever reason.
+Like you looked at a belt last week or maybe five belts.
+Let it be five belts.
+And now everything you see is belts.
+Maybe you even bought a belt or two.
+You don't need a belt anymore, but all you see is belts.
+One way of dealing with this is allowing the customer to say they don't want to see a belt anymore.
+Another way of not having to deal with this is if for your normal general recommendations, if you ensure they are diverse enough, you might only see one or two belts and it might not bother you so much.
+You would say like, oh yeah, I recently bought a belt.
+That's why I see a belt here.
+Okay, I trust the system better now.
+But then you would see nice jeans and t-shirts and everything will be all right.
+And you don't need to have like a smart algorithm that identifies those problems where the other recommender model goes overboard and it becomes too specific and things like that.
+Instead you just naturally get it out of your recommender system.
+I remember when I have been talking about this with Olivier and where we have trying to make the difference between targeted advertising and recommendations simply sometimes just saying, no, I actually bought a washing machine so you don't need to display any more to me.
+Well, so I don't need another one for the next five or 10 years.
+As you said, you could do a much more smoother job there either by going more diverse or also by really registering.
+Hey, I now said implicitly for the fifth time that I'm not interested in belts anymore.
+So please respect that information without me having to explicitly make that statement.
+For how long should it be?
+Should it be forever?
+I mean, it's a huge solution space for that.
+And for sure, I think most online stores can still get better there.
+I like Olivier's observation about targeted advertising.
+In a way it's fairly similar to recommendations except there's this let's say auction mechanism in the background in addition.
+So that comes in addition.
+And I find it quite interesting to see how recommender systems have touch points with other things.
+I think it can be very inspiring to look at targeted advertising because a lot of, for instance, scalability problems like because a lot of the stuff is in real time and so on have been solved there.
+A lot of exploration problems have been solved in that area.
+I think recommender systems researchers should also look into this area.
+It's very interesting.
+Another touch point with recommender systems is, in my opinion, search because the difference between recommendation and search is just the existence of an explicit query or not.
+But other than that, things are more or less the same.
+So you can use very similar evaluation mechanisms, for example, you might have similar KPIs.
+It's a different point in the user journey on the website, but the underlying models can actually, they can be quite similar and they have a lot of overlap and they could reuse things.
+And again, inspiration, recommender systems researchers can get a lot of inspiration from what happens in learning to rank for search.
+It also happens.
+I'm not saying that this kind of exchange doesn't happen.
+Which already would have answered my follow up questions.
+So what current observation you might want to share about what the field might look into in addition.
+So there are some that both kind of borrows from information retrieval, looking a bit into more targeted advertising.
+Also, as we mentioned, the problems of targeted advertising might be fruitful for recommender systems or to enrich the insights about recommender systems there.
+What else about recommender systems research and practice in general do you like to share with the audience or do you see in the upcoming future?
+I think diversification is super exciting and that could be done more.
+That's zero.
+The number one, what I want to say is conversational recommendations.
+You mentioned a little bit like so.
+And if you put the customer, the user and the driver's seat, you have maybe already a conversation going on.
+I must say, and this can go really to like chatbots, but I think chatbots are a bit overhype and people have allergic reactions to them because they usually just the sign of really bad customer service or whatever, or they're just gimmicks there that are useless.
+But I think conversational recommendations is an interesting upcoming topic and there's a lot of possibilities in this space.
+I must say I'm completely clueless about this field because I've so far completely ignored this topic.
+It's impossible to, as I said, our field is so big, it's impossible to watch everything.
+So I on purpose ignored it.
+But I'm hoping maybe our listeners do know interesting things there.
+There could be really exciting things there.
+I just, I have no idea.
+In 2020, there was actually as part of the recommender systems tutorials along with the workshops.
+There were some fun tutorials that was specially dedicated to conversational recommender systems.
+If it works good, then why not?
+The second thing is applying reinforcement learning methods to recommender systems.
+So it's really interesting to find a good balance here between exploration and exploitation.
+Why I said it before, supervised learning does not directly model the decision making that we actually want to do.
+But recommendations, they are about deciding what to show to the user.
+And for the explore, exploit trade off, there are at least two, three different kinds of exploration.
+You want to have classic exploration to get better training data, but you also want to explore to find out more about a specific user so that they can get better personalization.
+So kind of to solve the cold start problem for the specific user.
+There again is maybe a touch point to conversational recommendations.
+Even showing certain things, this is a conversation.
+There's one thing I want to highlight about reinforcement learning because the literature is often a bit hand wavy or so about this.
+People sometimes do not really distinguish like what is the problem setting and what are solutions there.
+The same as sometimes in supervised learning, people don't really distinguish what is the model and what is a learning algorithm that learns parameters of the model.
+Some words mixed together and not distinguished.
+I think it's very helpful to distinguish it because it also helps you to compare approaches much better if there's clarity.
+And this also happens in reinforcement learning often.
+What is the problem statement?
+What is the problem?
+What is the solution?
+What is the policy?
+What is the learning rule?
+What is the bandit?
+Is bandit problem setting or is it your solution?
+Like people say, retrain a bandit and so on.
+So it's a bit more consistently practiced terminology or?
+For sure.
+I think it would help.
+I think people, like one thing that I got from a colleague and it might be somewhere in the literature, but I haven't seen it, that helped me to really understand some aspects of the reinforcement learning world better is to see that there's really a reinforcement learning hierarchy and the comparison was made to the Chomsky hierarchy of formal languages where you also have regular languages and so on.
+You know, context sensitive, context free, et cetera.
+You start with the lowest complexity and you get more and more complex, but every solution for the low complex things can in principle be applied to the more complex scenarios.
+But of course they do not use the full power of them.
+So you start with the multi-arm bandit and the next level of complexity is the contextual bandit.
+And the next level of complexity is the Markov decision process.
+And the last level of complexity is the partially observable Markov decision process, the POMDP.
+I think, I mean, we've seen bandit approaches and MDP approaches in, mostly contextual bandit approaches and MDP approaches in recommender systems.
+And I think this is the right manageable level of complexity.
+I think contextual bandits is pretty well understood and works.
+MDPs not always, but very interesting, I would say.
+Partially observable.
+Well, I think it's just too hard for us right now.
+And of course, to reinforcement learning, you have always did those connections to dealing with presentation bias, to dealing with bias in your data.
+For recommenders, we need to do off policy evaluation and off policy learning also in the context of reinforcement learning, because we cannot, this is not a game like chess, right?
+So we don't have an arbitrary number of test games or so that we can do.
+We can only interact with customers, like in e-commerce with customers.
+And every mistake really costs us.
+It's not something we can repeat indefinitely.
+Definitely a couple of outlooks with regards to reinforcement learning, to conversational recommender systems.
+But as we always do towards the end of our episode or two to three questions, and there, of course, I would assume from a researcher like you that does interesting stuff in practice now, if you might be having a recommendation and advice for people who join the field or also who do research in recommender systems, is there something that you would like to give advice to these people that are listening to our show?
+Yes, of course.
+I mean, I'll give some advice that I followed and some advice that I didn't follow.
+But I didn't follow it because I didn't know better and now I know more.
+So if you're a PhD student, and that applies to all of machine learning or maybe even all computer science PhD students, I would suggest that you really try to apply for industry internship every year because you can learn so many things earlier there and it can inspire so much and you can really create a network that will help you later.
+And I think we are not theoretical physicists.
+We are not doing natural sciences here.
+Let's be honest.
+It's more like an engineering discipline.
+In the end, of course, deep long-term research is important, but most of the research we do is very application oriented.
+And the application for our field particularly is often in the industry.
+I think it's really interesting to go into the industry and see what they are doing there.
+And then, of course, find research groups or if you're in a more professional industry context, find teams and managers that inspire and challenge you.
+There's an old rule for jazz musicians.
+If you're the best player in the band, then you're in the wrong band.
+I think this applies as well.
+So if you think you are the smartest person in the room, then you are either a victim of the stunning Kruger effect or you are in the wrong room.
+So maybe you need to find out.
+If you try to change rooms and you don't find other rooms, maybe it was stunning Kruger.
+But who knows?
+Another thing about this applied stuff is that I'm all for applying things and I'm not so much...
+Also for finding out things.
+I'm really not so much of an academic or I'm not so much interested in writing papers, but one can also use those things to generate material for paper writing.
+So I think building actual systems and building actual experiences and putting them in front of real users, be it in a small environment or in a company or in a public website or so, I think is incredibly instructive and you can learn a lot on the way, both from the feedback, but also from what you need to do to build things.
+And make sure to not only prototype and then throw away, but also sometimes do it incrementally, like measure things and then reflect critically about your metrics.
+And the devil is really in the details.
+You need to understand the tools that you use and the assumptions around them.
+And so I often see people following trends and they just take existing approaches and more or less blindly apply them and that's a bit sad.
+I would try to shy away from that and rather implement your things and try to think deeply there and think what makes sense.
+Try to maybe be a bit crazy.
+Also sometimes you can take an existing approach and blindly apply it, but don't expect too much from it.
+Don't only do that.
+And then when you, in case you have a system that is actually getting traction that is used by people, really make sure that you use that feedback loop that is available there.
+This is the best way to evolve your system or your model.
+Okay, cool.
+Definitely a ton of good recommendations.
+And I also especially like the last one.
+So don't blindly apply something that you have seen somewhere and expect good results to turn out of it, or at least assume it's not working if bad results are turned back.
+So of course there should be sometimes also pragmatism, but you should always also know what you are dealing with and to better understand then what's coming out of it.
+Maybe as always, as we do in the end, there are two additional follow-up questions that I wanted to raise.
+So the first, if you are not to nominate the Zalando app as your favorite, what would be the one that you like most or where you really say these are recommendations that somehow inspire me or that are really relevant?
+So who's doing actually a good job in terms of a recommender system that you use or hose output you use?
+I think the YouTube recommendations are quite good.
+There's a bit of a bias towards like short snippets of video.
+So it's a bit of this attention problem, but generally I've found good things there.
+I also heard horror stories about it, but I like that there are rabbit holes that you can get into, but maybe this is for different demographics.
+I don't know.
+For me, it's okay.
+I always like it doesn't have a 100% success rate, of course, but that's normal.
+Yeah.
+Last but not least, if you nominate someone, who would that be?
+Who would you like to be in that show and why?
+I would be really happy to hear Sebastian Schelder talk in your show because he's a professor I think in the Netherlands right now.
+He's a very interesting person and he does very, very interesting research also in general and machine learning and in recommender systems.
+Very application relevant.
+For example, his lab that did recently, they did for example work on recommendations that can instantly react to data deletion requests and that you have model updates that automatically happen based on deleted data.
+Also practical things like latency issues.
+He was an early contributor to Apache Mahout, which for a while wasn't really like a standard software also for recommendations.
+He has been doing a lot of interesting things also about like around data quality for machine learning in general.
+Together with AWS, I think he developed a system to basically do data unit tests, unit tests for data sets and so on.
+He always has very interesting takes on a lot of topics and which is a very funny thing is he in 2010 or 2011 implemented the first ever recommender system at Zalando, which would kind of close the circle here.
+Like I'm a fairly new person working on recommendations at Zalando.
+He was one of the first people to work on recommendations.
+I think he was still a student back then.
+Cool.
+Okay.
+That sounds definitely like an interesting person and therefore also interesting guests to have on the show.
+So I will definitely reach out to him.
+Wow.
+Okay.
+That was quite a dance episode, but I guess nevertheless not uninteresting.
+Instead it was very interesting.
+Thank you Zeno for taking the time to talk to me and also for hopefully, educatively entertaining our listeners of this episode.
+I guess you also provided lots of references to the work that you have came across that you have been also working on that we will include in the show notes.
+If people want to reach out to you, what would be the best spot to do that?
+Oh, that's a good question.
+So I think my email address can be found pretty easily.
+It's my first name dot family name at gmail.com.
+I very much prefer being emailed over like being contacted on LinkedIn, et cetera, because I think email is a good old technology that works really fine.
+I can definitely support the fact because you're a fast responder.
+So yeah, if you want to reach out to Zeno, then you reach him via email.
+Yeah.
+And please, yeah, like I said, a lot of like I talked a lot.
+Thank you.
+Thank you for giving me the opportunity to talk a lot.
+But if about any of the things that I said, if you have an opinion and maybe a contrarian opinion, I'm always very much interested in that.
+And also if you see like the papers in the show notes and if there's stuff, if you think there are further publications that are really interesting additions to that, please feel free to share this with me and myself.
+I'm always interested in exchange about those things.
+It's one of the things that I really miss by not having so many conferences due to COVID and so on, the exchange with practitioners.
+Perfect.
+So I guess for this, maybe Twitter might be the right spot because I always also Twitter the newest episode release.
+So if you are hearing this and you found this by the Twitter post, maybe just simply append your papers that you found to it, or maybe directly reach out to Zeno.
+If you have something more explicitly to discuss or to criticize or something like that, have a debate.
+And with that said, I would conclude today's episode, Zeno.
+Thanks again.
+And it was really a pleasure.
+And like always, see you at RecSys.
+Yes.
+Bye bye.
+Bye.
+Thank you so much for listening to this episode of RECSPERTSs, recommender systems experts, the podcast that brings you the experts and recommender systems.
+If you enjoyed this podcast, please subscribe to it on your favorite podcast player and please share it with anybody you think might benefit from it.
+Please also leave a review on Podjazer.
+And last but not least, if you have questions, a recommendation for an interesting expert you want to have in my show or any other suggestions, drop me a message on Twitter or send me an email to Marcel at RECSPERTSs.com.
+Thank you again for listening and sharing and make sure not to miss the next episode because people who listen to this also listen to the next episode.
+See you.
+Bye.

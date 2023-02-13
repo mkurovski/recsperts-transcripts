@@ -1,0 +1,649 @@
+Note: This transcript has been generated automatically using OpenAI's whisper and may contain inaccuracies or errors. We recommend listening to the audio for a better understanding of the content. Please feel free to reach out if you spot any corrections that need to be made. Thank you for your understanding.
+
+Our secret source was always having rich information about the user commercial behavior on, let's say, e-commerce websites, showing them relevant ads on publisher websites, right?
+So we were able to personalize ads based on our knowledge of the user historical e-commerce behavior.
+The recommenders are actually playing an economic role in a marketplace, right?
+So you have sellers and buyers, and then you have recommender systems that are somewhere in between.
+At the moment, if you use a proxy metric and you optimize for it, soon enough that metric will diverge from your true objective, right?
+What is the recommendation doing actually to the user decision process that affects the user decision process, and how can we model that?
+And we quickly realized that there is quite a deep connection with the economic vision of user decision process for economic activity.
+Why can't we not turn the user preference model into a generative model?
+Why can't we actually build something from which we can sample, actually, from which we can sample likely products that the user will buy?
+You could have an end-to-end full application of a personalization, right?
+So you could have a user vector that goes into a generative model that then generates a mesh that goes to the printer that produces the object.
+So we could go all the way there.
+Hello and welcome to this new episode of RECSPERTS, a recommender systems experts.
+Today I have the great pleasure to meet and talk to Flavian Vasile, who is a principal scientist at Criteo AI Lab since almost 10 years now.
+He has previously worked at Twitter and Yahoo.
+He was a co-author of RecoGym.
+In addition Flavian was also a co-organizer of the Real Workshop for the past five years since 2018.
+He contributed many papers to the recommender systems conference, but also to the AAAI, UMAP, KDD.
+And he was also co-authoring a couple of papers with one guest in one of our former episodes, which was Olivier Jeunen.
+So I'm very happy to have you on board.
+Hello Flavian.
+Hi Marcel, thanks for having me today.
+I guess I mentioned a couple of points about yourself, but I guess there is much more to know for our guests.
+Can you introduce yourself?
+Sure, gladly.
+As you mentioned, I've been active in the advertising ML field for quite a while now.
+I started by interning at Yahoo Labs in the advertising group and then decided to stay.
+I stayed in four years there.
+Then I moved to Twitter advertising, doing also advertising applications there, and then moved to what was at that point in time quite a small startup, Cretel, and stayed here for the last nine plus years and became quite interested in recommendation in the last five or so years.
+Before that I did many other things like content classification for advertising, graph-based targeting, and so on.
+So yeah, but in the last five years I've been really focusing, it's five years, it's more than five years now, it's maybe like six plus years, I've been focused on the recommendation and deep learning models for recommendation and tried to draw attention for the recce community on some aspects that as a practitioner I discovered to be quite important.
+So as a result, we had all this crisis of offline to online metrics alignment and we created a field workshop and then the RecoGym simulator where we tried to make the difference between organic and bandic signal, wrote quite a bunch of papers on this, had a bunch of tutorials actually also, summer schools at recce and also web conf now, KDD, where we try to kind of educate more and more about the need to think about the bandic signal and pose recommendation as a reward optimizing system.
+So far from taking the standard look at recommender systems that was quite popular in the zero years where we had that Netflix challenge, I mean there has lots of stuff going on from them.
+Nowadays you might say, okay, you don't do rating prediction anymore.
+Now you do ranking prediction, but I mean the field has developed much further as you mentioned.
+So nowadays approaches from bandits and reinforcement learning have become quite widespread to address some of the major issues.
+Like you mentioned the offline and online gap that we frequently face and recommender systems when we are about to decide which of the recommender models we want to take to the online stage when we think it performs good offline.
+It's not always a guarantee that it will also do so in an online environment.
+Yeah, you just mentioned that it was about five or six years ago when you started focusing on recommender systems.
+Was there something specific that piqued your interest or where was the point where you decided to turn your focus more to the recce space?
+I was always interested in recommendation.
+I feel it's one of the key applications for machine learning.
+Beyond search I feel like this is one of the things that ML does the best and affects the most daily life.
+Six years or so I had an opportunity to work on an internal project on improving recommendation and I also had a very good visiting intern, Alexi Kono, who was interested in language models and creating word embeddings and so on and so forth.
+So these two things together created a very nice project which resulted in the meta-prod2vec paper which was quite well received and a lot of people have leveraged it in the past.
+So I think that was the kind of starting point for me getting interested in recommendation and getting serious about recommendation.
+Yeah, and as we can all see, you have been pretty active in the space.
+People who use the more sequential manner of recommender models might be well aware of protovec.
+You are one of the authors for the meta-prod2vec paper that took into account the site information in addition but also you worked on causal embeddings for recommendations.
+I guess it was 2018 when it became best paper at RecSys and nowadays you are still very, very productive.
+I mean there are a couple of papers we will be talking about later on on economic recommendations and generative recommendations so very, very interesting stuff.
+But before going into the depth of these papers, what I always found a bit interesting is actually Criteo.
+So, I mean in the RecSys community, Criteo is well known for its great parties at RecSys but also for publishing papers like crazy at different conferences.
+So not only RecSys, so you are doing really great research there.
+And I mean it's not only papers, you mentioned it.
+It's also open source contributions.
+For example, the Recogym which was kind of the jumpstart for simulators and recommender systems.
+I mean we then afterwards saw Google with Rexim.
+There was the open bandit pipeline.
+And yeah, I guess one of the largest data sets stems from Criteo.
+So the one terabyte click prediction data set that is still very widely used and really something I would say very useful for the community of practitioners and researchers.
+But somehow the starting point for this episode for me was we are always talking about personalized recommendations and we are the people who know Criteo a bit from the conferences know that Criteo is working in advertising.
+And then there are these people that somehow associate recommendations with or are you are the people who are showing me the advertisements.
+So can you shed some more light into what is Criteo's business case?
+What are you doing?
+And then we can maybe dive into a bit more the topic of how is personalization helping there?
+Sure, gladly.
+So Criteo started as a retargeting company.
+So mostly we are acting as a B2B company where we take advertisers need to show ads and publishers need to monetize their audiences and kind of put them together.
+And our secret source was always having rich information about the user commercial behavior on let's say e-commerce websites, showing them relevant ads on publisher websites.
+So we were able to personalize ads based on our knowledge of the user historical e-commerce behavior.
+So the first one was retargeting, which mostly means bringing the user to e-commerce website that he or she already visited, as opposed to acquisition, which is more about bringing a new user to the website, right?
+If I can just interrupt there, it's called retargeting.
+It's not targeting.
+Exactly.
+So what is the re-entargeting?
+Is it about that bringing back?
+Retargeting is the fact that you re-engage the user from the point of view of the e-commerce website is about re-engaging the user, right?
+So kind of a reminder, hey, you forgot to finish this transaction.
+Are you still interested in, you know, you added this to basket a couple of days ago.
+Are you still interested in finishing this transaction, for example?
+Okay.
+And this basically means that you are conditioned on users that have already interacted with a certain e-commerce platform before.
+So it's not about here's shop A and there's shop B and you have previously engaged with shop A and I'm now retargeting you.
+So trying to bring you back.
+So this is what you do.
+It's not about there's shop B, which I haven't interacted yet with and you want to bring them to shop B.
+Yeah.
+So this was the original, like the main product that Krito kind of was known for and we became quickly market leaders.
+But then we branched out into kind of all the conversion funnel for the user behavior.
+So we're now going for upper funnel.
+So for earlier stages in the shopping funnel and there we have other products.
+So we have a contextual offering when we don't know anything about the user, for example.
+So we just use the kind of information on the page or we have that position offering where we know things about the user from a different website and it's exactly how you said we bring users from shop A to shop B. We do have now these offerings, but traditionally we didn't.
+Okay.
+And to get these two terms straight that you just mentioned, so advertisers and publishers maybe to illustrate with an example.
+So for example, if I'm an electronics retailer, then I'm basically the advertiser in this story.
+So for example, a news platform might be the publisher because this is basically the platform which will be the place at which the targeting takes place.
+So where basically consumers meet sellers.
+Exactly.
+Exactly.
+So the publishers will be basically the display opportunities.
+Where can we show ads?
+Okay.
+Okay.
+So for some people it might be a self-evident question to answer, but let's just start from the very beginning.
+So where and how does personalization help there?
+So in retargeting, the personalization is quite straight forward because you are implicitly using the user history, right?
+You either show a product that the user already saw in the past and he didn't finish buying it or a product similar to something, to a historical product.
+So personalization is implicit in retargeting because that's the whole point.
+This allows you to really stand out from normal brand advertising campaigns where you have a very general, very abstract kind of call to action or image.
+So our ads will always contain basically a certain product and that product would be likely something that is relevant to you from your history as opposed to a campaign that will just show the name of the brand or the name of the store and maybe the best sellers.
+So it would be a very different in personalization from the two banners.
+Okay, and the way that you, I mean, you are a profit oriented company.
+You also want to earn money in order to pay your people properly and so on and so forth.
+So where is it where you earn the money with?
+So is it that you basically take a premium from the retailer and then part of it will also be paid forward to the publisher?
+Where is it actually, what is the difference when you are making the money with?
+Of course.
+So the business model is very simple.
+In some sense, we take quite a lot of the risks so we prepay for all the publisher traffic.
+So we pay the publishers, we acquire the publisher traffic on our own and then we charge the retailer, the advertiser a percent of the sales.
+So we guarantee sales.
+What we call post-click sales.
+So if any of the users that clicked on our ads end up buying something on the retailer website in the next k days and they think that's kind of tunable, then we would build a proportionality to that, the client.
+Of course, the client will set his willingness to pay how much he is willing to pay for every sale and then he would then give us that portion for every sale that we drove to the website.
+So then what is nice for in this business model is that unlike other types of business models, a lot of the budgets are uncapped because you know that you want more sales.
+So then a lot of the campaigns don't have a preset budget because they're always on, right?
+So we can drive it better, which for optimization purposes is quite nice because you don't have to think about budget smoothing and other things.
+Yeah, that is a point.
+Cool.
+Okay.
+And now you actually work for the Critio AI Lab.
+So some part of the organization that focuses on research, but I bet that definitely that research is also somehow directed by the business.
+So can you illustrate to our listeners a bit more how that collaboration between the business and the research units or parts of the organization works and how you are also bringing research ideas insights into production to help the business?
+Sure.
+So yeah, I think the Critio AI Lab, which was founded in 2018, is quite different than other research labs in the industry because we are not fully separated from the R&D department and we try to stay relevant because we're big, but we're still not big enough to have an R&D research group that is fully paper focused.
+We try to keep the focus of the research group quite aligned with the business, right?
+So what in practice it means that even if we have quite a lot of theoretical work in the group, that there is a continuum where there are other researchers that take this quite theoretical research and try to apply it to real projects.
+For example, all our work on, let's say, adversarial robustness and counterfactual inference led to, let's say, better offline estimators for, say, click, uplift for a recommodel.
+So we try to keep the really applied work and the theoretical work somehow in a sink.
+But I would say there is no clear guideline how to do that.
+I would say it's quite an art.
+We just got lucky that we have a pretty nice ecosystem of 30 plus researchers and 100, I would say, in an NML that managed to work together in the nice things happen in this group.
+So it's basically a close collaboration between research and business there.
+But on the other hand, I would somehow assume that you have quite large freedom because, I mean, all those efforts that ended up in proper off policy estimation, I guess they haven't come overnight.
+They were, I guess, the product of many contributions, also many iterations on research, which sometimes takes quite a long time.
+So for me, this somehow feels like there is not a push, like this is a problem and you need to come up with a solution within the next one or two months.
+And if you don't, we will basically cut that research direction and turn our focus to something else.
+So how do you organize this to make really the case for we want to follow this because we have some points of data of research that we can assume bring us into the right direction, but we just need to focus on it longer.
+And then at the end, it's going to pay off.
+It is a very good question.
+The way it works, ideally works, is that there is a proportion of the research group that is always in some sense embedded in the engineering applied teams.
+It's almost, let's say, kind of a product maturity cycle.
+So as the ideas get more mature, the researchers behind them get embedded into the applied teams and try to life test them to see if they work.
+And then as they finish, they come up with other ideas and then they retreat a bit, maybe for a year or two in the research group and work fully theoretically and then come back again in a couple of years.
+But there is always somebody that is closer to production and somebody that's just stepping away from production to think about more theoretical things.
+So there is always this kind of flux of people coming in and out of basically a joint project with engineering.
+And that has to go to work quite well.
+I'm thinking about a sponge, so the sponge is a researcher and he throws a sponge into the business and it's getting soaked up with problems and with business problems.
+And then to be squeezed out, the sponge goes back into the research or more researchy area and it's getting to get squeezed out.
+And what comes out of it is somehow research insights that are discussed and so on and then brought back to the business.
+Yeah, exactly.
+There's this cross-pollination that's happening.
+But of course, as I said, it's a very sensitive and fragile thing.
+So it needs to be continuously encouraged and taken care of because it's quite hard to design for it.
+So it's really, you need to see when you have it going on and kind of do more of it.
+But yeah, I think it's a lot to do with also how you hire for the profiles you hire and also how you incentivize these things.
+You don't want to incentivize too much staying fully too close to production, but also staying fully theoretical.
+So there's always a balance to keep.
+Okay, I see.
+Yeah, with regards to that kind of organization and the Critio AI Lab, I mean, one of the fundamental stuff that you folks started with or was rather optimizing for clicks, which of course is nowadays heavily criticized.
+Can you guide us through the process of improving personalized advertising and where you are nowadays with your efforts?
+Very good question.
+I just want to kind of mention from the beginning that at the moment when we started actually publishing on kind of clicked optimized recommendation, the business itself was already on conversion optimization.
+But it's always and even when you have a simulator, it's always easier to design everything for clicks.
+We had a computer that clicks for just the intermediary step, but we were not ready from the beginning to work on conversions though the business itself was on conversion.
+So we had clicks, but I think we moved away from clicks as being like the main business model in like 2016 or something like that.
+So while Critio in general was optimizing for conversions, our research was just assuming that clicks were kind of the bendy signal because it was so much simpler to work with clicks than sales.
+What was the reason for that?
+I mean, was it just because it was a much denser signal or was data coverage just much better provided for clicks instead of conversions?
+I think it's a combination of multiple factors.
+There is the sparsity issue, of course, as you said, basically you have more clicks than sales.
+But let's say that in a simulator, you could of course have as many as you want or you could wait as much as you want.
+So for eCoGin, for example, that shouldn't have been a problem.
+But you have then the problem of of course, the delayed reward aspect and the credit attribution issue.
+So what is nice with a click is that you know exactly to what action to attribute it.
+The click, it's immediate and it's on this action or on this banner.
+You know that you showed a certain banner or a certain item in a banner and the user clicked.
+So you know that that's a positive signal.
+But what if you think that the conversion is the only positive signal?
+Now you show 10 banners and then the user buys.
+Then you are in the full RL situation.
+You need to start doing full RL from the beginning.
+You cannot do bandit approaches first.
+We wanted to do a simpler problem first and then kind of crawl before we walk.
+So we started with clicks and that basically informed our decisions for you know RekoGin and a bunch of other papers and all our off policy estimators were all designed for immediate rewards because that already was hard enough.
+Yeah.
+Yeah.
+But I would assume it was also beneficial to start with it.
+So it was not useless at all, even though it was not aligned to the goal of criteria itself optimizing for conversions.
+But was it actually a good proxy or was it just the right proxies to start with before jumping into conversions or what was that point where you said OK it's still useful to check clicks but it's not the best.
+Well it was encouraging to see that you can move clicks and then now you have something offline that can predict what will happen online with finally with a real metric like with a real A-B test metric.
+So that was very nice to see that you know you have offline estimators that are aligned with production.
+But quickly after you know and I think there is a name for this.
+Is it a good.
+No it's maybe good.
+Basically at the moment if you use a proxy metric and you optimize for it soon enough that metric will diverge from your true objective right.
+And that's easy to see.
+So immediately after you know you start optimizing for clicks you manage to roll out something that's positive in clicks and sales but soon enough the next A-B test will be only positive in clicks and negative in sales.
+And then you are back to square one which is you need to start learning something for conversions.
+And that's where we kind of arrived let's say two years ago where we decided to start really thinking about conversions.
+Okay I see.
+I was provided with a very good and comprehensive presentation for a lecture that you gave in Stockholm just some while ago and in there I could find that end to end product of things you can optimize for which really goes from CTR over conversion optimization into optimizing for the utility of a consumer of a final buyer but also taking a look into multiple stakeholders.
+Can you illustrate a bit when things started to change in your focus from clicks to conversions and what were kind of the model or research changes that you performed there?
+Sure.
+So it was around 2020.
+So kind of two years ago that I felt that we are ready or we should start looking at conversions.
+Then that forced us to a bit rethink the series of methods that we could apply right.
+So we quickly realized that kind of the old policy work that we did was very nice.
+It was almost impossible to use for conversions right.
+Basically the variance and the combinatorial explosion of actions and combinations of actions was just too much to have any hope to do kind of off policy RL.
+So we realized that we have kind of two directions that we can pursue either we can do on policy RL so we can kind of learn by doing or can kind of you know do things directly in a live in a bit test to collect data and to try new things directly or to actually get more opinionated on the reward model right.
+So in normal bandit setting the reward just is something external stochastic reward and you don't make more assumptions about where is this coming from.
+But if you think about it the reward actually is the product of an implicit user model right.
+You know that there is something happening inside the user kind of mind that makes him in the end convert or not convert right.
+So we started thinking more about you know the causal aspects of what is the recommendation doing actually to the user decision process that affects the user decision process and how can we model that.
+And we quickly realized that there is quite a deep connection with the economic vision of user decision process for economic activity which is you know that the user is a rational agent that is trying to maximize its own utility.
+This is when we kind of opened a new research direction where we started kind of I call it Econ Reco where we started kind of bringing ideas from economics to design a better recommender system.
+I find it quite fascinating.
+I find it has quite a lot of nice theoretical properties.
+The performance aspects are still yet in progress.
+We're still trying to create a model that will work on real data.
+For now it works well on simulated data but the theoretical aspects are quite promising.
+Okay so you mentioned the new research direction called Econ Reco so for I assume economic recommendations.
+So with lots of considerations stemming from economic theory from econometrics I would also assume can you walk us through the fundamentals of this new research directions and also give us kind of feeling what are its main differences to classical recommenders?
+Sure.
+So the building block for this approach is really the rational agent model that the belief that the user will act rationally when choosing to buy a product and that the user is able to compute the preferences of the utility over a set of items and those preferences given nothing else changes they won't change either right.
+So that means that the user being aware of let's say a set of five options it will be able to compute its upside for each one of the five options and then subtract the price and it will choose one of the you know the one that maximizes the upside.
+So it gives us a very clear framework on basically how to predict what the user will do right.
+So we will know that if the user buys something it's because this item is the utility maximizing one.
+So this is you know this is in the deterministic case but most of the time what people do in econometrics and what we end up doing is to add the you know kind of use the gamble trick kind of use some some gamble noise to turn the arc max into a softmax.
+So then you have that basically the user policy is now an exponential policy a softmax over the items that the user is aware of or knows about.
+So what the end story looks like is that when you observe the user you know the user organic activity on e-commerce website what you're really seeing is the user trying to acquire information about the items that are available for him to buy trying to compute their utility and then when the user runs out of time basically chooses to buy the best one or none of them if none of them are good enough right.
+And parse the the user history this way then you can try to learn basically the user preference model or the user utility model especially if you have prices.
+What I find interesting about this is that you also take into account the price.
+So this field somehow a bit new to me.
+So you're modeling the user's preference towards not all the items but the items that are somehow in the awareness set of the user or something like that and you're also taking into account the price.
+So how do you take into account the price in that model.
+If you think that the user it's really a utility maximizer that the way you compute the utility is by looking at the unknown upside which is in some sense the internal satisfaction that we believe can be turned into a monetary sum and then the downside which is you know the price being paid right.
+And then as almost like any economic agent the user will try to maximize its profit margin right like it will try to pay the least for the maximum satisfaction right and you will choose the item that gives him the best delta for between the price and upside which is also known as willingness to pay.
+So of course then if you actually have access to user past behavior on items with prices then you can start actually computing what is the possible upside that the user had for the winning product right by just kind of making differences between different products and seeing that this user preferred product A at price 20 over product B at price 10 you know that product A had to have at least you know utility 20 actually even bigger than that and then you can start narrowing down on kind of the utility model that the user has over the item feature.
+So you basically have a user utility where you say the user's utility is equal the user's willingness to pay minus the price so that surplus which could also be negative but I would assume if that becomes negative then and if there is no positive one and the awareness that the user would just simply decide not to buy assuming the user is rational.
+I mean this is always somehow a problem in an economic theories where that whole field of behavioral economics I guess also started a bit with but at some point you need to start and make some assumptions.
+So and how are you modeling that willingness to pay?
+I mean so just for our listeners there was a paper that you just published as of this year it's called welfare optimized recommender systems and in this paper I guess you are trying to model that willingness to pay.
+Can you illustrate that a bit more?
+So sure so it turns out that it becomes quite a similar model to what we have right now for kind of next item prediction for example right.
+So in normal next item prediction for classical kind of record right you would have a soft max over all possible products that the user could see next here what we have it's kind of a modified softmax where instead of kind of predicting over the range of the whole catalog what you do is you assume that the user timelines somehow finish with a conversion or decision basically one or zero and then you have actually one softmax per time episode or per session where you have a softmax over all the products that the user saw up until the last timestamp and then try to predict if any of them was bought or you have a kind of an n plus one which is a known by option.
+Which basically means the problem there is that the dimension of the softmax is always different from session to session.
+Right so from the point of view of coding it's not as fun because you have this kind of basically varying range for every user session but indeed the softmax now ranges over the history as opposed to over a fixed set which is the catalog.
+The assumption that we make is that the user cannot buy something that he does not inspect first right in most real shopping sessions that is true because you have to first at least see the item to add it to cart and then to buy it right so then you will actually have that kind of item view event somewhere in the past.
+So in reality this holds quite quite nicely.
+The only let's say simplifying assumption and this is why we're not yet saying that this applies to real data is that we're assuming that all these items are somehow in competition with each other right so it works very well for example for items that are you know kind of substitutes of each other but doesn't work well for complementary items.
+So if you are trying to buy a pair of shoes and you're only looking at shoes then this holds but if you're looking at shoes and socks then the softmax should not be over the socks and the shoes in the same time right.
+And then you have to have maybe a mixture of softmaxes or a smarter way to basically cluster the objects in your history.
+So somehow you're already illustrating the future works that we are going to expect based on this paper but I want to go back to the title because I'm actually coming also a bit from an economics background and their welfare is a very important term and what you claim in the paper is that you are able to optimize for the overall welfare which not only considers the user but also the sellers.
+Can you explain a bit more what that welfare consists of and how you're doing that with the model?
+Sure, you touched upon on the other really important piece that this approach gives us which is it sheds a light on basically all the agents in the marketplace right and it shows that actually recommenders are actually playing an economic role in a marketplace right so you have sellers and buyers and then you have recommender systems that are somewhere in between and then the natural question that we should ask is actually on whose behalf are recommender systems acting right are they acting on behalf of the user or on behalf of the seller right and are they representing the incentives of the buyer or of the seller.
+This makes quite a lot of difference because then the objective of the recommendation system actually turns out to be different right in a recommender system that is actually buyer side the recommender will be fully incentive compatible of course with the buyer with the user and it will try to maximize its utility if it's on the seller side it will try to do something in between right it will try to still get the user to buy so it will offer something that is appealing to the user but it will try to kind of upsell right it will try to find you items that give a good margin to the seller right.
+So the ranking functions will turn out to be not exactly the same and what we are proposing in the paper is that actually either of the two of the objectives are in some sense myopic and that actually an objective that kind of tries to blend the user and the seller interest is the best for the kind of the marketplace long term healthiness and this is basically a raw amount of let's say satisfaction or utility being created in the market and that is the welfare right so that that takes into account both the user happiness and the seller margin and it tries to optimize the sum of the two.
+And by seller margin what we are talking about here in a more simplified setting is basically the price so we don't take into account costs yet and then for example say okay the seller itself has of course some costs associated with the with selling products which means that the seller generally would be more interested in optimizing for its profit margin which we can't model in that setting or maybe not yet.
+So what we say is the utility or the aggregated utility of sellers is let's say for all sellers and for all conversions the sum of surprises that the sellers make and for the buyers it's basically the aggregated difference between their willingness to pay and the prices associated with their conversions and then what the model does is that it optimizes both things so basically the aggregated sum of both aggregated utilities is that correct?
+Yeah that's exactly it.
+So what I was actually thinking about is prices are pretty natural to products and e-commerce.
+What I was thinking about that welfare optimization might not only be applicable in retail industry and advertising so I was actually also thinking about media or entertainment because we could somehow take into account the time that we listen to a song or is that we watch a movie also as a price.
+If you would say okay this is opportunity cost because the time that I'm spending watching a movie could also be used for doing something different so what are your considerations on that end?
+So would you say it's only applicable to retail industry or would you see other domains for recommender systems where this would be applicable and how?
+That's a very good question.
+So it's clearly geared towards transactional kind of marketplaces where it's very clear what the price is in subscription based models like for media consumption it's a bit harder but as you said you could basically extract maybe what is the willingness to pay for every item by the time spent and you could also look at on the advertiser side to see exactly and in this sense maybe the advertising in some sense is a publisher and see how much the time spent of the user on their website is valuable as a kind of for monetization strategies.
+So if you replace the price with time spent and then multiply the time spent with advertising revenue that you can have per second in some sense I think you can basically get the transaction back and kind of be able to estimate things also for subscription based models assuming that the subscription based models have an advertising component.
+In terms of the stakeholders, Rose Welfare we are taking into account here, are there even more stakeholders that might somehow enter the model and host welfare we might want to model in addition.
+So I mean you already said it at the very beginning that we have the publishers and we have the advertisers on the other hand side and then we have the buyers.
+So what about the publishers?
+Could they also enter these economic considerations that led to the modeling here somehow?
+It's a good question.
+I don't see why not.
+So of course if you add them to the mix in the sense that they are the places where the recommendation happens, in the simplified case of course the recommendation happens on the e-commerce website or somehow on the user's side in the browser somewhere but if you start thinking about the destination as a separate agent I think there are interesting things happening there.
+I think the simplest thing for the publishers of course is to be incentive compatible is just to take a cut of the transaction and say basically that their value is basically facilitating this information transfer from one side to another.
+I don't see them having their own recommender kind of objective.
+They are really just hosting the recommendation.
+I think the marketplace is really still between the seller and the buyer.
+What could happen is that the producers themselves could start coming in and that could also become another player in the market or you have all the marketplaces that aggregate a bunch of retailers or brands together.
+So I think that's where you'll see more dynamics.
+And then you have all these fairness constraints and all these kind of other things that people have been worried about.
+What led us to these economic considerations here was basically the problem of moving from clicks to conversions.
+So how has that welfare optimized recommender systems research helped you in addressing this issue or moving more to conversion optimization and utility?
+How did it help there?
+So on real data we're not there yet.
+I cannot yet say that it's becoming the state of the art in terms of performance on real data.
+We have, let's say, more and more realistic simulators for conversion data on which we're expanding the model.
+But I think that that's the next thing.
+And I hope that in the next year we'll be able to do real world user commercial activity modeling.
+But as I said, there are some limitations of the existing model because it cannot handle kind of heterogeneous interests and multiple shopping interests in the same time.
+Once we manage to support that, I'm optimistic that it will lead to some improvements.
+That's what fingers crossed.
+Okay, all the best.
+So is there already some follow up to that work?
+Or I mean, you mentioned you are about to start developing its application towards the real world setting or to real transactions or how are you following up on this?
+I mean, it sounds pretty insightful.
+It sounds also like you couldn't easily extend from it into many different directions and maybe take more economic considerations into account.
+Is this something you are you're working on?
+So the first step that the thing that I'm the most excited about is actually to inform with this model some form of new embedding space, which will be mostly content based.
+So if you think that basically the inner product between the user vector and the product vector becomes a home with the willingness to pay, you know, kind of the maximum utility that this item can provide to this user at this moment in time.
+You can imagine that basically there is a mapping function from the raw information that the user has access to kind of a hidden latent space in which you can estimate the utility.
+If you think that, you know, I as the user by looking at an item on the web, I can basically compute utility, our model should be able to do it too.
+Right.
+So the model and the user have access to almost the same information, which is something that it's almost like a control instrument.
+It's something that we never had that before.
+Right.
+So for full digital e-commerce, we almost know for sure there is no leakage, right?
+We know what the user knows when, when he makes a buying decision.
+I think that's quite powerful.
+So I think that's the most exciting next project that I have in mind for this is to be able to learn this kind of latent decision space in which the user actually makes the estimation.
+So if we can read somehow a mapping from the raw text and image data to an internal representation of the product that is kind of monotonic to its value.
+I think that's already a huge thing, right?
+You'll be able to retrieve products that maximize utility for users.
+And that is pretty great.
+Yeah, and I guess that's a very good transition to some other work that you were a part of retrieving the products that already exist.
+But what about creating new products that don't exist yet, but cater to the users demands even better than those that already exist?
+So I was very excited by work one year ago that you also provided me with, which was called Warhol, what users want, or you call the model that you came up with their Warhol and you presented it at the Fashion Rexels Workshop at last year's Rexels in Amsterdam.
+And to be honest, I had to think about Star Trek when reading that paper, because I was like Jean-Luc Piccard standing in front of a replicator and saying what he wants, such that the replicator was generating what I wanted, whether it was some alcoholic drink or some different beverage or some food or something like that.
+But I guess in the Fashion Rexels domain, we were rather talking about running shoes or dresses or something like that.
+This is a much different direction, but still very promising.
+Can you illustrate to us a bit what brought you to the domain of generative recommender systems?
+Sure.
+So this was actually kind of a parallel project to the kind of economic record.
+And it started with a client task that at the time sounded quite crazy, which was, can you help us visualize better what our users want?
+We started thinking about how can we do that?
+How can we give more insights about what the users ideally would want?
+This turns out to be quite a reasonable need from the point of view of a retailer.
+The retailer actually has a lot of freedom in how to restock what products to actually get from the brands.
+What the retailer wants to know is really what will his users buy if he had those items.
+So it's quite interesting for both brands and retailers to understand ideally what would the users buy.
+And to begin with, we started with a very simple text model or a keyword model in which you can try to separate the keywords of the products that got bought from the products that didn't get bought.
+But it was very crude.
+So we could find out that some things were trending and some things were not.
+So that you are somehow able to represent a certain user or some aggregate of some certain user categories with, let's for example, say a word cloud or a distribution over certain categories.
+Which was kind of a discriminative set of words that would separate the products that ended up being bought from the products that are not being bought.
+So it was kind of a keyword model.
+Gave us a couple of insights, but it was not really right.
+You would want, as with NLP model, you would want to move from a one gram or a bigram to an Ngram to create full sentences of this.
+So you want it in some sense like a generative model.
+At that point in time, the first versions of text to image models started appearing.
+So it was last year was Dali, who is their visual transformer.
+And we got inspired.
+We looked at this and we're like, why can't we not turn the user preference model into a generative model?
+Why can't we actually build something from which we can sample actually, from which we can sample likely products that the user will buy?
+That was basically our take on Dali.
+So we took Dali and the visual transformer from Dali and we turned it into a kind of a conditional version of it that was conditioned on the user, on the user best and the user decisions.
+And we trained in on real user data such that basically the model when prompted with a user vector would basically generate images of products that are likely to be bought by that type of user.
+Okay, I see.
+For last year, the images were quite amazing.
+Now looking at them, you know, after stable diffusion came, they look.
+And now it's stable diffused too, right?
+Exactly this week.
+Yeah.
+So yeah, we are actually in the process of actually kind of revamping our model on the stable diffusion model because the approach still stands.
+And yeah, we're hoping that the paper will be out soon.
+So yeah, I think this is quite exciting, especially for one for user insights to understand kind of what the users ideally would like and, you know, kind of the gap between what you have in your catalog and what the user might want to buy.
+And then also for the brands, right?
+Instead of kind of trying to A-B test your products, your design, kind of, you know, like in the fast fashion world, you know, they create like limited batches of products, they put them in stores and see what works.
+You could almost have the design step to be informed by past user shopping data.
+And I think that will become quite powerful.
+I definitely want to challenge the usefulness and applicability of these amazing models.
+Before coming to that, I would like to better understand the data and the modeling part.
+So you said that you somehow take the user's representation as a prompt to Dolly and Dolly, for example, then comes up with some images.
+And now you could also work on stable diffusion too, that just came out or something like that.
+Can you shed some more light into the details of how this actually works?
+So also for the people who are not yet that much into those newest developments around diffusion clip or Dolly?
+So sure, gladly.
+First of all, a note on kind of the difference between the two architectures, right?
+So Dolly, or at least the original Dolly was kind of a transformer based model, a visual transformer.
+And stable diffusion is a diffusion based model.
+So the architectures are quite different.
+So we are working on kind of adapting our approach to diffusion models.
+But for visual transformers, what was nice was that basically what you could do is, and this is what we added to the original Dolly architecture, right?
+In the original Dolly architecture, you would condition the transformer, because we're talking about kind of a regular transformer.
+You would condition the transformer with the text input, right?
+So that would be the text to image part, right?
+So you would encode the text and then decode to an image.
+And that would be the visual transformers step.
+And now what we did actually is that we would encode the user history, which would be also expressed in a clip embedding.
+So because you can also put the user history in the product space by just product image or text space by, let's say the simplest thing to do is just to average the, for example, the products that the user saw in the past.
+So that would become now the condition, right?
+By averaging, what do you mean in specifics there for us?
+So for example, am I taking into account some, some word to back embeddings for each and every product?
+And then I take the average for them.
+Yeah, yeah.
+Sorry, maybe I'll skip some steps.
+I'm assuming like now quickly it's becoming, you know, clip is becoming, I would say kind of the preferred encoder for everybody.
+I would say at least in this case, I basically I'm assuming that all the products that you have are basically encoded in the clip space based on the text and image clip.
+It's you know, it also appeared I think last year by open AI and got open source, which is nice of them.
+And it allows you to create very good embeddings based on content for, for products.
+They are very good for retrieval.
+So the neighborhoods are quite well estimated and we found them quite useful for recommendation tasks.
+Okay.
+So now that you have these clip embeddings for items that the user bought or clicked or saved or something like that.
+You can create the user profile by just taking the average or weighted average or some light function of the user shopping activity.
+So then this way you get basically user vector that is in the same space with the products.
+Right.
+And now instead of passing a text embedding or a clip embedding of the text as as Dali would would do, you would actually send the user vector as the prompt and then you would decode instead of decoding to image with the code to text and to image.
+So we would basically encode the best and decode the future.
+So this way, and you could train this actually with a task where basically you take the user past and actually decode the next product.
+So we say, okay, as a normal next product, the prediction task, can I predict with Dali given the past, can I predict the embedding of the next product?
+And that turned out to be our loss.
+Basically how close do I generate the product to actually the real product that the user so next.
+Yeah.
+So just to summarize what it works like is you have a user, you have a user's history of let's for example, say the K most recent item purchases, then you take into account or map those items to their corresponding clip embeddings.
+And then for example, as a very simple approach, he would take the average across all those embeddings and takes those average aggregate as a way to represent the user.
+And this is then, as you mentioned in the same space as those item embeddings are because it's somehow constituted from those embeddings.
+So it's will be in the same space.
+And then those will be the input for Dali coming up with a visual representation, but let's say it was a visual and a textual representation, then you can then take and that would kind of be the artificially ideal next product for the user.
+And then you have multiple options, I guess.
+So one way is to say, okay, let's create something that resembles that output.
+So here product developers or in year 2400 here replicator, please come up with this and present it to the user.
+Or you could also take it as a seat item to search the item space, right?
+Yeah, exactly.
+That would be more kind of to see if basically could you use it for echo?
+Like are you generating items that are reasonably close to real items that you have right now?
+So it's one way to kind of test the performance of the generator.
+The other one, of course, is to actually generate items and kind of look at them and look at the kind of the consistency in terms of text and the image.
+And you have all the image kind of image generation, image quality scores that you could do.
+So yeah, you then this is what we did in the work whole paper.
+We tried them both.
+Of course, in the end, the best thing to do is to kind of try to take it for actual and applied use case and see if let's say, for example, the designers find this useful.
+And I think, of course, with the newest models like from stable diffusion, this will be more practical than with what we had last year, which now looks a lot sillier than we thought because in one year these days, it's crazy how quickly things have evolved.
+But yeah, I would also say that the speed of development in that area is crazy.
+So what has been going on in that space or within the last 12 months or a bit more is really tremendous.
+And it's really hard to even adapt to it so quickly.
+I mean, when you're already saying that you are working on adapting to diffusion models already.
+So I guess this is pretty fast already.
+I remember that your client that has been sparking your research there with his request in please show us what users want.
+I mean, this was really at the right time when Dolly came out.
+So it was like a match made in heaven that kind of sparked that research.
+However, your client asked you to show us what our users want.
+And then you came up with that work.
+And now you are able to show what a single user wants.
+So how are you aggregating these information to, for example, say, hey, this is a user group and we kind of try to come up with that visual and textual representation of what they want.
+How do we aggregate it to guide the focus of product developers or whoever towards you should take a look into developing this and that.
+Exactly.
+So the idea would be that actually you will have to segment the audiences, the user audiences, and that that should be reasonably easy if you have a good latent space.
+So the idea would be that you would send the user vectors to a clustering algorithm as one of your kind of preprocessing steps.
+And then, of course, you take the big user segments.
+And of course, with the user with the client feedback, you could say which one of these segments are you really interested in developing for?
+This is what we see in terms of traffic and in terms of sales today.
+What do you want to brainstorm about?
+Do you want to brainstorm about teens that are into rock music?
+Here's kind of their segment.
+This is the vector that represents them.
+Here's what our model thinks they could be into.
+So that's kind of broadly how we're thinking about.
+Really interesting directions for recommender systems to spark the development of new products.
+Not only about recommending the next of what is available, but to recommend kind of the next of what is yet unavailable.
+I was already triggering it a bit, the applicability and the usefulness.
+I guess you already addressed it.
+So by making sure that I cluster my audience beforehand, I can also make sure that what I create will tailor the demand of sufficient amount of users to make sure that the development, the creation cost somehow pays off.
+But do you also think that this might play a role for really individualized products?
+So I mean, if we look into manufacturing, we have different ways with 3D printing, additive manufacturing in general, where we could really say, hey, this is a user model now.
+And I'm again thinking about that replicator from Star Trek, that this might already be applicable or available yet to use for a really individualized product.
+I mean, why not?
+And I mean, we have not yet.
+Well, actually, we just published a paper at the NeurIPS, the creativity workshop at NeurIPS, where we actually look into NERF models for like 3D generative applications.
+So I think one of the kind of intermediary steps that we need to bridge if we assume that this kind of models will be successful is actually to move into 3D generation, right?
+Because a lot of the applications, downstream applications, design applications do use 3D meshes for the product design, right?
+So we also saw that, you know, like an image description of a product is not sufficient, even better would be to actually create a 3D representation of the new product.
+So yeah, you could imagine that in applications where basically, you know, like laser printing would be something possible, you could have an end to end full application of a personalization, right?
+So you could have a user vector that goes into a generative model that then generates a mesh that goes to the printer that produces the object.
+So we could go all the way there.
+There are a couple of papers already that kind of link stable diffusion with 3D generation and with NERFs.
+We are starting to look at that and I think next year we'll have more text to 3D applications.
+So I think, yeah, that definitely is something that we're interested in and might become unusually quickly something real.
+So yeah, maybe next year, at the end of next year, we'll already see some text to print applications.
+That's amazing.
+So maybe Star Trek might not be as far away, at least with regards to replicating from ideas.
+Maybe the warp accelerator might be further from now than those replicators.
+Okay.
+So actually also for our listeners, so the paper that's full name is What Users Want?
+Warhol, a generative model for recommendation and we will also link it into show notes.
+One thing that I was stumbling across when reading that paper was actually the performance comparison that you applied where you said, okay, now let's take the output of that Warhol model and let's try to use it to find the product recommendations from the available space.
+And it was somehow showing, I would say, mediocre performance.
+So there were some models you compared it with, I remember RSVD that performed much better.
+And on the other hand, you said, okay, this is just the first step.
+Further steps are about to be done and then we get to the same or even better levels.
+What would you think is currently the issue that this model that on the generative side is so fascinating and great makes it worse than established recommender models?
+That's a good way.
+I would say that the first bottleneck, it's of course the generative bottleneck, right?
+It will generate images of products that are not at all tuned for performance, right?
+They will be somehow marked by the generator predefined knowledge of the text and the image space, right?
+So the fact that the generator is already pre-trained on a lot of data, the question is, is that data somehow a good representation of what are good looking shoes, for example?
+So I think the training data for the generator, for the visual generator, for the text to image model, for example, will have a big impact on how the performance would be because of course the encoder afterwards moves it back into the clip space and then it becomes comparable with all the other products.
+But I would say the decoding to the image space is tricky, right?
+So maybe if you fine tune a model on existing shopping data or only on the shoe space, this model would get more and more aligned with the final task, which is recommendation.
+But the way we thought about it is, of course, that was that more of a proxy kind of evaluation than the real goal.
+If we really wanted both, would that be possible?
+Would we be able to approach a generative recommender system to be as good as the current ones?
+Yeah, I think we're reasonably far from that because that would mean that this generative model has to be really good everywhere in some sense.
+And that's hard in general.
+Okay.
+But only reasonably far, not infinitely far from it.
+Right.
+So it was already better than basically best of the non-personalized thing.
+So it was kind of halfway through.
+Yeah, I would say that probably there are some low hanging fruits, but I think that there is a bit of way for a generative record to become the way to go.
+Cool.
+Okay.
+So yeah, definitely interesting work to check out and also everything that's following up on it.
+Taking this and also the previous paper back to that overall picture, I guess in your presentation, you differentiated into classical recommenders, banded recommenders, econ recommenders, and generative recommenders.
+And then on another side, you said, yeah, we have that combination of several objectives, that product of click-through rate, conversion rate, and utility.
+So how do the econ records or even more as a generative records address that overall optimization?
+So the econ record, if done correctly, if basically if the assumptions about the user kind of user model are correct, in some sense, is the right formulation for recommendation general.
+First of all, as we discussed a bit earlier, it helps a lot with being something compatible, right, to define basically on what side is the record of the system deployed, right?
+Is it on the seller side or on the buyer side?
+So then you know for sure that the recommender system is aligned with the right side of the market.
+And then on top of it, then we have the utility piece, which if correctly estimated, will allow you ideally to lead to the best conversion model possible.
+This of course assumes that it's a very heavy assumption model where all these things have to be true, right?
+The user has to be exactly rational.
+You have access to exactly to the awareness that the user has in its mind.
+So all these things have to hold for this to be true.
+So of course the question is how robust will this be in real scenarios?
+This is the big question and this is what we're trying to figure out.
+But I think in terms of the story, in the ideal case, this is the way to think about it.
+Of course, how to adapt it to real data, this is where things get harder.
+On the other side, the generative model, it's more about new applications of recommendation, right?
+So it's about basically going for the design step in the product, kind of in the product life cycle, in the marketing life cycle, even, right?
+If you think about machine learning in MarkTech or in marketing, you see machine learning everywhere but in design, right?
+So you have machine learning in the advertising step or basically in the targeting step, we're kind of trying to find the product market fit.
+You have it in the supply chain management.
+You have it in the pricing.
+We're trying to bring it closer to pricing also, but in the pricing.
+And then the only place you don't have right now, which is kind of right now it's an art, it's I think in the design step, like finding out what really the users want or what else should you develop next time.
+I think it's the least connected to machine learning right now.
+So with this, we're trying to showcase another way of looking at a condition that basically makes design in a machine learning application.
+And I think that's the exciting part.
+Yeah.
+So in terms of the excitement, you definitely have me on board.
+But does this mean on the other hand that you're not focusing on classical and bandit recommenders anymore or is it just like they have other targets and you are still investigating further?
+I mean, I would make the claim that still bandit recommenders are also some new or interesting stuff many people are still working on.
+So do you see that there is still much of work ahead of us in terms of bandit recommenders?
+Definitely.
+We were also very still active in that piece of literature.
+So we are still publishing on using Rekogym and our latest work in that area, it's mostly about banners and the kind of combinatorial actions to basically generalize from one action to actions that are basically sets of items because that in recommender system, that's very usual.
+And for us as an advertising company, we have a lot of ads that are composite.
+So how to model the reward on that kind of banners when the reward is still a click is still an open problem.
+So we're active in that regard.
+Also for conversion modeling, we are following another direction, which is online reinforcement learning.
+We have not published anything on this, but probably next year we'll have some work.
+It's more applied for now, but I think once we see it working, probably we'll publish it.
+We move our focus a bit from these really new stuff to the current challenges in real world recommender systems.
+What would you point out there to be some of the major challenges that industry faces, but also that research is currently working on?
+So I think that the first I would like to outline on what I think was the latest revolution, which I think is quite exciting is this the development of the two tower architecture and the K-Nearest neighbor kind of based delivery systems where you turn kind of recommendation into a search problem into a dead space.
+So I think this is kind of now propagating through the industry and becoming kind of the de facto architecture.
+I think now an open question is, do we still need the ranker?
+Like do we still need a re-ranker?
+Do we still need the two stage architecture or can we do end to end everything into a single stage?
+Because one of the reasons we had two stage was for scalability constraints and with a two tower architecture, maybe that is not needed anymore.
+So maybe a single model can actually be feasible.
+So I think this is an open question.
+It will simplify a lot of architectures and a lot of modeling choices.
+So that's one.
+The second one is if you still do want to do clicks or some form of attributed conversions, what are good attribution schemes for conversions?
+If you don't want to go to full RL, how can you take into account somehow the conversions that happen without clicks and how do you discount for that kind of counterfactual aspect of it?
+So I think these are kind of let's say cheaper fixes that could improve definitely the causal effects of recommendation from the point of view of conversions.
+And I think the third one would be like diversity.
+How do you generate good banners?
+Because again, the theory says that you do arc max.
+You cannot do arc max every time.
+That will be a boring recommender that will send you every time the same item until you change state as a user.
+So the question is how do you add randomness or what is the optimal diversity policy and what does it mean to have optimal diversity from the view of the reward in generating banners and then sequences of banners?
+So I think that that's another important direction.
+And of course, then there is the fairness, especially for marketplaces.
+We don't have it at crypto because we are not the marketplace.
+But if you have a marketplace and you have a recommender system in the marketplace, I think the fairness for the marketplace sells is an important question.
+Yeah, I guess also with regards to the latter one that you mentioned, so fairness, we touched also on this topic in the last episode where we were talking about recommender systems and how they might support human resources or the human resources domain and what the role of fairness that is quite evident there plays there.
+But there are definitely also many other domains, I guess, also in that episode with Christine Bauer, we touched on artist fairness.
+So it goes through all different kinds of sets of domains and recommender systems where fairness plays a role.
+Since you mentioned that two tower architecture as the very first point, I'm always surprised how we came up with that name for it.
+So I mean, it's pretty straightforward because you have one tower that generates a user representation from a raw representation.
+And on the other side, you have the one that creates the item embedding from the item representation.
+Because I was actually doing something very similar in my math thesis, which is now back then six or seven years where I created a deep learning based recommender system for mobility, where we also came up with something that was really like that.
+So there was that user tower and the item tower to represent users and items in the same space.
+And yeah, so just in retrospect, I really found that yeah, a two tower pattern is really a catchy name for it.
+But it has just evolved over the last couple of years, I guess.
+So it's still a pretty new term, but yeah, it was very interested that I said, yeah, you have done a two tower architecture also back then, but people just didn't call it that way.
+I mean, when we talk about personalization in general, so not only in advertising, I would guess that there's also one thing that you like as a user or as a consumer.
+Can you enlighten us?
+What was your favorite personalized products that you use?
+That's a good one.
+What is the, well, recently I've been looking at YouTube for game design.
+I got interested in doing game design with my son and I find the recommender system quite good.
+So I think this is the one that I interact the most daily.
+Is there any other that surprises me?
+Say I would say YouTube probably it's the recommender system that makes me the most these days.
+Okay.
+So how did it really relate to what you mean?
+Yeah, it was definitely really nice talking to you in this episode, but I guess there are many more people to come.
+I hope so.
+So what would be the person that you would like me to invite to RECSPERTS?
+Another good question.
+I think, well, well, I always enjoy talking to Thorsten Joachims, so definitely I'll be curious to see how he thinks about the future of your recommendation.
+Great, great.
+Yeah.
+I definitely enjoyed the tutorial he gave last year on off policy evaluation and learning at the RecSys 2021.
+So it's a really great tutorial.
+It does a good job in explaining stuff.
+Yeah.
+And their new simulator, I think it's, you know, the Open Bandits pipeline or something like that.
+Yes, yes, yes.
+That's also the research group.
+Yeah.
+They said Junta Saito was doing research with him and they came up with it.
+Open Bandits pipeline.
+Yeah.
+Great.
+And the time flies by.
+It was a very nice discussion with you and also getting into these intense ideas, which people can definitely follow up on by looking at the show notes and listening to this episode.
+Yeah, it was a pleasure.
+Thanks for having you.
+Likewise.
+Thanks for having me.
+Ben, have a nice day.
+You too.
+Bye.
+Bye.
+Bye.
+Bye.
+Bye.
+Bye.
+Bye.
+Bye.
+Bye.
+Thanks for coming to this episode of RECSPERTS, Recommender Systems Experts, the podcast that brings you the experts in recommender systems.
+If you enjoy this podcast, please subscribe to it on your favorite podcast player and please share it with anybody you think might benefit from it.
+Please also leave a review on Podchaser and last but not least, if you have questions, a recommendation for an interesting expert you want to have in my show or any other suggestions, drop me a message on Twitter or send me an email to marcel at recsperts.com.
+Thank you again for listening and sharing and make sure not to miss the next episode because people who listen to this also listen to the next episode.
+See you.
+Thanks for watching.

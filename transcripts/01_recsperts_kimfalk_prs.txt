@@ -1,0 +1,647 @@
+Note: This transcript has been generated automatically using OpenAI's whisper and may contain inaccuracies or errors. We recommend listening to the audio for a better understanding of the content. Please feel free to reach out if you spot any corrections that need to be made. Thank you for your understanding.
+
+It's a system that finds relevant content for a user and relevant in the sense that it's relevant for the user in the context that they are right now.
+We would like to find similarity between content.
+So what makes two songs similar or what makes two books similar?
+Another way of looking at it is that if you don't know anything about your content but you have some knowledge about who has listened to what or who has consumed what content, then you can actually go in and say items are similar based on who likes that content.
+The ideal is that they do not want people to actually start up on their loading page.
+What they want to do is that you go into Netflix and then they start something and that's what you want to watch.
+And that will be the perfect recommender system.
+Hello and welcome to this first episode of RECSPERTS, recommender systems experts.
+Today for this first episode we have Kim Falk with us, who is a senior data scientist and my first expert in this show.
+He is already well known in the community.
+He has been the industry chair for his recommender systems conference and actually he also wrote a book on practical recommender systems.
+So hello Kim, great to have you on board.
+Would you just introduce yourself a bit?
+Hello myself and thank you for having me at your show on your podcast.
+My name is Kim.
+I'm from Denmark.
+I'm working as a freelance data scientist.
+I have been working as a data scientist for the last 10 years, more or less.
+Before that I was a software developer.
+I have a degree in computer science from the University of Denmark.
+I have been working with myself for the last 10 years.
+I have been working with myself for the last 10 years.
+I have been working with myself for the last 10 years.
+I'm currently working together with myself on a project doing recommender systems, which is very interesting.
+I have lived around Europe and now I'm back in Copenhagen with my family and I am coming to you from my cellar in my house.
+Don't live there, lockdown.
+Yeah, it's a pretty beautiful cellar.
+I already got pretty accustomed to your cellar because it's always from where you do your meetings, right?
+Yes, it was a very nice Airbnb room until the lockdown when we then decided that it might as well be my office because nobody would come into Copenhagen any longer.
+Oh, okay.
+But at least there is someone coming with four legs already into your room or sometimes into your room who is sometimes also eating the carpet, isn't it?
+Well, the one of them is the old one and she's usually sleeping under my desk.
+The other one is four months old and she's eating everything.
+Possibly she's eating something right now when I can see her, but yeah, let's hope.
+So maybe you haven't provided her with the right food recommendations to start with some bad jogs already.
+Yes.
+I don't know a lot of my commander jokes, actually.
+So yes, my career, basically the way that I fell into data science was more or less by accident.
+Okay, tell us more about it.
+In the university where I came from was a place where it was kind of agreed that machine learning would not work.
+Okay.
+I had one course at the university.
+It was called evolutionary algorithms.
+That was the closest thing I actually studied at the university.
+Which year was that?
+I finished in 2003.
+I think it was 2002.
+I had that course.
+So from my point of view, it was distributed systems, concurrency.
+That was the interesting thing of working across the net.
+That makes me sound pretty old.
+But yeah, so it wasn't before I came to this company where they were doing recommender systems that I kind of came into machine learning and recommender systems.
+So you did your degree in 2003.
+So this is when you finished university.
+And when did you actually start it with that company?
+I guess it was filter or it was called filter.
+Was it actually the first company you started your professional career with?
+No, no, I went, I was a software developer.
+I was a consultant doing electronic patient journal for eight years before.
+And it wasn't before 2010, I think I actually started that company.
+So I had quite a long streak of being a software developer engineer before I started in that direction.
+So this was your first professional life.
+And then in your second professional life, you became a data scientist.
+But I guess there are many competencies that you acquired in your first period that you could also benefit in your second period.
+Yes, I think that data science is about thinking a lot about problems.
+But sadly, to solve those problems, you really need to understand how to code and implement them and a lot of the experience I got from my previous life, as we call it, has helped me in that sense.
+I can feel that I'm not keeping up to date with the software engineer part of it.
+So I'm slacking a bit behind.
+But luckily, they came up with the concept of data engineers.
+So you can do sloppy code and then let them make it fast.
+That would be a very nice job description for data engineers.
+I guess not everybody agreeing to this, but I like it.
+Fix the sloppy code, data scientist.
+So no software developers or engineers anymore today, this is the job of data engineers because everything is about data.
+I would say so.
+I think that is, at least from my point of view, the software engineering that I did, I was a backend software engineer, and that was basically what you call a data engineer today, I would say.
+But yes, I think that data science is really awesome.
+One of the things that is not so popular in these days to say is that I actually became very interested in machine learning and data science because I don't really believe that it works.
+So I went into it trying to convince or finding proof that you could actually make it work.
+I have to say that the jury is still out on a lot of the things that you say that you can do with AI today for me.
+I'm not really sure that you can solve all the problems that is claimed to be solved.
+As an example of that is, if you read a lot of blog posts about NLP, for example, you will always see that we have solved this and this and this problem, which they have using a dataset that has been highly annotated of people spending hours and hours and hours doing that.
+While if you have a new dataset and you want to solve the same problems, it's basically impossible.
+Recommender systems is a little bit like the same because you have a few datasets that cutting its research is being used on.
+So excellent results and then you take some real life data and then it's really hard to actually get the similar results out of it.
+Yeah, I see your point.
+So many times when people talk about, and this is, I guess, quite a controversial topic, AI, because even the topic of or the term AI is misused quite often.
+So AI is many times about rather shiny marketing cases, but not really about underlying quite well-earned use cases that have proven to be useful and also applicable to use cases where they might substitute older ways of doing some things.
+So I recall that there is that presentation from some conference where it was told, if it's written in PowerPoint, it's probably AI, if it's written in Python, it's probably machine learning, right?
+Yeah.
+There is a lot of PowerPoints out there.
+Let's put it like that.
+Which is, I guess, not bad because I guess as a data scientist, you also have the job to convince people to present stuff not only to the technically savvy ones, but also to the ones that are, yeah, in the end, your stakeholders and the ones that you are delivering results to.
+So I guess always also working as a data scientist, you have the job to make things and convey things also intuitively.
+Of course, maybe not every formula fits that requirement, but you really, I guess, need to understand what you do.
+And just when you really understand, then you are also able to convey messages and results properly to people and their PowerPoint, where to put your results into is sometimes, maybe not all the time, or could be a right way of doing it.
+But it shouldn't be the starting point of the journey, right?
+No, of course not.
+I think to a large extent being a data scientist is about being good at communicating what you find because it is an investigative profession where you need to come up with answers to questions.
+And if you can't communicate those ones, then you're not doing your job.
+Of course, with a recommender system, it's not so much when it's in production, you can see that it's recommending things and you can do metrics.
+But before you actually, if you start out with a recommender system, there will be a lot of data analysis that you have to do to understand the business where it should be running, but also the users that should be using it.
+You need to communicate that both to, I don't know, to understand it yourself, but also to your stakeholders.
+Yeah, yeah.
+So PowerPoint is needed.
+PowerPoint is still needed, but it's not the full picture.
+No.
+So far, I got that it was somehow in the early tense or how you like to call it that you changed fields a bit.
+Of course, you still were dealing with computers and with programming, but somehow the direction changed from developing, I would say maybe software products towards developing data products.
+So was it really recommender systems you started that journey as a data scientist with or was it other stuff?
+And how did you or what was really the project that brought you into that field of personalization in general or recommender systems in specific?
+Well, it's many years ago by now.
+It was a British broadcasting company that wanted to try and do a Netflix clone where they would basically have an app with different rows of movies and series and not having so many blog posts about how you should do it.
+We basically had to discover everything ourselves and discuss what things would mean and so on.
+So Netflix was at least it wasn't available to us at that point.
+I don't know if actually the streaming channel had started at that point.
+I guess it had.
+I'm not that old.
+But that discussion and so when you talk about recommender systems today, you have this idea that okay, so let's do a recommender system two minutes after you decided that you're coding machine learning.
+The recommender system that we built back then was weeks and weeks and weeks of discussion on how you could actually make it work and how you could could what should be there and something like what happened if you ran out of recommendations?
+What did you do if you don't know anything about the user?
+Can you continue scrolling?
+How do you order stuff if some investigative user decides to scroll to page 10?
+Is it then still personalized and how is that order and so on?
+So those kind of discussions we spent really a long time on.
+And of course, collaborative filtering has been around for a long time, but it's not that you just opened a blog post and opened it.
+And we didn't do it in Python or Scaler.
+We did it in SQL and C sharp.
+So the algorithm was implemented in SQL.
+And that wasn't me at that time.
+There was somebody else who coded everything up there.
+But in that process, I really fell in love with everything because it's not just one and zero in a sense that yes, it's one and zeros, but it's such a subjective field where you really need to understand and not only understand, but also understand your assumptions about your understanding to really get started on it.
+So it's a bit about experimenting.
+Like you said, you have been discussing a lot, but sometimes this implies that you don't work or experiment a lot because you can mostly just do one thing at a time.
+Was this a case or?
+No, now I'm remembering as we discussed a lot, of course, we discussed a lot in a sense, we had workshops and then we coded a lot.
+And then we had new workshops when we had sold whatever we had decided upon.
+So a lot of discussions is hours and hours.
+It means, I don't know, two sessions a week of hours of discussion.
+So which also often continued at the pub afterwards.
+So those ones were also hours, but I don't know if we remembered much of that afterwards.
+So there were some difficulties, I guess, which are not the case today anymore.
+I guess you mentioned the availability of coverage on how to build a recommender system on what is possible, I guess.
+So that has, I guess, changed a lot during the recent 10 to 12 years, I guess.
+So I guess with the widespread adoption or propagation of data science itself, also recommender systems benefited a lot as one of the major, I would say, use cases.
+So you said that once you are talking about data science, the next minute you are talking about recommender systems, at least with our guest biased view on it.
+And the second thing that I guess you also mentioned as well was a bit about not only the availability of information on how to do it, but also the availability of proper tools, right?
+So I could never imagine to write a recommender system in SQL or even how to do it, even though, of course, we know SQL, but with Python and the whole ecosystem of Python, that wouldn't be imaginable today.
+Or what do you think?
+If you didn't have Google Maps, you will still find your way around it, it will just be more difficult.
+And I think it's the same.
+Of course, we get more lazy, the better the tools we have.
+And that's maybe another point that I feel is very important with recommender systems is that the interesting things about not having any tools like them was that you really had to understand the algorithm.
+And one of the things that I think is missing a little bit today is that there are a lot of data scientists out there today that are very good at downloading a library and then optimizing a metric without actually understanding exactly what that metric means and how the end product would look like.
+Well, if you could if you coded in in SQL, then you are painfully aware of every step of the way.
+There is nothing that can escape you.
+Because if it does, then then it just returns crap, basically.
+But even that, I would say if you just try, even if it's hard to code a certain algorithm into SQL to return recommendations, then even this step, even though it's painful, it might not lead to the real deep understanding.
+Maybe it will give you a deeper understanding instead of just pip installing a library and having a three-liner that does collaborative filtering.
+But I guess in the end, isn't it about consulting some proper books and reading papers?
+Or where do you think that people nowadays should get their information from?
+And I hope that we will do a good job with this podcast because, yes, so far, there are courses out there.
+There's your excellent book, which is a good introduction into recommender systems.
+But what else besides your book, besides courses, would you recommend people to get started with?
+I think getting your hands dirty as fast as possible, trying to implement something and then play around with it and understand what happens if you tweak something.
+I'm not of the school that you don't understand programming unless you've done a simpler.
+So maybe the SQL implementation of collaborative filtering is also maybe a step you don't need.
+I will say that the Coursera course on collaborative filtering, I think that one of the first exercises you do, you actually do collaborative filtering in a spreadsheet in Excel.
+Oh, yeah, I've done that.
+I've gone through that.
+Which I found was, how do you say, it was a good learning experience.
+So if you're starting somewhere, then try and calculate, hand calculate the collaborative filtering and see how things are working.
+It's very good.
+What I meant is to say that if you don't understand the data and the business and also the algorithm, then I'm not sure that you will always end with good results.
+I'm not sure that you ever end up with good results when you do recommender systems, but it's a matter of tweaking them and helping a little bit on the way.
+One of the discussions that I had with a friend at RecSys late in the evenings often was whether you should liberate the recommender system completely and say that you should just show everything that it recommends to a user or whether you should use kind of business rules saying that if you should do a recommendation on cartoons, is it then okay that you show horror movies as recommendations?
+Where I would say that if you kind of restrict their response a little bit, then they make more sense.
+But of course, it's a matter of then you're also restricting the ability of the algorithm to learn the right signals and so on.
+Exactly.
+In my case, it turns out that there is a lot of people who likes horror movies and cartoons and of course, if you want to recommend to those people, you should do both, but mostly cartoons are consumed by children that doesn't really need to see or know about horror movies.
+So there are some things that I could restrict also.
+Yeah.
+Yeah.
+So maybe you are trading just the restrictions against the relevance of recommendations a bit, which means that doesn't mean that even though you are applying these business rules that the final changed or transformed recommendations will be that irrelevant.
+So I guess always kind of a trade off, but you can solve for it and still come up with something that is relevant.
+I guess so far we have been dropping a few keywords that I guess we should definitely introduce in this very first episode.
+So I guess you already came up with one of the most used abbreviations.
+So it's RecSys, I guess when sometimes people refer to recommender systems, they call it RecSys.
+But I guess this is not really what we mean when we are talking about RecSys.
+So can you give us a short introduction into what RecSys is?
+So RecSys is an ACM yearly conference where of course I'm subjective because I've been part of arranging it for two years, but it's where cutting its technology on recommender systems is being presented and discussed.
+It's really a nice place to go if you want to get under the skin of recommender systems.
+I think every second year there is actually a school, RecSys school a week before where you can come and kind of get the introduction to recommender systems and then you can then move on to the cutting its technology afterwards.
+So it's a great preparation for you to go there first and then visit the main conference second afterwards, right?
+Yes.
+I find it's a very nice conference.
+It's not as big as one of the big conferences, but it also means that it's a bit more intimate.
+And I'd say there are some rock stars within the RecSys community.
+For example, the people who does Netflix recommender that there is a lot of people who wants to talk with them and they're actually very easy going and nice to talk to.
+And so it's nice that you get around meeting people that actually has a big influence on what you get presented on your apps and television every day.
+And again, I felt that they're always very welcome to answer your questions and listen to your comments.
+So it's an excellent place to both learn something new, but also understand how people work with recommender systems, which is something that is pretty hard to get to when you only have the scientific articles or blog posts and so on that you actually talk with people on the floor.
+Yeah, yeah, yeah.
+I totally see your point.
+What I always like to stress, it's not a boring conference, but actually it's also the place where we first met.
+I guess it was 2017 at the RecSys in Como in Northern Italy.
+So quite a sunny week.
+I guess it wasn't 2017, right?
+I thought it was long ago, but yes, it could be the one in Como.
+I guess it was still the time when I was writing my master thesis on recommender systems.
+So I guess it was in 2019 when you had kind of a homecoming of the RecSys conference, maybe not also RecSys conference, but with respect to yourself, right?
+Yes, it was in Copenhagen, which was a great experience, except for the fact that I actually liked the idea that you go away and then you hang out with recommender systems geeks 24 hours a day for that period.
+Because suddenly we had to think about bringing children to school also and walking the dog.
+I have the feeling that last year, where the conference was only virtual, which would have otherwise taken place in Rio de Janeiro, they did really a great job in having a full virtual experience with that tools like Gazatown.
+So I really enjoyed it.
+I was really surprised how well even that online only format went and how you could still connect with the people there.
+But I think that we, you and I, and the group of people that are always hanging out at RecSys were lucky because we spent so much time and we are so, I'd say we are so close outside also.
+It was pretty easy to connect because it's not that one of the good things that I feel to be at RecSys in person is that you just pop it, you bump into people and you talk with them.
+And even if there was the possibility to do that also online, it's I don't think that it beats the real experience.
+I would say that you both, but try and be there in person because that's the better experience.
+Yeah, I would say so as well.
+Once there was a figure, it was about 70 to 80% of all the papers presented at RecSys already have some industrial contribution or some industrial authors.
+So you really see this is not just even though there is a great case for only focus on theory, but it's really that many and recommender systems research does the research coming from an industrial background.
+And this shows how tightly aligned the field is between practice and research.
+But yeah, talking about theory and as this will be the introductory episode, I guess we have to set the stage with a couple of terms and yeah, within such a widespread field, I guess it's always hard to find the right starting point.
+But maybe the first thing, let's try to somehow come up with a definition of recommender systems.
+So this is not like a school class lesson, but as we have using that phrase for quite some time already, how would you describe a recommender system to a person if you were not allowed to use the term recommender or recommendations?
+I would say that it's a system that finds relevant content for a user and relevant in the sense that it's relevant for the user in the context that they are right now in the time of the day and in their mood.
+One from Netflix said that the ideal is that they do not want people to actually start up on their loading page.
+What they want to do is that you go into Netflix and then they start something and that's what you want to watch.
+And that would be the perfect recommender system.
+So that I'm even aware of your preferences, even though I've never seen you or experienced you before.
+Yes, there is the problem of privacy and data that it will be difficult for any system to understand exactly what mood I'm in and what context I'm in.
+And of course, there is a long road to where the system knows exactly what you want so far.
+And that means that there needs to be choices and those choices needs to be trying to provide you an option for no matter what mood you're in or in what direction that you're going right now.
+Yeah, maybe I would rather say it's a challenge because somehow people expect relevant stuff to be shown to them and not random stuff.
+And this somehow means that I need to somehow exploit or use information I have about them in order to filter the relevant from the irrelevant.
+And then there comes the point that people tend to be cautious with their data.
+They convey about themselves.
+So sometimes a bit of a hard problem when people expect to be very conservative about the information they share about themselves, but at the same time want to have relevant suggestions, right?
+It's not a hard problem.
+It's a good challenge.
+Perfect.
+Okay, so, so yeah, since we have talked from time to time about that video streaming service provider a lot, maybe we can have another example as well to add some more variety.
+So let's maybe imagine that we are users of music streaming.
+So maybe Spotify, maybe Deezer or maybe something else.
+So and of course we want to maybe explore new stuff and enjoy relevant stuff.
+So what would people start with when they were faced with, hey, please build us a recommender system that recommends relevant stuff to our listeners.
+So what would be the starting point for you or even the starting points that you recommend to go forward with in your book?
+So yeah, in my book, actually the first thing I'd say you should start with is what is, or I consider non-personalized recommendations, meaning that you take statistics and use that to understand what is more consumed of your items.
+Because if you don't know anything about a user, then the best choice you can have is to find what most users actually like.
+So the most popular things.
+That's that then, of course, as we talked about before, the more you know about the user, the more you can filter your data or your recommendations.
+So if you know any preferences, if you know some demographics, here I can talk about whether you are a kid or a grown up, for example, or whether you are from a big city or outside of the country, not in the big city, and which country you come from and so on, because there is some popularity changes a lot.
+For example, you can also look at what time of day it is and have the context.
+So people listen to different music in the mornings compared to the evenings.
+That is at least very outspoken when you talk about radio or television and so on.
+I don't know if I have a different playlist for the morning, actually.
+But in a sense, so there is a lot of things you can do non-personalized in the sense that without actually knowing much about the user.
+The next thing you can then do is that you talked about music.
+So music is a bit difficult because it doesn't have any textual representation that you can then do natural language processing on.
+What about the lyrics?
+What about the biography of the authors or the singers?
+Yes, but if I'm born in Denmark, it doesn't mean that I'm the same type of singer as other singers from Denmark.
+I see your point.
+Anyway, so what we want to do is that we would like to find similarity between content.
+So what makes two songs similar or what makes two books similar and so on.
+And there are different ways of doing that.
+For example, looking at the biography of the artist or the lyrics and then try and do what you call embeddings based on that.
+So Kim, you have talked about similarity of content.
+So this entails two different things, of course, which is the one is similarity, the other is content.
+So when we are talking about similarity, then what does this mean with respect to recommender systems?
+When is content regarded to be similar and what would you think or provide an example for which is content actually?
+So what is content?
+Content is what you want to recommend.
+So in music, it's songs, in streaming, it's in television streaming, it's videos and movies and similarity.
+You can approach that from two different ways.
+So what I started talking about with embeddings is that you look at from a content point of view.
+So you look at the things that you know about your content and then you try and find similar items based on that.
+Another way of looking at it is that if you don't know anything about your content, but you have some knowledge about who has listened to what or who has consumed what content, then you can actually go in and say items are similar based on who likes that content.
+So basically, then you move a little bit away from how do you say that all the green cups are close to each other just because they're green, but it could also be different types of things that are similar simply because of the fact that a user like me would have watched or listened to this song at the same time as another song I listened to.
+This is I guess one of the oldest use cases in recommender systems I recall.
+So I guess it was Amazon, they have written a paper or published it in 1998 where they are covering that stuff.
+And I guess also something that everybody who's new to the field can relate to that typical others like you also liked.
+Yes.
+And basically the core concept in the first implementation was that there was always some super users who would consume a lot of the content and if you could make those super users rate their content, then basically by knowing which of the super users you would agree with, then it would be easy for you to actually receive recommendations based on them.
+It's a little bit like if you want to go to the cinema, then you have a group of friends, you ask that group of friends and basically, I don't know, I have a good friend called Thomas and if he likes the movie, then I would go and see it.
+But I have another friend that if he likes the movie, then I know that I should not go and see it.
+And in that way, you kind of you understand who it is.
+The good thing about collaborative filtering is that in a case where you have Netflix, for example, there is 160 million people.
+So there should probably be a group of people that are very similar to your taste and based on what they liked, they probably want something that you haven't watched yet and then you can recommend those things to me.
+So basically, it's just I wouldn't say that it's dating on another level, but it's kind of you cluster people in very small groups that has the same taste and then based on what the others are doing, then you get recommendations on that.
+Okay, okay, so we are pretty much entering two different directions here.
+So the one is collaborative filtering and the other one would be the part of content based filtering.
+But let's say with the first one.
+So I really always like that example that you also talked about.
+Which movie should I watch next in the cinemas and then asking people like, for example, during lunch, which was the last movie they went to and what judgment was on it and then you typically get some qualitative rating provided by them.
+Yes, it was good.
+I definitely recommend going there or no, it was rather average.
+You have to see.
+And then so this is this is one component, I guess, of what you need for collaborative filtering.
+The other component is what you also mentioned is kind of a weight.
+So how similar are you to that person and do you feel that your preferences are aligned so that that person might contribute something positively or even a person which you feel is not aligned with your preferences might positively contribute to your decision because you know, okay, this is rather something that you decide not to consume, which also I guess is a fruitful decision to make because it reduces the large space of potential solutions you have, which maybe is not the case for the cinema movies, but can easily become when it comes to tens of millions of songs that are hosted on some music streaming platforms.
+So how do you how do you actually come up with that similarity?
+Of course, when when asking people, you do it more qualitatively and think for yourself and do the math in your head.
+But what if you want to do the math in Python or something else?
+So what is similarity there?
+I guess there are several possibilities or what would you go for first?
+Well, you don't have to think about that any longer.
+You just take SK lane and then use one of the similar.
+No, of course.
+So basically what you do is that you create a matrix, which is a table with numbers where you have users as rows.
+So a row for each user and then each column is a movie.
+And then you try and fill in as many cells as possible with with a value.
+So if I like the movie Star Wars, I would put in a good number in Star Wars.
+If I didn't like something else, it would be a low number and so on.
+And then you interpret each of these.
+Yeah, so there are in collaborative filtering, you usually talk about user to use the similarity or item to item similarity.
+Let's take the item to item because that's the most diffused one.
+Then you would say, OK, so the column that represents each movie, how close are two columns to each other?
+You can see that as a vector.
+So your column for movie X is a vector that consists of as many dimensions as there are users and then see how close they are to another column.
+And usually you would use cosine similarity, which basically means that you draw two vectors in the space that represents each of the movies.
+And then you figure out how big the angle between those two vectors are.
+There is a lot of interesting X cases in that where these things will become difficult.
+But basically, that's the most used way, at least that we know of.
+I guess you also pretty easily run into problems there since these matrices are typically very sparse.
+So we like to fill them.
+But the way they are very few entries filled and that we maybe need to solve that problem.
+So I'm thinking about also a different thing, which is the Pearson correlation coefficient that you might be using.
+But then, of course, you have the situation that you can just compute it on all the co-occurring ratings where I have a rating from users for both of that movies that I want to compare.
+And yeah, but yes, that's true.
+It's a nice example because, yeah, there was something very, very famous, which was a bit spareheading your entry into that field, which actually was the Netflix competition where actually this was the task, right?
+So basically, the Netflix challenge was to giving a set of data where you saw a list of users, what they had consumed, tried to predict what they would rate next or what they would consume next.
+Yeah, but you had a test set of users that has consumed something that wasn't in the data that you were delivered.
+And then you had to predict that and how you interpret what that test set was can be different.
+Netflix offered a million dollars to anybody who could improve their current recommender systems by 10 percent.
+And everybody was very surprised because they said, but a million dollars is so much money.
+Why would you spend that on that?
+And if you see Netflix today and how much they increase the consumption of users if they just improved their recommender system by 0.00 something, then it's insane.
+So those money that they ended up paying out was just a drop in the amount of money that they have earned on it since then, I guess.
+But the most interesting thing about it was that they didn't actually implement the winning algorithm because it was too complicated.
+Of course, that said, they used a lot of it, but they kick-started a whole industry, not an industry, but a whole field of research by doing it and which is the thing, the result of that you see in the RecSys conference, for example.
+There is, of course, older researchers.
+They will probably say that they worked on it already before that.
+But how do you say it was pushed into the general public and really became a subject of interest all over the world?
+Yeah, I guess.
+So it was, I guess, a major leap forward for the field because it gained so much attraction.
+And of course, it was a practical hands-on thing.
+So I guess it was not only researchers who have already been in the field who then decided to participate and contribute, but also people that were seeing, hey, this is Netflix and I can get the data there.
+So I will try my best and check out which place I can reach.
+And I guess it took them two years to finally get the challenge solved by a team.
+But even since then, which is not that long ago, so a bit more than a decade, the field changed that much.
+So back then, everybody focused on rating prediction.
+I would say that rating prediction doesn't play such a big role nowadays anymore.
+Or what do you think?
+Certainly, I think it does.
+Okay, why?
+Because it's a good way to measure whether your algorithm is working.
+And I'm afraid that it's a false positive in a certain sense.
+Okay, this is something you need to explain to us.
+Why do you think that rating prediction is a way to approach a recommender system in that way is a false positive?
+Because sometimes you also might not have ratings provided by your system or the way that users can say, hey, this is a one and this is a five.
+Yes.
+So in the cases where you do have ratings, then of course, if you don't have any ratings, then you can try and predict something else, like whether you will watch it or not.
+One of the things that has been said afterwards is that a lot of the research is still trying to solve the same kind of problem as the Netflix channels.
+And it's not sure, ensure that just because you have an algorithm that solves that challenge very good, that you will actually end up having people like the recommendations that it will produce when you put it into production.
+So the question is, do I have a better idea on what it is that you should optimize it for?
+The thing is that if you are a research team, then you don't have actual users to verify whether your system is working or not.
+So it is difficult to do.
+But to say that if you have something that is very good at predicting ratings, then you also have something that will actually work in production is not sure.
+So one is not leading to the other one in any case.
+So that's what I mean, that it might be a false positive in the sense that it gives a wrong sense of confidence.
+The interesting thing about the RecSys conference is also that there are so many industries.
+So they actually can verify a lot of their theories and algorithms in production in the sense that actual users have tried and received a lot of the recommendations that is being presented.
+That puts it to another level of confidence for us, the readers of these papers, because we can trust it much better.
+Does that answer the question?
+Yeah, that goes, I guess, into the right direction.
+Still I have to confess, I'm not really fully convinced because you could agree if you have seen that there was a shift in the field going from rating prediction to ranking prediction and coming up with all the sorts of ways that don't focus on that explicit feedback.
+So where users decide to provide, for example, a certain rating towards an item.
+So to put five stars on an Amazon product, but to rather not decide to be explicit about their preference for items.
+But I guess nowadays, and what is much more widespread, and this also why researchers focus on it is the abundance of implicit feedback we have.
+So I guess you mentioned it when you were saying what the actual goal is, because the goal is actually not to be able to perfectly predict the rating that someone puts onto a product or on a movie or something else, but rather to predict whether a person is going to consume and probably enjoy some certain content.
+And therefore, I guess, using these implicit signals, which are much more abundant, is much more valid than they will maybe also arrive with a denser matrix, making things a bit easier.
+But this is rather the point.
+And I guess with the widespread focus on implicit feedback, they also came a bit, the focus on predicting rankings of items and not really ratings.
+Yes, so the thing about ranking is that the more interested you are for something, the higher it should be on the list in your recommendations.
+I think that ranking is much more close to what we want.
+Actually what I think that a good recommender should do is that it should recommend only one item, and that should be the one that the user wants to consume or not.
+And if you can do that, then you're closer to understanding whether that would be a good recommender or not.
+You see often that people would say that I have a good recommender, because the top 20 or the top 10 items I have in there, there is something that the user has consumed already of the things that you hide when you when you test it.
+And is that actually then a good recommendation?
+Because how long do you have to scroll down before you actually come to something you look at?
+Of course, it depends also on the presentation, because it's important if it's a top 20 and I'm looking at a cellular phone and I can only see the first two items, then it doesn't matter that 15 to 20 are excellent.
+While if I'm sitting at a television and I can see 50 items, then maybe it's fine.
+But I agree that ranking is of course a better thing to look for.
+And I guess, of course, this is a problem when it comes to retrieval metrics like precision and recall that don't really focus on the position within the top k items, the item appears so the right items appear.
+But on the other hand, I would say there are metrics that account for that fact.
+So maybe there could define the hit rank or the hit ratio at the first position and then count how often the first item was actually the one that was consumed by the user.
+And on the other hand, there are metrics like like the mean rate support rank or NDCG that also account for the fact that items that are appearing lower in the list, if they are relevant that they get discounted properly since they were not appearing at the top of the list.
+Yes.
+So I guess it's a way of you measure things and I guess there is a lot of controversy sometimes.
+Yes.
+The way that I see these metrics is a lot that you should see it as a benchmark more than more than as an absolute value, meaning that so you start out, you create something simple, then you calculate the metrics and then you try and see if you can improve those ones.
+So the actual metrics, of course, they should align as well as your business with your business goals as possible also on how it should be presented and so on.
+Yeah.
+Which of them are the better one?
+I agree with you.
+Rating prediction is not something that we want to look too much into, but ranking is much more important.
+But yeah, so maybe instead of being too specific about which of the ones that you listed where you discount the further down it is, rather just agree on one and then try and improve on that one.
+And then as soon as you have something that you can actually put into production, then see if there could be some kind of link between what your numbers are in the offline test with actually what happens in production.
+And then in production, you can then use a B test to see if the new version of your algorithm is better than the old one.
+Yeah.
+And I guess it's also important to have these different ways of evaluation always in mind and not only focus too much on the offline evaluation, but really align this with online evaluation.
+And then I guess this is also something that is covered in your book is that there are also user studies in between.
+So sometimes a point where not too many people I would say focus on.
+So there is this controversy of people that are improving their precision at 10 or MRR by even a tiniest bit with the most fanciest solution already, but things like what the user thinks, how they experience recommendations or maybe falling off the wagon.
+Yes.
+So often a new algorithm more complicated appears in research and they say that they beat the older ones by some percentage.
+And what is interesting is that there is no general way to actually show how you have improved it because it's not black and white with these recommendations.
+So for example, now there is a new paper that just came out.
+There has been this wave of deep learning algorithms showing that they would be improving ever more on the metrics.
+And this paper actually shows that if you train a good old matrix factorization algorithm, which is kind of the symbols collaborative filtering algorithm, which is maybe not the symbols one, but one of the simpler ones, then you can actually get better results than the deep learning solutions.
+I guess this was not applying to all the methods on the paper because they were looking for reproducibility and actually for the competitiveness of the reproducible approaches, right?
+Yes, so the thing is that to compare a recommender system or an algorithm, basically we should have one system where we implement algorithms and then we could give it to make a thousand users view them and then we can see how happy they are with them.
+Having the metrics as a number is very difficult to compare because it's very difficult to say if it creates more happy users, whether your metrics is five or six or seven or something like that.
+And in that way, you should always shouldn't go for the algorithm that says that it's the most advanced one.
+You should go with the one that you feel that you can understand better.
+And then when you have shown in production that this works, then you can start improving on it.
+I think in the deep learning question, if you have as much data as Amazon or Netflix, then I think it would probably make sense to start doing deep learning on usage data, meaning what users consume and so on.
+But in most cases, then the amount of signal that you have is I don't think that deep learning really is the best tool to solve that problem.
+I love playing with TensorFlow, so it's not I wish it was differently, but my impression is that it's not.
+But on the other hand, I guess I wouldn't say that deep learning is off the table.
+So there was the great rise of deep learning starting someone in the midst of the last decade.
+And then it was also merging into into recommender systems fields.
+And I just remember as one of my first experiences, actually the workshop on deep learning for recommender systems at RecSys and Como.
+So I agree with you that randomly throwing deep learning to solve a matrix factorization problem at some data is a bit too easy.
+Yes, I need to cut in here and say that using deep learning to predict ratings is not the solution.
+And then you just yeah, so there is a lot of use of deep learning in the field of recommender systems, for example, creating user embeddings, item embeddings, visual embeddings and so on, which you can then use in the sense that you can also do those embeddings and then feed them into another networks and so on.
+So I'm not saying that you shouldn't use deep learning.
+I think that there is a lot of tools that you should try out first and be sure that that's working and then compare and then you can try out deep learning and then see if that actually improves anything in your system.
+This is the main point.
+So deep learning was showing major improvements in computer vision and natural language processing.
+And I guess it's having a major impact in cases where we really take into account the additional attributes that are mostly unstructured and coming with items.
+I remember that blog post from 2013 from Sander Dielemann who was writing about how they applied CNN, so convolutional neural networks to male spectra comes kind of visual representations of music.
+And then we're coming up with new genres, but also with visual fingerprints of music, which first sounds totally awkward because music is audio and now you are coming up with a visual fingerprint.
+How does it work?
+But I guess that they really contributed a bit more to the body fire commander system there.
+But yeah, if you are maybe just too narrowly focusing on only rating prediction given a one hot encoded user or item, then this is maybe not the right direction.
+And their matrix factorization is more efficient, powerful and getting you to the same result.
+Yes.
+So, so some parts that we haven't covered so far by going deeper into the upsides and downsides of RecSys research was actually one of the fundamental problems, I guess, what we are also dealing with in our work, which is that collaborative filtering has a major problem, which is the cold start.
+How do you deal with it?
+Or if you don't want to talk about nasty cold start, then maybe let us know a bit more about the gray sheep that you are working with a lot.
+Pick a topic.
+Well, so one thing that I love about cold start is that every so often a new article comes out about now we solve the cold start problem.
+And so basically the cold start problem means that you don't have any data.
+And the way that each and every paper solves the cold start problem is by saying, yeah, but we don't have any type of data.
+But we have some other data that we will then use to solve the cold start problem.
+But then actually, if you want to go down to the definition, then you don't have a cold start problem any longer because then you know something about the user.
+So basically, the way that you solve a cold start problem is that not that way, but some of the choices that you can do, because I don't know if you can solve it, is you know a lot about onboarding.
+For example, you can do some non-personized recommendations and then hope that people will catch up on it.
+Or you can try and do recommendations the other way.
+Because in collaborative filtering, you need to know enough about the user such that you can find similar users out there.
+If you don't know anything about the user, then you can actually do any recommendations and then you can do any personalization.
+But in the word personalization means also you should know something about the person because otherwise you can't actually personalize anything.
+So if you have something you know about this user that is different, then you can use that and compare it to other users and then recommend what they like.
+Otherwise, it's just a matter of doing some mix of popularity and items that are controversial in the sense that you learn a lot from knowing whether they like this one or not.
+Cold start users and then of course on the other hand, there are cold start items, but doing onboarding might be some solution, but I guess some area we didn't talk about yet might also provide a solution for it, which is content-based filtering.
+I guess we already touched it a bit, but maybe can you talk a bit more about this?
+Yes, I can.
+But I just need to mention that if you don't know anything about the user, then content-based recommendations won't work either.
+But that's just a sign.
+If you don't know anything, but sometimes people in collaborative filtering are rather focusing on the feedback itself, but let's assume we know anything about the user, maybe not feedback for items.
+Yes, okay.
+So basically, if you know a little bit about a user, you'll still have a cold start problem.
+But if you know that a user has consumed something, then what you can recommend is that you can find something that is very similar to what you just consumed and recommend that.
+But since you can use the collaborative filtering algorithm yet, you can then have different methods to find similar items based on the content.
+And here you can use deep learning really a lot, because basically what you do with deep learning is that you take the metadata you have, it could be the music, the pictures, and so on, and then you create embeddings.
+Again, then we talk about vectors in a space where you can find similarities with using different methods, for example, the cosine similarity.
+And using that, then you will then have a way to recommend things to users anyway.
+There is a slight catch that is a bit concerning with content-based recommendations, which I think in my book are called the Spiderman problem.
+Because in my dataset...
+So Spiderman problem, tell us about it.
+I have five.
+So in the book, I use a dataset from the movie database, where there is a lot of Spiderman movies.
+And one of the best examples that I use when I wrote the book was to do content-based recommendations on Spiderman.
+Because then I knew when my algorithm was actually working, then if I took a Spiderman movie, then it would show me all the other Spiderman movies.
+And that was a very good metric to show that I actually had implemented something that worked.
+But then the next step was that when I just watched the Spiderman movie, do I then want to know all the other Spiderman movies?
+Because a recommendation should also be interesting and surprising and diverse.
+So Spiderman 1, 2, 3, and then 5, 6, 7, and so on.
+Sounds like a Spiderman weekend.
+Exactly.
+So possibly one of the things that I didn't came up with was that I would actually, instead of having everything that was really similar together, I would have a threshold.
+So not completely similar, but not too far apart anyway.
+And that helped a little bit in that algorithm that I used.
+So it was kind of your self-designed diversity for recommendations, or what did you do there?
+Yeah.
+So the thing is that the way that you calculate the metrics that we talked a lot about before was that you should try and predict what next I want to watch.
+And since the content-based recommendations are very close, very similar things all the time, then unless you are very specific in your taste, then it won't actually predict very well the things that you are watching.
+So the metrics that I tried to use or I used for the content-based didn't actually give very good results.
+So in the Rexxus world, my experience is that you should try and go with collaborative filtering as much as you can when you have the option.
+But content-based recommendations are also a very good idea to also have in your mix, in the sense that you could have kind of a cascading algorithm where you start out with collaborative filtering.
+And then if that doesn't fill it out, then use content-based and so on.
+Which just brings us to the large field of hybrid recommender.
+So is this the direction you wanted to go to?
+Yeah, maybe.
+I don't know.
+You're the chat holder here.
+But one of the things is that you can actually do is that if you want, so if you have your embedding, so if you have some kind of clusters of items in your content, then you can actually inject that into your consumer data and then use that to kind of enlighten the fact that you pretend that there are users that like all the action movies or all the eels songs or rolling stones or something else.
+All the books or something like that.
+And if you then inject those data into your collaborative filtering, then you will also have it more likely that users would also find a similar user in that person and then you can recommend things like that.
+And in that way, you also have the content similarities pushed into that.
+That's a way of doing a hybrid, for example.
+We have covered to quite a large extent some, at least the preliminaries and maybe already also the different approaches towards recommender systems that are somehow at least trying to solve their mutual problems.
+So since your book is called Practical Recommender Systems, and we so far rather talked about the theory, which is totally my fault as a host, a question that I also want to direct to you is, so if I'm new to the field, how or what should I really get started with?
+And I mean, which technologies are suitable to start with recommender systems?
+What is kind of your daily technology that you are working with that you would recommend or maybe would not recommend to people that try to get more practical?
+I don't know who will receive the recommendation so they can't be personalized, I'm afraid.
+So I have a cold start issue.
+But yeah.
+So please come up with something that is that is popular.
+Yeah.
+So Python is the lingua franca when you talk about recommender systems.
+At least I'm sure that there is a lot of companies that then think that Python is not efficient enough and so on.
+But if you are starting into the field, then Python would be a very good language to learn because it's actually pretty readable.
+Of course, that depends on the author of the code, but it's very accessible.
+I could show you.
+And then there are many different packages and libraries out there that you can basically just download them from GitHub and start using them.
+There is a lot of data sets out there that basically just search on Google and find something and then try to start creating recommendations.
+From my point of view, one of the most important things to do as early in the process of learning how to work with recommender as possible is to create a user interface where you can see the results of your recommendations.
+So there is two sides of this matter.
+Of course, we should go back to if you don't have some end users, then you should work with the metrics and see whether you can actually predict something and calculate whether you actually do a good prediction or not.
+But from a personal point of view, it's also very important to say, can you actually make a recommender system that gives you good recommendations or your friend or your mom depending on who is the end users?
+Because if you can't see them, if it's just a list of text in the bottom, then it might not be presented in a way that you think is good.
+So my advice is find some way to create a website where you can see the results of it.
+And if you don't feel like doing that, then you can go to the GitHub repository of my book and there is a Django website that implements a movie site already, which you can get for free and get started on.
+Of course, if you want to understand what's inside of all that code, then you probably have to buy my book.
+So buying your book, I guess you have a small present for us today, right?
+I do.
+Manning has gracefully said that they will provide a 37% discount for everybody who listens to this podcast.
+And I agree, we have a free book to give out.
+And I will leave it up to the host to figure out how that should be given out an ebook, I better hurry to see.
+So yeah, it sounds excellent.
+So thanks for it, Kim.
+So thanks for arranging that.
+Of course, it's one of many sources.
+I personally read it.
+I also enjoyed it.
+I also enjoyed the Coursera courses.
+But I guess we have the chance and I will include it in the show notes such that you can find the discount code there and see whether you want to purchase it.
+Check it out.
+If you want to participate in the raffle for a free ebook of practical recommender systems just spread the word about this podcast.
+You can do this by either retweeting my tweet of this episode on Twitter.
+Or if you want to go with LinkedIn, like and comment or like and share my episode release post there and do this by October 21st latest.
+So go to Twitter or LinkedIn spread the word by sharing and get the chance of winning a copy of Kim's book on practical recommender systems.
+You will also find the links to these posts along with the show notes.
+I will announce the winner on October 22nd and approach him or her with the voucher code to redeem his or her free copy of the book.
+That sounds awesome.
+Cool.
+Okay, so I hope that at least this provides provides a small or even bigger coverage of the topic of recommender systems.
+And I guess we have already touched a bit of the challenges for the future, but I would definitely say the problems there are far from being solved yet.
+What would you think are some of the biggest challenges?
+The lack of data.
+So you rather mean the lack of publicly available data.
+Yes.
+Yes.
+I would love to see Netflix, for example, provide a teaser row or a row for amateur recommender systems builders where you could say, I would like to join this group of users and then this recommender would provide recommendations for me.
+Something had you say where actually those big players in the game would allow a little bit of space for the researchers.
+Of course, you shouldn't let anybody create recommendations for anybody, but still it could be a very good place if they instead of doing the next direct challenge to be offline, it could be something where they would say, I will give, we will give the top 10 or top 20 teams in this competition a row that you can personalize and then see how well they do.
+So you mean that actually users have the possibility to influence a live system?
+Yes.
+Okay.
+Okay.
+Well, that could be definitely a challenge, but let's pose that as a wish.
+But nevertheless, I guess you just touched it.
+So with the RecSys challenge that also happens annually in coordination with the recommender systems conference, there is at least one great way of obtaining access to real world data.
+So one of my students, she actually worked with with a Twitter data this year, where Twitter was hosting and sponsoring the data for the RecSys challenge, which was quite abundant.
+Yeah.
+So it was on tweet engagement prediction.
+I guess we saw some e-commerce players like you choose, or also some people coming from the area of, I would call them professional social networks like Xing in Germany.
+And also there was, I guess, Trivago from Germany providing their data for recommendations of proper hotels.
+But I understand your problem and also the wish that this data is sometimes just semi public.
+So you need to register, download it somewhere.
+It's not as publicly like you go to Kaggle and download it over there.
+Any further challenges or where do you see that field going in the future?
+The field right now as it is, is that there is a lot of focus on algorithms and giving ranking algorithms.
+I think we need to be a lot more user centric in the sense that we need to understand the context of the users much more, which is again, another thing that is very difficult to do for research for a study where you have data, but you don't have a live system.
+Again, Netflix is talking a lot about that you should do full page optimization.
+So because things interact with each other, it's not a recommendation in vacuum.
+You need to consider if you have two lists of recommendations on top of each other, because one item in the first one might actually, it could be Spiderman one could actually make you more keen to watch, how do you say, you remember you just watched Spiderman one, two months ago.
+And then because the recommendation list in the second row is Spiderman two, then you say, wow, let's let me watch that.
+But possibly if you hadn't had a nice memory pop off of you watching that thing before, you wouldn't have chosen that movie after all.
+And in that way, there is a negative, I don't know if you call that feedback, but there is a negative or positive interaction between those two.
+And those things also needs to be measured because it's very difficult to ensure that you give good recommendations if you can't see them in the context where they're presented.
+Yeah, I guess it's definitely one of the more challenging things to do once you are at that point.
+So, but nevertheless, I agree with you that you always perceive recommendations not isolated, but always somehow in a context, like you said, in the beginning, which is time, which is moved or something like that, but also in the context of other recommendations.
+And this is going to influence each other.
+And definitely you have to model these influences somehow to be aware of them.
+Yes, for sure.
+But again, when we're talking about research, it's very difficult to factor these things in.
+So I don't actually have a solution for how to do it.
+One of the good examples is, for example, movie lens, which is the website that is maintained by a university.
+And they are trying out different things and you can go there and you can rate things and you get recommendations and you can also understand better how your recommendations work there.
+That could, for example, be a place where you could upload your own recommender and see how that would work in comparison with other places.
+But the thing is that these numbers are very good.
+But since we are dealing with humans, then they're not worth much unless you see the reaction on real humans.
+So I see that as challenges.
+I don't know how to solve it.
+Yeah, maybe we'll see.
+Maybe we'll get some new fresh insights in a few weeks when this episode is going to launch.
+Okay.
+Thanks for your insights and thanks for answering all the questions.
+I hope that our listeners will like it and feel more motivated joining this field and checking out more of that stuff.
+Kim, it was a pleasure as always.
+And especially since you know that I like to discuss with you a lot and especially it was nice that you agreed to be on this first episode and I hope there will be much more that are going to follow.
+And I suggest you listen to them.
+Of course, that should be the recommendation.
+Listen to my sales podcast.
+I'm so grateful that you made the first step.
+I'm honored to have been the first one.
+And I hope to come back to the show again later.
+Yes, of course, because we are part of this field.
+We are working with recommenders and I guess then we will have additional things to talk about in the nearer future.
+So yeah, you are definitely always invited.
+Again, thank you.
+If people have questions, how can they approach you?
+They can find me on Twitter.
+I think that's the easiest way or on LinkedIn.
+Okay, so I will make sure to also enclose purple links in the show notes such that people have some follow up questions or want to get in contact with you.
+They can do it via Twitter or via LinkedIn.
+And then I guess I'm always up for a discussion on the recommender system.
+So please.
+So yeah, then I guess that's it for the first episode.
+Again, thank you and see you I guess on Monday.
+Bye.
+Bye.
+Thank you so much for listening to this episode of RECSPERTS, recommender systems experts, the podcast that brings you the experts in recommender systems.
+If you enjoy this podcast, please subscribe to it on your favorite podcast player and please share it with anybody you think might benefit from it.
+Please also leave a review on Podjazer.
+And last but not least, if you have questions, a recommendation for an interesting expert you want to have in my show or any other suggestions, drop me a message on Twitter or send me an email to Marcel at RECSPERTS.com.
+Thank you again for listening and sharing and make sure not to miss the next episode because people who listen to this also listen to the next episode.
+See you.
+Bye.

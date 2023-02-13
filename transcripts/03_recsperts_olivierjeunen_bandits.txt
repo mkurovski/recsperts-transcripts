@@ -1,0 +1,534 @@
+Note: This transcript has been generated automatically using OpenAI's whisper and may contain inaccuracies or errors. We recommend listening to the audio for a better understanding of the content. Please feel free to reach out if you spot any corrections that need to be made. Thank you for your understanding.
+
+If we want to have an evaluation of something like CTR but fully offline, well what you need is data of showing recommendations to people and recording whether there was a click or there was no click.
+And once you start doing that you can actually start thinking about, well, using that data for an offline estimate of online performance.
+Measuring and defining the rewards is one thing and then getting a system that is going to try and maximize this reward is a different thing.
+The main reason why Bandit learning systems have not been adopted in a majority of cases, I would say, is that you really need to have a modest action space.
+When you want to focus on Bandit learning, look at using simulation environments, don't shy away from them because they can be incredibly useful tools in making you really understand what happens when you basically change the environments a bit.
+How is this going to have an impact on the different learning algorithms that you're looking at? And that's really, really helpful in getting an insight into how different methods actually work.
+The simulator does not have to match reality. The simulator is not perfect, but it's a very useful tool in the same sense that using these sort of offline evaluations that we've been using for years are a very decent tool as well.
+Hello and welcome to this third episode on RECSPERTS, recommender systems experts.
+This time I have the great pleasure to welcome Olivier Jeunen to my podcast, who is actually a postdoctoral researcher with Amazon in the UK in Edinburgh.
+He has spent significant time on RecSys during his research on reinforcement learning Bandits and has become a renowned person within the RecSys community, also with very renowned companies that he worked for like Spotify or Criteo AI or Facebook.
+Yeah, it's a great pleasure to have you here on board Olivier. Do you like just to introduce yourself?
+Yeah, a big thank you first for a very nice introduction for inviting me. It's a big honor to be like in this list with the first speakers that you've had on your show.
+So I'm very happy about that. Yeah, so I basically finished my PhD just a few months ago in the RecSys field.
+And now I just started as a postdoctoral scientist working for Amazon trying to do basically the same research that I have been doing, which has been focused around trying to understand using Bandits for my recommendation, which is a very, very well term, let's say.
+But yeah, that's like the main focus.
+So you basically continue your research, just switching gears from academia to industry. Is that the case?
+Yes, yes, indeed. There are some small changes as well, let's say. Like my focus when I was in academia has really been on a slightly more theoretical nature.
+When you're working for a company, that's always going to be slightly different. I'm also part of the organization that's working on advertising.
+So you have this sort of aspect that's focusing on the recommendations, but you also have an aspect that's focusing on a bidder most of the time because you have like these sort of auctions in advertising.
+And you first need to win the auction before you can actually show an ad or a sort of recommendation to a user.
+So that's also like a second aspect that makes a problem slightly more challenging, I would say.
+But there certainly is a lot of the experience that I have from the last few years that I can bring with me to my new role. So that's always nice.
+Cool, perfect. So that brings me to the point when I always try to explain to people what I'm actually doing.
+And I talk to them about recommender systems, about different companies that use recommender systems and how they are displayed to the end customer.
+And then kind of every time people tell me, oh yeah, you are the one who is responsible for these cases when I, for example, search for a vacuum cleaner and then I navigate through the internet through different websites.
+And I'm always shown that very same vacuum cleaner. And then I try to convince them, yeah, I mean, this is advertising, but recommender systems is a bit different.
+Actually, recommender systems and advertising or targeted advertising borrow from the same techniques and they both belong to the greater field of information retrieval.
+But I'm always having kind of a hard time to really kind of nail down the differences. How would you separate these two from each other?
+Right, right. Well, one main example that I really like is actually when you think about Netflix or Spotify, for example, or any streaming based service where you actually pay for a monthly subscription.
+When I get a personalized playlist by Spotify, this is a part of the service that I'm paying for. I really enjoy having that.
+It's something that is going to allow me to discover new artists. It's going to sort of keep me engaged, which is really, really nice.
+And I have like a very diverse playlist and I don't really have to make a big sort of effort of looking for the songs myself and putting them in a list.
+You have these lists that you get on a weekly basis. And that's really, really nice for me because it's really a part of the service.
+When you think about something like advertising, well, you're not really paying for anything, right?
+You mean the advertising companies are sort of paying for your attention. And that's the catch, right?
+The main example that I really like is like the services where you pay for a subscription.
+But it's also not always the same, right? When you browse on a page on Amazon, there will be a list with certain items that we really think you might want to buy.
+And we really show them because it's going to better your user experience.
+You also have some ads because users browsing the website are not the only customers for a website like Amazon.
+You also have the sellers and they also need to have a nice experience. And there you get this sort of marketplace or trade off thing.
+And there these things sort of begin to flow into each other. And there's not really a very clear get difference, I would say, between a recommendation or something like an ad.
+But when you think about streaming services, I think there's a very, very clear difference.
+Yeah. So maybe one could say it's about recommendations if you pay for the personalization at the end user and it's about advertising if others pay for the personalization.
+Maybe this is a way of putting it. Would you agree?
+Not always, but sometimes certainly. There will also be websites where you don't have to pay and you will also get a list of recommendations that are solely optimized for you to make something nicer for you.
+Think about maybe a news website. There's no sort of advertisers saying that they're going to pay to get some news articles to be higher up in the list.
+So it's not something like advertising in that sense. It's really a recommendation.
+But it's still a bit different, I would say, to having a company that's trying to put together a sort of package of recommendations for you, like in a playlist compared to like a news website.
+It's a different aspect of the problem of sort of recommendation as well. It's a very broad sense, I would say. There are many, many ways to look at recommendations.
+Okay, okay. I guess I see the point. You can't make a hard cut between these two things because given the kind of platform you are having, it depends a bit how much the user's relevance is mainly defining what items are shown to the user.
+Or if it's, for example, in the e-commerce sector, where of course you have that multi-stakeholder problem to solve different targets you are trying to optimize for. And then, as you mentioned, you still also have these additional auctions that are involved there.
+I guess this is very interesting because it already brings you to the center of your research that you have spent four years with and where there are many of papers who have emerged from that.
+I find the title very interesting because the title of your dissertation is, Offline Approaches to Recommendation with Online Success.
+And I guess in one of the previous episodes, we discussed about one of their greatest problems in recommender systems evaluation, that you try to evaluate recommender systems based on offline data, looking backwards and trying to simulate different scenarios.
+And getting a good estimate of how your recommender might behave in an online, so real setting when you bring it into production.
+And the problem that you are trying to solve sometimes sounds unsolvable because it sounds like, yeah, to see how something works online, I need to see or bring it online.
+But you are somehow, together with others, solving this problem and trying to answer that question without that dependency. Can you give us some broad understanding of how it works?
+Yes, sure. Yeah, so that's the main problem of the results we get for our evaluations that we're doing fully offline.
+They don't match up with what we see when we do an evaluation fully online. The problem of mismatching results between fully offline evaluations and fully online evaluations is really something that's very, very interesting to me.
+There are many papers over the years that have sort of reported on this problem, but there really aren't many that have been able to solve it.
+But the sort of core of the problem is that we're measuring two different things.
+One of the things that we sort of have been doing for a long time is focusing on rating prediction, right?
+So you have a big matrix, you have a certain rating for a user and item, you try to predict what the rating would be for a user and a certain item that they haven't rated before.
+And then we say, okay, well, a decent model has a lower root mean squared error. And when one model has a better score than a second model, well, then that's a better model.
+But that's not really close to what we're doing in the real world, right?
+We show recommendations to users, and we hope that they like them, which is a very vague statement that that's not very easy to measure.
+But so, right, that is the goal that we have. We have moved away from this rating prediction task to sort of next item prediction, where you have a certain sequence of items.
+We want to be able to predict which other different items the user has interacted with in the sequence.
+And if we can do that, well, well, then we have a better system. But that's not necessarily true either.
+That's not what we're trying to do in the real world. We don't basically try to predict what you're going to interact with, right?
+We want to show something that leads to you liking it, to you sort of clicking it, to you streaming a video, to you buying a certain product.
+And so that's really what we want and what we need.
+So if that's what we're going to measure in this fully sort of online system, our fully offline evaluation should also be focusing on these clicks or these streams or the same signal.
+We try to predict something like CTR based on data of just people viewing certain items when there was no real recommendation involved.
+It shouldn't be that surprising that the results are going to differ quite a lot because you're making this assumption that these signals are the same, but they really just aren't.
+And then you can sort of start thinking about, OK, well, if we want to have an evaluation of something like CTR, but fully offline, well, what you need is data.
+Showing recommendations to people and recording whether there was a click or there was no click.
+And once you start doing that, you can actually start thinking about, well, using that data for an offline estimate of online performance.
+So in specific, you not only need to record what users clicked like or even how they rated stuff, but actually also what they have been shown, but never interacted with, such that I also can get or kind of replay their experience.
+During their user journey, is that correct?
+Yes, yes, exactly, exactly.
+And that's going to be the core problem as well, because this all works in theory when you have a recommendation system that is showing things uniformly at random.
+Because then there's no bias in your data.
+There's an equal probability of you getting a recommendation for basically the entire item catalog.
+And then you know that you will have a decent estimate of performance when you have a large amount of data.
+Because then when I keep gathering more and more data, I will have a sample for the entire sort of item catalog for the entire user space.
+And I will be able to know, well, if I have this type of user, I showed them this type of item as recommendation, I have a click through rate of this percentage.
+But the problem is that your system is not going to be showing things uniformly at random.
+No one wants to have recommenders that are showing items uniformly at random, yeah?
+Of course not. But this means that you have to make certain assumptions.
+You have to assume that maybe a grown man does not want to have a recommendation for something like a toy for little kids.
+You might want to make that assumption.
+And then when you move from this assumption, there's a system that is not showing certain recommendations.
+And then you don't have coverage from the user item space there.
+You assume that there's a low CTR anyway, so it's going to be fine.
+And you can make these sort of assumptions and then you can move along and get a decent offline estimate.
+But you're never certain whether these assumptions are actually going to be correct.
+And I would say that that's the main crux of the problem.
+When you don't show certain recommendations, you're never sure whether they would or would not have led to a click.
+Mm-hmm. So this means because there are many aspects that you just mentioned that I want to go into a bit deeper.
+Because I myself think that I haven't really figured that out of how to really enable this in a system or really technology-wise.
+So, of course, from theory, this sounds like a sound understanding, but sometimes it's just a question.
+What do I actually need to do in practice or with my system in order to ensure that all the items get a certain positive probability of being shown to a user or something like that?
+But still, at the same time, I don't want to apply a random recommendation because even for the, let's say, cold start users, there is a better way to go with, for example, to go with trending or with popular items or something like that, which should even be better as random stuff if you look to most of the evaluations in the papers.
+If you record everything, so what has been shown to the user, let's call it impressions, what the user interacted with, like what were positive and negative interactions, how do you resemble these assumptions that you are talking about?
+So, for example, this assumption of the grown-up who shouldn't be shown a toy for kids or something like that, how are you generalizing this and embedding it into a system to ensure you get the proper data to estimate everything correctly?
+Right, right. Yeah. So, the main sort of type of system that I hesitate to think about in my work is something called a policy.
+We call it a policy when it's a probability distribution over items being conditioned on a certain context.
+So, when you basically come to my store, I have a certain probability with which I will show basically a different item from the entire item catalog.
+And so, when this probability is uniformly at random, it's all going to be very, very easy, but that's, of course, not something that we would want.
+The main assumption that is often made in works is that the probability is never zero.
+So, we might have a very high probability of showing something like work tools for a man that is a grown-up.
+There are many silly stereotypes here, but that's going to be just for the sake of the example.
+Sometimes you can go with the stereotypes, it makes things easier, but of course, it's always important to be aware that there are stereotypes.
+Of course, of course. Exactly.
+But then, there will be a very, very small weight for something like a certain toy for kids.
+And so, we will then only show these recommendations very, very sort of infrequently.
+When the weight is going to be zero, when we never actually showed certain items as a recommendation, we can never learn whether they would be good or not.
+You mean that these specific items that have a very low probability will be shown, which means that they have a positive chance and that I'm still picking stochastically.
+So, I'm not taking the top K elements that have the highest probability.
+No, it means that I'm picking from my item corpus with respect to that probability distribution.
+And this yields the fact that I will sum when, even though it's very unlikely, show that toy to the adult person.
+Yes.
+Yes.
+When you don't do this, so when you would give it a weight of zero, so it really never gets sampled, that's fine.
+But then you need to know, like, the main assumption that you've made is that this is a bad recommendation for this type of person, and you will never be able to learn whether it actually is a good recommendation.
+So, maybe sometimes it's better to have a very, very small weight. You might show it's like one in a million cases.
+And then suppose you might have made a wrong assumption, you will learn this, like the signal will be in the data, that there actually is a high CTR, because many grown men basically have kids.
+So, it's a good recommendation to actually be showing these toys to them.
+And so, these are things that you can then learn from your data.
+And of course, it's going to be a very hard problem, because many items that have a very small probability of being sampled really are just not good recommendations.
+And so, there is this sort of trade off between doing like some sort of exploration or not that is going to make the problem quite hard.
+And of course, there is that point of interpreting context correctly, because your context seldomly tells you whether it's dead or not, but it tells you something different from which you might infer that this person is likely to be a dead and has a child, and therefore it might be yielding a higher CTR of showing that toy.
+So, it's not actually of achieving some certain positive probability for that item to be shown, but also I need to get some evidence to relate from context correctly.
+Is that true? Or yes, of course, this is even making the problem more complex.
+And what does this yield or what is the result of this?
+So, do we need really tons of data to solve for it?
+But and where is actually or let's maybe put it that way. So, where is actually the trade off collecting tons of data?
+And when actually are you able to say now I'm able to confidently predict my CTR based on offline data?
+Right. That's a broad question. So, I would say there's like a few different aspects to that.
+The first one being that I firmly believe that most of the power lies in the features that you have.
+Features are really often much more important than the model class that you're using.
+Whether you're using deep learning or sort of like a linear model, sometimes sort of simple transformation on your features can mean a lot without really changing your model class.
+And so, I think using information about the user history, using information about the items that you're showing, using information about really something like the context which devices are they using, these can have a huge impact.
+So, sometimes these are more important than having loads and loads of data.
+Now, the second aspect is that because you're going to be getting samples from a stochastic system, you do need to have a lot of them.
+And so, the main bottleneck really is that you need to have a decent representative sample of the action space.
+The action space is really often going to be the entire set of items that you have.
+When you have millions of items, this is really going to be a problem because you're going to sample from them.
+But most of the items are still never going to be shown for a certain type of user and you will not be able to get a decent estimate for the probability of a click on these items.
+And so, this is like the main reason why bandit learning systems have not been adopted in a majority of cases, I would say, is that you really need to have a modest action space.
+Or at least that's my personal experience.
+These things really tend to work well when you have something like a two-stage system where first from the entire item catalog, you have a first stage ranker that goes from millions of items to maybe a few hundred.
+And then from these few hundreds, you can start sampling and sort of build your stochastic policy there.
+But building the stochastic policy to sample directly from a few millions of items, that works seldomly.
+And the main problem is exactly what you said, you would need way too much data to actually get that working properly.
+So, these both things are kind of contributing to each other.
+Would you agree?
+The lower your action space or the lower correspondingly your corpus is, the less, lesser data you need.
+And of course, if it grows too big, then you need to apply some certain additional methods because having that probability distribution over millions or tens of millions of items is just not feasible.
+Right.
+And so, that's what I'm saying.
+But I'm not 100% sure that that's true.
+Because I do know that there's a very nice paper from Google about using reinforcement learning for YouTube.
+And YouTube is basically one of those cases where you have a huge item catalog.
+So, I'm not sure how they do it, but they seem to do it.
+And so, the main trick, I think, is really going to be to do some sort of variance penalization.
+Because what you're doing with these sort of banded learning systems is you are using some tricks to get some like an unbiased estimate of the CTR that you would get with a new policy.
+And then, of course, it's nice if it's not going to be biased, but this means you'll have high variance.
+And that's like the main crux of the problem.
+But when you trade in your sort of unbiasedness for lower variance, you can still do things.
+And you might not be able to learn a perfect system, but you can learn a better system.
+And if it's better than the previous system, we can sort of start in like a loop where our new system is better than the previous one.
+Now, this system is the one that's going to allow us to get more and more data from the live system.
+Using this new data, we learn a new system and we can sort of move towards a better system over time.
+Okay. I guess it's this paper on YouTube by Min Min Chen.
+Yes, exactly.
+We're going to write an archive. We will definitely include that in the show notes.
+Okay. It seems like a complex problem, but it also seems like some companies who have access to that greater data are somehow approaching its solution.
+And of course, you have also had the chance to look into these companies.
+So also in the advertising space, like, for example, with your engagement at Criteria AI Lab, or also on the other side where, again, we have that problem of a very large item corpus, given the tens of millions of different songs that Spotify might recommend.
+Can you share some of the insights that you got from your work there and how you were able to somehow exploit your theoretical findings in that practice or how you were able to generate from this practice additional theoretical insights?
+So how did, for example, the larger data or the access to larger data sizes help you in answering your research questions or which new research questions appeared during the journey?
+Yeah. So I really owe a lot of my thinking to the people that I've worked with at K2.
+I was there in 2019, so I was starting the third year of my PhD, and I joined the RekoGym project there.
+So RekoGym is a purely offline simulation environment, which you can use to basically benchmark different algorithms that are based on bandit learning for recommendation.
+And so I never had access to data while I was at K2 for the three months that I was there, which seems very silly because, I mean, you come from a purely academic desk and you're very excited to start working with real-world data.
+And so I was slightly bummed out at the beginning. I really didn't feel like a simulator would be useful because the way that I really thought about it was, well, this is some sort of chicken and egg problem, right? If we can build a perfect simulator of user behavior, well, then we know user behavior and we don't need the simulator, and there's no real reason to actually use it.
+But the people there really sort of were able to convince me that the simulator is not perfect, but it's a very useful tool in the same sense that using these sort of offline evaluations that we've been using for years are a very decent tool as well.
+They're not perfect because we see that there's no real sort of clear alignment between purely offline evaluation results and the purely online evaluation results.
+But still, we've made significant progress over the years. There must be value in them. And that's the same with using a simulator.
+So what does significant progress in that regard mean? So it already contributed somehow to refine what you are actually applying online there.
+And you are doing better even though you are aware of the fact that you are not doing perfectly and that it still works or something like that.
+Or what do you mean by that?
+Well, there are still many papers that purely do that evaluation based on a random time splits and looking at something like recall at K on the movie lens data set.
+And so we know that that's a flawed evaluation procedure when you're looking to increase metrics of user engagement in a real online system.
+We know that they don't really match together. But at the same time, we do see that the recommender systems that we're using in practice are becoming better.
+And there's value in using these more advanced modeling techniques. And so maybe the evaluation procedures that are very prevalent in the field or not a one to one mapping to success online.
+We do see that if you're much better in recall at K, there's a good chance that your system is going to be decently better in the real world as well.
+And so, I mean, it's not a perfect system. But of course, it's been very, very valuable to do that.
+I would say that the same is true with using rating prediction. That's really not the exact problem that we're trying to solve.
+But if your system is really, really good at rating prediction, then it's probably also going to be a decent recommender in the real world.
+If you actually show things to users and want clicks, for example.
+So one might rephrase that very popular term about whether models are useful or not.
+So you could, for example, say rating prediction is seldomly useful, but some are very or something like that.
+Exactly, exactly. And so, I mean, the exact same thing holds for using a simulator, I would say.
+It's never going to be perfect, but it can really teach you a few things.
+And so the main way that they basically got me to think about simulators is that it's a certain data generating process.
+You can benchmark different learning systems and you can see which system is better able to learn the data generating process.
+And then that process might not be very close to the real world, but we can show that, well, a different learning algorithm has a much better performance in a small sample scenario, for example, with a very skewed logging policy.
+And then we can really use these simple simulation environments to learn more about when certain methods are better or worse than some others.
+When talking about the simulation, it means somehow or it feels to me somehow like you are relaxing the requirements.
+So you don't want to have necessarily a simulation that is able to predict an online metric, but you relax it in a way that your simulation and what you do with the simulation is able to rank certain methods against each other and that this ranking of certain methods is in line with the ranking in reality.
+Is it somehow what you are doing and what already satisfies your demands or what you need from it?
+Somewhat, I would say. I would say that the main thing is that the simulator does not have to match reality, but the simulator has its own sense of something like a fully online experiment.
+So we can do something like an A-B test. We can really simulate that we show a certain recommendation to a user and then we have some true probability of a click, which we can sample from and then we observe the CTR for the system that we're trying to run in something like an A-B test.
+So we can do this for different systems. We can log the data and these really are just lines of, well, for this user, we show this recommendation and we got a click. For this user, we show this recommendation and we did not get a click.
+And then we can use this data to actually learn from. And this new policy, we can then deploy as well and sort of put it in like some sort of A-B test.
+And so this way of thinking, this way of learning from data is actually much more closely aligned to what you are doing in the real world, I would say, than using something like movie lens, where we actually take the ratings, we say that they're binary, we then build a matrix, we randomly sample some stuff out of there.
+I mean, it's a very different process. And so the ranking that you'll get from your simulated A-B test might not be perfectly aligned with the real world, but you've shown that for a system with similar learning dynamics as the real world.
+This method is able to actually get much better performance than this. And that's where it's something.
+Okay, maybe since there might be another problem, I'm interested in how you approached it, but we might need to recall for our listeners that general setting of reinforcement learning.
+And I will give it a try. Please correct me if I'm doing wrong, because you know better.
+So when we look at reinforcement learning, regardless of which problem we are solving for it, we have this different components.
+We always have that agent who is having an internal policy, and this policy is basically a mapping from the state.
+So for example, how I perceive the environment to two actions, and that could be deterministic, it could be stochastic.
+This is what we so far said, your policy is selecting from the available items of which one I'm going to choose next.
+And then the agent is basically the instance that is recommending that to the user.
+And then we see the user as part of the environment. So the things that the agent is trying to influence with its recommendations or decisions.
+And then we observe the environment, which means that we observe what the user is doing, how or whether he or she is responding to that recommendation.
+And that response is basically the reward that we receive. So whether the person is clicking it, buying some stuff or listening for at least 30 seconds to a song, then we say, okay, it's positive and I get a positive reward.
+And I'm kind of reinforcing the decision making process that I modeled. So I don't hear any interruptions to that point.
+But now we have been talking a lot about the simulation, the instance that is simulating how my environment, how the user responds to my actions, so to my recommendation.
+But so if we make, let's say, a slight tick mark behind simulator, even though we maybe need to investigate a bit more, which assumptions one needs with regards to the simulator, let's maybe shift our focus to the second component to the reward or to the reward generating process.
+How are you modeling this and approaching the problem of granting proper reward to the mechanism that tries to learn from that reward?
+Yeah, so that's a great question as well. The main thing that I have been doing in my papers is focusing on, we will call it a click for now, but it doesn't really matter if it's really a click or whether it's a different signal.
+And I now start to regret making this assumption always, because I think it's very important to think about what you define your reward to be.
+I mean, I've heard from many people at many different companies that just focusing on something like CTR really gives you a system that promotes something like clickbait.
+For news, these things are true. For Netflix, that's also true, because you are just going to start showing things that people are very likely to click on, but not necessarily the things that they really like, things that they really want to be shown.
+It's very hard to be able to measure two rewards, because I mean, the main thing we want is really just for users to be happy, for users to like the recommendations that they're seeing.
+Maybe they need to be novel, maybe we want something like serendipity, but these things are extremely, extremely hard to measure.
+Basically, you want the users to engage with a platform on a continuing basis that they stay as loyal customers, and then clicking is a bit different from engagement, because engaging means maybe to listen to a song fully, maybe to listen to a song multiple times, or to watch a certain episode of a series, not only for the first 10 seconds, but rather for 90% of its playing time or something like that.
+Exactly, exactly. And basically, even then, is the only goal to get the users more and more engaged? Is the goal of Spotify to get basically people to listen to music for 24 hours on a daily basis? Maybe not.
+Maybe there's also a certain point at which there's something like diminishing returns from getting more and more engagement.
+And so it's really a very hard thing to ask, I would say. It's much different when you think about advertising, because in advertising, the goal is to get clicks, because there's an advertiser that says, I want to buy clicks.
+So we need to show things that people are going to click on. And it's a very sort of clearly defined goal.
+But if we say that the goal is to make our users happy, that's much, much harder to actually measure. There was a talk by Ben Carderets, who's at Spotify at a meetup a few months ago.
+And the title of his talk was Measuring User Delight. And I thought that that was actually a very nice way of putting it.
+The goal is to ensure that users are delighted by the recommendations that we're showing. But how do we actually get there? Is being delighted the same as listening to something that we show as a recommendation?
+Maybe not. So maybe it's broader than that. And so measuring and defining the rewards is one thing.
+And then getting a system that is going to try and maximize this reward is a different thing, because really often it's not going to be a single number.
+And then you're moving into the realm of multi-objective reinforcement learning and things get really complicated really quickly.
+And so I think that that's also the reason why I've been focusing on bandits for so long, because it's a very basic instantiation of the problem.
+But I feel like we haven't been able to actually solve that really properly yet. So maybe we should do that before we move on to the harder and harder problems.
+Let's call it reward engineering is an open problem for the Rexas space when it comes to reinforcement learning. But you would somehow say it's an important problem, but not the most urgent one.
+The most urgent one would be solving about the bandit problem. Or is it true? Is it what you are thinking? Would you agree?
+They are certainly very closely related, right? We also need to define the right rewards for the bandit learning problem.
+So that's a very important part as well. But I think that before we're moving to full on reinforcement learning, we should linger with the bandits for slightly longer.
+Because the main difference, I would say, between reinforcement learning and bandit learning is that in reinforcement learning, you have a certain plan to get to a reward.
+You can take different actions, you get to a reward, and the reward gets sort of attributed to a sequence of actions that you have taken in the past.
+Whereas when you're looking at the bandit learning perspective, the reward is going to be somewhat instantaneously.
+When I show you a secret recommendation now and you click on it, the reward is only going to propagate to that action of me showing this right now.
+When you think about reinforcement learning, it might be that when you return to the system really often next week, that's going to be the result of basically all of the actions that I took this week.
+And you need to be able to learn which actions were actually leading to that good result and which actions were not leading to that result.
+And that makes things much, much, much harder.
+But how does this interfere with the motivation for applying reinforcement learning to the Rexas problem or to the relevance problem?
+When I recall papers within the RL4xO space, I always recall that thing, yeah, but we want to solve for the long term user engagement or delight or something like that.
+We don't want to just optimize for short term results, for example, which might even increase the click baiting effect.
+What do you think is a better direction, solving the bandit problem better before or even that view on somehow modeling the long term behavior of a user and doing that with reinforcement learning?
+So for long term rewards, I would say that reinforcement learning is the main tool that you need to use.
+And that's a very important research direction.
+And I'm happy that there's many people who are much smarter than me.
+We're really doing these things, which is great. But that's not something that I know too much about.
+And it's also the main reason for that, I think.
+In the past years, I've been lucky to do research internships at a few really interesting places.
+But I remain something like an academic at heart.
+And I am not used to using data from a real world system yet.
+And I think that might change. But most of us don't have the data to be working on reinforcement learning for long term rewards.
+Large companies do have that. They don't really tend to share it, which is also very understandable.
+But that does make it a very nice research area that is not really open for many people to start working.
+We could have different, more involved simulation environment.
+And then it would also be very, very interesting to work on.
+But that's not something we actually have at the moment, these simulation environments that are really focused on.
+Long term reward. I mean, it's a very important problem. I'm happy that people are focusing on it.
+The main reason that I basically haven't focused on it is because we don't always have the resources.
+It's always easy to get access to something like that.
+First of all, data to learn from and then a way to probably do an evaluation of these systems.
+So it's maybe for an independent researcher or a researcher that is working in academia first.
+Better to get started with bandits for access because their demand for data is not as big and you can get started more easily.
+And if so, how or what would you recommend to get started with?
+Well, for me, there is also a need for data.
+We don't really have enough data sets where there is a stochastic policy showing recommendations to users.
+We have information about this logging policy.
+We have information about the weights of the probability distribution.
+We really don't have enough data sets of that either.
+So that's also one of the reasons why I've been focusing on these simulation environments for so long, because they're just much easier to come by.
+And so we do have a few ones that I believe are really tested and true for the bandit learning problem.
+When we're moving towards the reinforcement learning problem, I think we need to first build these simulation environments before we can then start looking at using them to solve different problems.
+So my main tip would be when you want to focus on bandit learning, look at using simulation environments.
+Don't shy away from them because they can be incredibly useful tools in making you really understand what happens when you basically change the environments a bit.
+How is this going to have an impact on the different learning algorithms that you're looking at?
+And that's really, really helpful in getting an insight into how different methods actually work.
+Okay.
+So getting back to that simulator again, of course, your simulator has to have some certain assumptions.
+How are you building these assumptions or how are you basically building the simulator for your environment?
+The main thing is, again, to be very explicit about your assumptions, know that they're going to be wrong, but sometimes they might be useful.
+And so the one that I've been using, Reiko JIM simulator, is using a latent factor model in the background.
+And so that's really just the same assumption that basically has been made by the majority of works in the recommendation space in the last few decades, that there is a system in the background where you have a vector for a user, there's a vector for an item, and the affinity between the user and the item is directly correlated with the dot product between these two vectors.
+So that's, I would say, the main assumption that we have in Reiko JIM as well.
+And then this score sort of put into a few smart sort of transformations, and then we can define a probability distribution based on these scores.
+So the probability of you going to click on a certain item when I show it to you or not is going to depend on whether the vector that I have for that item is close to the vector that I have for you as a user.
+That's the main assumption that we have.
+But then there's so much basically on top of that being that I never see your vector, I get a sequence of items that you've looked at, and I need to try and infer a vector for you.
+I never get a vector for the item, I just know which types of users look at which certain types of items, and then I need to infer a vector for that.
+And so the learning dynamics that you have on top of that, the sort of different layers there, they are sort of equally important as whether you're using a latent factor model in the background or something different.
+Okay, I see. And then you still use some data to basically get this simulator to adopt to a certain setting first, or how do you start the simulator?
+Yeah, so that would be one possibility as well.
+So I know there are a few simulators out there that allow you to actually sort of train them on data and then start simulating from there on.
+That's not something that I have done actually.
+So I always just start from scratch.
+You randomly generate a bunch of user vectors, you randomly generate a bunch of item vectors, and then you start sampling user item interactions that are likely to happen based on that model.
+And so this is why when you're doing it this way, you get certain results.
+The ranking that you get for different algorithms is never going to be exactly the same as what you get in a real sort of A-beta, but it might be similar.
+So still something quite useful to use. And yeah, I've also seen that the success is speaking for itself, because in 2020, you actually led a team and contributed to the RecoGym challenge and finally also managed to win the challenge.
+So if not already covered so far, can you share some insights about how that challenge went like and what actually the goal was and how you managed to win that challenge?
+Sure. Yeah. Yeah. Yeah. So the main goal was really that for a certain setting of RecoGym, we had to build a certain agent. So a system that is able to learn from logs of recommendations, define a certain policy that is going to say, hey, when I get a user with these features, what am I going to show?
+And then you had to submit the code for your policy.
+So how it's going to learn and then how it's going to act based on what it has learned.
+And then they were going to put that in a simulated A.B. test to see whether it actually was able to do better than the competing methods.
+And so I was B.C. students back then. I was co-teaching a course called Data Science Project for Master's students.
+And we decided to look at it as like a team and see whether we could actually win.
+There were some great students with very smart ideas. And so we were very lucky to then be able to win in the end.
+The main things that we've learned there for me are the first one was using variance penalization on your training data.
+So it's always nice to have an estimator that is fully unbiased, as I said, but your variance is going to be huge when you have small data sets.
+And that's what we had. So you really want to trade in bias for variance.
+And the second thing was that we built a policy that did not only learn from the training data that it got, but it's kept on learning during the A.B. test as well, which gave huge boosts too, because we really got a very, very small training set.
+And then it's really nice to be able to do this sort of explore exploits type thing where we have a certain offline data set, which means there are many recommendations that we have no idea whether they're actually good to show or not.
+We're not going to show most of them, but a few ones that are promising, we're going to show a few times in the beginning, see whether they give us clicks or not, and then do a model update based on what we observe.
+It's one experience from a master's course and on a purely simulated environment.
+But I really think that it's an insight that is sort of transferable to the real world as well.
+That's if you have a system that is able to keep on learning from the data that is collecting, you are basically always in a good spot because you can keep on improving and improving.
+And that's immensely useful.
+Yeah, very cool stuff, I guess, from the perspective of our PhD student who can lead that whole project and also from the student that can learn from your experience and contribute to something and directly see the outcome.
+So, for example, the best outcome by winning the challenge.
+But even though, I guess, every team that is participating in these kinds of challenges also, I guess, the Rexas challenges can profit from it.
+And it's always, I guess, nice to engage with something that is not that artificial and there's a challenge set up and if there's some real data behind and you can really see how different methods change the outcome.
+I guess it's really, really a nice feedback that is gold for learning, I would say.
+Yeah, indeed, indeed.
+Yeah. And so, I mean, the main reason that we won was really because of the students.
+I was very lucky to have a team of very engaged students who were really, really sort of adamant about really doing their best for it.
+It's a nice course for a master's student as well because you really have this hands-on project.
+It's also a nice course if you're like a PhD student who needs to do some teaching.
+It's also a nice course to do because, I mean, it's much more fun than grading math exercises or something like that.
+So, yeah, it was going to be a win-win situation.
+So, are we going to expect some students in the future from University of Antwerp to participate also in further access challenges or what do you think?
+Who knows, who knows. I have no idea if there are any students who are further exploring this.
+Maybe they weren't sort of as positive about the experience as I was, but, yeah, they might.
+Yeah, maybe you left some kind of heritage or legacy that they might be inclined to look after it.
+So, I guess it's always a nice chance to learn something, especially given some access to real data.
+Like, for example, we had this or last year with the Twitter RecSys challenges or the years before with data by Trivago or Spotify.
+I guess this is always really nice way of playing around with stuff and check out which approaches work and which don't.
+And also see what are kind of the real challenges in reality.
+Maybe as we have been talking so far a lot about bandits, I found something very interesting in your blog post that really blew my mind because it was so simple, but still very elaborate in a way that you made that distinction that people are making seldomly in the RecSys space.
+The distinction between organic and bandit feedback. Can you briefly introduce us into that distinction?
+Yes, yes. So the main difference is what we call a sort of fully organic interaction between users and items.
+That's an interaction where we assume that the system did not have any sort of influence on the user interacting with a certain item.
+So that's really the user is going to a certain website, they browse a list of items, they look at certain items, they might buy a certain item.
+And so we assume that there is no sort of recommendation system in place that is sort of pushing the user towards a certain item.
+And so that's very, very useful data because there is no bias there.
+There is no system that is actually more likely to show a certain thing than a system that's less likely to show a different thing.
+When we talk about bandit feedback, that is really the system showed a certain item to the user and they got a click or no click.
+And so that's really biased because the system itself is choosing what we're showing and what we're not showing.
+And so that's really, really interesting because when you want a system that is, for example, going to maximize CTR, which is probably a bad idea, but we want to maximize some notion of rewards.
+Well, showing things to users and noting the rewards and learning which actions lead to rewards is clearly going to be the best thing you can do.
+But the problem is you need a massive amount of data.
+Yeah.
+We also have these fully organic user item interactions, which are a much weaker signal though, because you know, you might have looked at certain items, you may not have liked them.
+A page view on a website is not a one-to-one mapping with a reward when we show that to you.
+Mm-hmm.
+But it might actually be useful. And one of the main reasons is that, well, there's no biases there.
+So we can just learn from these fully organic user item interactions as well.
+Okay.
+And so I think that these go hand in hand, but most people don't make this distinction.
+One of the reasons for that is I think that most of the data that we have is fully organic or we assume it to be fully organic.
+Mm-hmm.
+And that's when we actually want to measure something online, what we want is bandit data because we actually want to show things and see whether they lead to a reward or not.
+This is quite interesting that you are bringing up that perspective because I was already about making the hard statement of in the end, isn't all feedback bandit?
+And now you are saying that most of the feedback or we are making the assumption, which are two different statements, is organic.
+You are just making the assumption, but in the end, almost all feedback is bandit or what do you think?
+I mean, it's hard, I would say.
+It's getting philosophical now, right?
+No feedback is ever truly organic. There is always some aspect of the system, whether it's the UI, whether it's, I mean, when you search for something, the search system is also a bandit system, let's say.
+Mm-hmm.
+There is always going to be some sort of influences. So even the organic feedback is not purely organic.
+We're thinking of maybe the selection bias of the logging policy that is showing these recommendations.
+Maybe when that's the bias that we're trying to mitigate, maybe we can assume that things that are not coming from that system are somewhat organic or organic enough for the sakes of what we're trying to achieve.
+But you are correct that there are biases basically everywhere and we need to live with that and we need to make certain assumptions.
+But yeah.
+But if you would draw that reasonable line, then will it still be the case that most of those feedbacks that we are receiving is bandit or rather organic?
+That also depends. I would say that most of the feedback that life systems are getting is probably bandit.
+But most of the feedback that we have in our publicly available datasets is assumed to be organic.
+When we take movie lengths, for example, a user needs to rate a few movies from the entire list of movies.
+When they get to basically pick the movies themselves, we can say that there is no selection bias from the system and then it's fully organic.
+When we basically give a list of movies that we want the user to rate, then it's going to be bandit.
+And I'm not entirely certain how the system is actually showing these things, whether the feedback is mostly organic or not.
+I'm not really certain about that. But I think that most of the papers that I've seen and even the ones that I've written, they assume that it's organic for the sake of learning and for the sake of evaluation.
+Because when you're doing evaluation and you assume something is organic when it's in fact bandit, there's a selection bias that you're not going to be taking into account.
+You're going to get a sort of biased estimate as well in the end.
+Yeah, that makes sense.
+Okay, so far you also mentioned that Reko Jim a couple of times and since then I guess there also appeared additional simulators that specify on the Rexaspace.
+Have you also tried out those? So for example, I guess Google, they brought up Reksem. I'm not sure what happened to it.
+But if you look to that space, is it still Reko Jim you would recommend trying out or is there also different ones that you say, okay, they might be worth having a look at?
+Right. I would say that really depends on what you're trying to do.
+So I know about the one from Google as well, the Reksem NG. And I think as far as I'm aware, and I really hope that I don't really butcher this.
+But I think their focus is also on long term effects of having a recommender and things like filter bubbles and long term effects in marketplaces where suppose we have certain sellers on a marketplace.
+If you never show them as a recommendation, maybe they don't get enough income from being on the platform and they might leave the platform and this is not healthy for the platform in the long run.
+So I think that that was like one of the use cases that they really tried to tackle like this sort of long term things. Reko Jim is really focused on short term things like you need a policy that is going to do well in an A.B. test.
+And that's it. There are some others as well, but I'm not really well versed in that. I do know that there's I think last year at the reveal workshop, there was this new package called the open bandit pipeline.
+Yes, I remember that as well. And so that one seems extremely promising. So they have a simulator that is based on real world data, really with the goal of evaluating of counterfactual learning methods.
+So that's either for offline evaluation or for learning a system from off policy data.
+Yeah, I actually remember that workshop from this year's RecSys where we were talking about off policy evaluation and off policy learning that great workshop given by Toss and his student. I don't know the name of Yuta Saito.
+Great guy. So it was awesome to follow that workshop because it really blew my mind and there were so many things. Exactly.
+I was question marks beforehand and then it was just making click all the time when I was following it. You need to really follow it intensely, but then things start to make sense.
+And there are, I guess, still many question marks in my head, but some of them were erased and I'm really grateful for it.
+And they actually also came up with that open bandit or referred to open bandit pipeline. And I guess there were some scenarios which they tried out in the open bandit pipeline.
+So if someone wants to get his or her hands on it, then this might be a good recommendation to start with it.
+I have seen that you are also going into other conferences. So I guess the last thing you did is giving a workshop at NeurIPS just as of this month, since we are recording December 30th.
+What was that workshop about? And can you give us some link from NeurIPS to RecSys there?
+Yes, sure. Yeah. So the workshop was called Carsel Inference and Machine Learning. Why now? It was like a very provocative title.
+And so the main focus of that workshop was actually looking at the intersection of machine learning and sort of call it inference, which I thought was very, very interesting.
+So it was not focused on RecSys basically whatsoever. So how I stumbled in there was I did a research internship at Spotify last summer.
+I mostly worked with Kiran Lee there, who is a senior research scientist. And he really is a sort of call it inference expert.
+And I had mentioned that I would like to be more proficient in using these techniques.
+So I have been trying to use some ideas of counterfactual learning for recommendation problems. And that has worked rather OK.
+But I really wouldn't say that I know a lot about things like causal inference because it becomes a rather theoretical rather quickly and rather mouth heavy.
+And then I sort of tend to doubt whether it's really something that I can try to contribute anything to.
+I was able to work with him for three months and he was just great. I learned so much.
+It was really great because where I would normally I think need to spend a week understanding two papers, he was able to explain them in like 30 minutes and give like the broad sort of intuition and be like, hey, that part looks really, really hard.
+But it's really just saying this. And so he really sort of gave me like a speech course in causal inference.
+And I was able to get some sort of contribution much more quickly than I would have been able to do by myself.
+So I am really grateful to him for that. And that was really just great.
+So what we did in the end was rather theoretical work about applying sort of causal inference to machine learning.
+And the main sort of problem that we were looking at is trying to tackle is when you have data with multiple interventions.
+But you try to learn the effect of a single intervention. And so one of the main examples that we had for Spotify is, well, suppose we have a certain promotion where we want to show a banner to a user like, hey, there is this new sort of musical album for this certain artist that you love.
+And we want to show a sort of pop up when you open the app. Yeah.
+We might have different promotion and we might have users that are in the target group for different promotion.
+But we still want to learn the causal effects from a single promotion on that user's behavior.
+And so we have basically two interventions in our training data, but we want to be able to sort of disentangle these interventions and learn, well, this promotion was great for this user, but the second promotion maybe wasn't great for this user.
+And so being able to try and disentangle the causal effects from sets of interventions, it's not an easy problem.
+And so that's the main thing that we show in the paper is that when you really don't make any assumptions, it's not possible.
+When you make certain assumptions, it really can be possible to learn the effects.
+We prove that and we have a learning method in the paper as well.
+That sounds interesting. It also sounds like a relevant real world problem that you might run into in different areas where you have many different effects working at the same time and somehow influencing user behavior, but can't be very sure what the different effects are.
+Exactly. Exactly. I mean, when we show a set of recommendations to the user and the user is going to come back to the system really often from now on, which one of the set of interventions was actually the one that had a really positive effect.
+So that's I mean, it's all like in the same space, let's say.
+Yeah, so so far, after these many aspects, I have to quote a sentence that I actually found in the acknowledgments of your dissertation, which also somewhat describes my current status because you said, I have learned so much.
+And maybe the most important insight is a fact that I still know so little. So I really liked that one.
+It's, it's always like you become more and more decent, the more stuff you learn because you are, you begin to recognize how much you don't know, but it's also a nice thing because then you know what you could still learn and start engaging with.
+So really nice that you said, okay, I want to learn more about causal inference.
+And now I get on board with Spotify research and there's a great mentor.
+And then he kind of facilitates you to bring up a workshop at NeurIPS. So congrats to that. Exactly, exactly. Thank you.
+Yeah, I mean, the main thing that I love about this sort of career being a research scientist is really just that you get paid to learn on a daily basis.
+Of course, you need to learn quickly and you need to be able to apply what you learn.
+But still, I feel like I'm really getting paid just to learn more about what I find interesting.
+I someday still really can't believe that that's my job. Like it's it's amazing. It's like what I would have dreamed of when I was a kid.
+Just being able to learn and really get paid for that. That's really like the dream.
+This sounds really great. Looking forward into the future. So far, I guess you have had a great year because you published two papers at this year's RecSys.
+One of them was best student paper. So congrats to that. I saw that tweet and you are really not someone that is showing off with his success.
+You earn it. You are doing great stuff there. So congrats to that. So giving the many challenges you see in the RecSys space, given your current work at Amazon.
+What would you say are the greatest challenges in the RecSys space?
+Of course, this is a broad question, but what is something maybe that you are interested in in solving?
+Yeah, so the main subject that I think is like the line between the work that I've been doing over the last two years is really trying to figure out what it is that we are trying to optimize for.
+How do we actually ensure that we have a system that is going to sort of be optimized for what we want it to be?
+And so that's not always just clicks. That's not always just streams. That's maybe even not always just more revenue for the company.
+Maybe there are different aspects as well that we need to take into account and really think about where do we want to go?
+How do we measure where we want to go? How do we ensure that where we're going is the right place?
+And how do we then find systems that maximize where we're going?
+And so I would say like one example of that is also the second paper that I had at RecSys this year.
+The focus that we had there was really about fairness, fairness of exposure in marketplaces.
+And so the main example that we used there was about musical artists on a streaming platform.
+So maybe the system wouldn't just need to focus on maximizing the engagement of the users, but there also maybe the system wants to give a chance to lesser known artists to actually sort of push them upwards in the recommendations.
+So they might actually get a chance to live off of their art and they actually get shown to more and more people.
+Yeah, very important.
+That might be like a sort of long term effect that we might want to maximize, but realistically might not be able to measure with the systems that we have right now.
+So reward engineering might not really be very simple here, but how do we actually ensure that the sort of impact that our platform has on the economy, on the world, on many people's lives?
+How do we actually ensure that that's going to be a net sort of positive impact?
+And I think that that's really interesting and also really, really important.
+Yeah, I see. This is going to be a great challenge because of course it's also object of many criticism in the RecSys space from the inside, but also from the outside.
+So I guess focusing to research that better and approach a solution is, I guess, a great thing that might also be beneficial for not only the e-commerce area that you are currently in, but also for the other areas.
+And I guess your experience within other areas you could benefit a lot from to maybe translate and then to see how you can bring it to work at Amazon.
+So yeah, looking forward to next year's RecSys, where you are also a web chair at RecSys 2020 in Seattle, which now perfectly aligns with your current company.
+So is there something that you are preparing and that you could already talk about, or are you surely presenting us another nice paper or just looking ahead and maybe, yeah, recovering a bit from the stressful years as a PhD student or what are your plans?
+That's still very unclear to me as well. So in the past month, I've moved from Belgium to the UK, which has been great, but it also means that research-wise it hasn't been a very productive month.
+I have some broader ideas that I would like to get into a paper. Whether that is something that I would be able to do in the next few months, I'm not entirely certain about that.
+I have some nice collaborations coming up as well. So I actually am meeting with Yuta Saito very soon to really talk about our shared research interests.
+So maybe some nice paper will be able to come from there. We've been thinking about organizing a workshop. So there are many, many ideas, but we will have to see which will actually come to fruition over the next few months.
+It will definitely be worth a recommendation. So I have no doubts there. And I also look forward that it will be a conference where even more people could meet again in person, even though it's a bit far for us.
+I definitely enjoyed it this year after one year of remote only, which was also nice, but not as nice as to meet the people in person. So really looking forward to meet all the RecSys folks again in Seattle next year.
+So let's hope for the best there.
+Yeah, exactly. Since you just began to extrapolate from your work to give some advice there, maybe I can catch a last advice from you. So if there is something that doesn't need to be RecSys specific, could also be our researcher career specific that you want to give to the listeners, what would that be?
+The main advice that I want to give is you need to make sure that you're in an environment where you can keep on growing and you can keep on learning. And something that I've really, really enjoyed a lot and I've been very lucky is that our research group in Antwerp is not the biggest.
+There aren't lots of different postdocs with a lot of research experience that you can actually learn from. And when I then actually went first off to Cretao, I suddenly was there in a team of experienced researchers.
+And I maybe understood around 30% of what they were saying, which was horrible in the beginning. I felt super sort of dumb. Just I really felt like a sort of classical case of imposter syndrome.
+But as you get over it, you realize that there's just so much you can learn from these people. And that all really went rather well, I would say. I learned so, so much to really bring back to Antwerp.
+And then the same at Facebook, the same at Spotify, I've been lucky to be able to surround myself with people that are much smarter than me. And it really allows me to keep growing. And that's just great.
+And I would say that that's like the main thing that I really want to keep searching for in a work environment. If I don't see an opportunity to really keep growing, and that's not in like a sort of career wise level, but an opportunity to keep on learning new things.
+As long as I have that, I'm good. If that's no longer there, maybe look for a different opportunity. Yeah, I guess that's a great advice. Thanks for sharing that.
+To start concluding, there are two interesting final questions that I want to bring up and they are maybe, maybe not easy to answer for you. Thinking about all the different personalized products in the Rexha space. What is your favorite one?
+So what is your favorite personalized product that you like? Very, very biased. And I think that's clear. But I'm going to go for the Discover Weekly playlists that I get from Spotify.
+I really like it. One of the reasons being the advice that I gave a bit earlier about, I think it's great to be able to learn about new music from musical artists that I like, that are not necessarily very big already, or very well known already.
+And I think it's nice to be able to support bands in that way as well. I used to go to many musical shows, I used to really be sort of really trying to follow the scene. I don't really have time for that anymore.
+It's all then just very nice to have a system that sort of does that for me. And I just need to listen and love the music. And that's really, really great.
+I'm perfectly aligned with you on that point. So it's also the Discover Weekly for me. If one would ask me that question, which person would you like to see in this show?
+Who would I really like to hear on this show? I have been very interested in the work of Michael Xtrands in the past few years. I think he's also really been focusing on a lot of applications of fairness in the recommendation space, which I think is hugely important.
+In that same sense, people like Ben Carderets, who is a professor at University of Delaware, but also works for Spotify, if I'm not mistaken, that would be nice.
+Cool. Pipeline is growing for next year. Thanks for it. And yeah, thanks in general for sharing all these interesting insights with the RecSys community, and especially with allowing us to understand a bit better what bandits in terms of RecSys mean and what you have been doing in the past and what you might be doing in the future.
+So really, really appreciate that you took the time and that we managed to have this interesting talk. So I also, again, learned interesting new stuff and my paper list is growing continuously. Thanks for that.
+So yeah, it was a great pleasure, Olivier. Thanks.
+Yes, a big thank you to you myself. I'm very glad that you thought of me. I'm really very glad with basically any opportunity to be talking about my work or just like the sort of open problems in using bandits for basically anything.
+So yes, a huge thank you. I really enjoyed it. I hope that the listeners will enjoy it as well.
+Cool. If they have any questions, where can they reach out to you?
+There is an email address on my website. So if you Google me, you'll find it. It's a Gmail address. That's going to be the best one.
+Perfect. And I will include that also in the show notes that people can can find you and ping you. So any follow up questions? Yeah. So thanks again. And see you somewhere at RecSys or somewhere else.
+All right. Goodbye. Thanks. Bye.
+Thank you so much for listening to this episode of RECSPERTSs, recommender systems experts, the podcast that brings you the experts and recommender systems.
+If you enjoy this podcast, please subscribe to it on your favorite podcast player and please share it with anybody you think might benefit from it.
+Please also leave a review on Podjaser. And last but not least, if you have questions or recommendation for an interesting expert you want to have in my show or any other suggestions, drop me a message on Twitter or send me an email to Marcel at RECSPERTSs.com.
+Thank you again for listening and sharing and make sure not to miss the next episode because people who listen to this also listen to the next episode. See you. Goodbye.
+Bye.
+Bye.
+Bye.
+Bye.

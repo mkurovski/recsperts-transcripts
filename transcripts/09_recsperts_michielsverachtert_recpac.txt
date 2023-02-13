@@ -1,0 +1,825 @@
+Note: This transcript has been generated automatically using OpenAI's whisper and may contain inaccuracies or errors. We recommend listening to the audio for a better understanding of the content. Please feel free to reach out if you spot any corrections that need to be made. Thank you for your understanding.
+
+We want to be doing experiments and we want to be doing them like easily and quickly, but for us, it's also really important that when we develop an algorithm and it works that we can use it in production.
+And for that, you need a very clear interface.
+You need to be able to test your code, all of those things.
+And that's how we started developing RecPack.
+And now when I have to write an experiment, I just get happy because I get to use this framework and it doesn't matter if I'm having a shitty day.
+It doesn't matter.
+I get to use this amazing framework.
+I think a lot of people default to the weak generalization and strong generalization split.
+We want people to be thinking about the use case.
+So that is where RecPack we have implemented a suite of 20 algorithms.
+So if you want to develop a new item similarity algorithm, you'll find quite a lot of baselines to compare against, but then also the boilerplate you would need to start your own item similarity algorithm.
+We've succeeded in our goal that it should be really easy to add another algorithm to RecPack.
+And we're hoping also that people will start developing their own algorithms using RecPack.
+Let's just use the scikit-learn interface.
+Like it's standardized.
+People know about this interface.
+I had used it before.
+We are limiting ourselves, but the gains of the intuition is so big for new users.
+Hopefully when you use RecPack, our goal is that you feel like you already know it before you know it.
+When should we retrain our models?
+What's the impact of not retraining a model?
+And then now more recently, I'm focusing on what data should we use to train our models because we have these big static data sets provided to us by companies.
+But maybe, especially in news contexts, we shouldn't just use the whole data set to train our model, but just use like recent data.
+Things change so rapidly.
+And I mean, it can be during the night, nothing changes.
+But then in the morning, a new article is published and another new article is published.
+And then the first one that was published is already no longer relevant.
+People are just interested in the newer news.
+Doing recommendations in a production setting is always a trade-off between accuracy, cost, and timeliness.
+Hello and welcome to this new episode of RECSPERTS, a recommender systems expert.
+We are meeting for the first time with two people that we have on board.
+I welcome Lien Michiels and Robin Verachtert from Froomle and the University of Antwerp.
+Hello and welcome to the show.
+Hello.
+Hi, glad to be here myself.
+Thanks for having us.
+Thanks for participating.
+In this episode, we are talking about RecPack, so the new recommender systems package for Python that you both developed.
+We will also talk about what Froomle is, what Froomle does, and how Froomle is doing personalization for its customers, and also touch on the research and just give a tiny look ahead on what we are going to expect at RecSys, especially from both of you.
+Starting with Lin, can you just give us a short introduction about yourself, what you're doing?
+I mean, you are a researcher at the University of Antwerp, but at the same time, you're also a machine learning engineer at Froomle.
+Can you just shed some light into what you're doing in both of these positions and what your main topics are?
+Sure.
+I think it's going to be very similar for both myself and Robin, because we both started out at Froomle around the same time.
+Both of us are indeed researchers at the University of Antwerp.
+We're trying to pursue a PhD, both of us close to finishing up, hopefully.
+Always a bit of a question mark, of course.
+So, yeah, we've been working at Froomle for the past little over four years.
+At first, so it's a kind of industry-academia collaboration that is quite common in Belgium, but I don't know if it exists in your country, in Germany, or in other countries.
+But the idea is that you do research that is relevant to industry as well.
+There's a really strong connection.
+It's supposed to be quite applied research.
+So four years ago, or a little more than that, when I started out at Froomle, we were still a super small company.
+I think Robin and I were two of the only engineers present there.
+So we really built Froomle from the ground up as a product.
+Of course, the company already existed, but we really helped shape the product and helped it become what it is today.
+So a recommendation platform mostly used in a news context and also a little bit in e-commerce.
+And then we did that, I think, for about two years, somewhere around that time.
+And after that, we started focusing on our research and using everything that we learned from interacting with our customers over those past two years, everything we learned from building the products, all of the challenges we faced there.
+And we tried to kind of bridge the gap between the research that we were reading from the conference and other conferences, like the web conference and wisdom and everything that was happening there, which the gap to what we were doing in production, which was very different at the time.
+And I think RecPack really takes center stage in that, but we'll talk about that later, because it's one way we've tried to bridge the gap between that production thing we were doing at Froomle and then the research that we were reading that's happening in academia.
+Thanks for sharing that.
+So that sounds definitely cool.
+And I guess we have some of these programs also in Germany.
+What you mentioned, we said, I guess it's called industrial PhD, or at least this is what I got when I looked at your LinkedIn page.
+So bridging the gap from practice to academia and vice versa, it's just somehow for more, for me it seems like explicit form of collaboration or of mutual benefiting in the recommender systems research common unity.
+We saw this also in many cases, just in a more implicit way that people who you would assume only do research also somehow later on apply the research and practice or they directly somehow collaborate with companies and for example, publish work together.
+So but I guess this idea is very, very good and interesting.
+So I like that you share this experience.
+Robin, what about you?
+So I guess, Lien, she already mentioned you both are industrial PhD researchers.
+But you name yourself data scientist.
+So what are you doing differently?
+Or just can you share what is your work?
+What are you doing at Frumo?
+What are you researching?
+I guess it's just the name on LinkedIn is just a name.
+We've been given various titles at Frumo in the past.
+And I guess I just stuck with the one that was given earliest and never updated my LinkedIn profile or whatever.
+No worries.
+I mostly I think less likely instead, we worked on the products in at the beginning, just like working together to get it to a state where it is.
+It was like two years ago now.
+And then I was able to actually focus more on my research trying to get like figure out a little bit more about simpler models that we could apply in practice because we saw that a lot of like RecSys papers were about like these new neural networks and stuff.
+And then around the time when I started like actually looking at research, that was when the first paper started coming out, like maybe these neural networks are not as good as they claim they are.
+And maybe we should go back to simpler models.
+And so that's been like my major focus for the past two years.
+It's like looking at simpler models and how we can actually use them in production and make them just like doing small tweaks, but optimizing them that way rather than going to these huge deep neural networks to make like recommenders.
+Yeah, that sounds pretty valid and interesting.
+And I guess it also really well fits the experiences that were shared within their most recent years.
+So every second episode remembers me of that 2019 best paper where you have seen those yeah you could also maybe I don't want to under undermine what you have talking about or make it less important but somehow you sometimes also could refer to them as baseline methods.
+But then you really see that baseline methods are very competitive if tweaked properly if applied in a proper sense and then you see that for example some KNN algorithm is outperforming some I think you mentioned fancy neural network stuff or something like that.
+It was one or two months ago when Florian Wilhelm, a good colleague of mine and also very involved with the RecSys community.
+And I guess, Lien, you both also worked on a paper this year that you published at Flares.
+He somehow just wrote me a message and Slack and told me, hey, there's a new recommender package coming up.
+It's called Rackpack, check that out and maybe you can apply it in your project.
+It was actually the first time that I heard about Rackpack and of course the name so yours and Robbins were present to me.
+My first thought was also okay this might have somehow evolved from Prümel and what you have been doing there.
+Can you give us an impression or share your experience?
+How did this evolve?
+So how did you came up with the idea of creating your own Python recommender package?
+So we started creating a Rackpack back in 2020 just when we started switching from working more on the production side of things from all to doing research.
+And the main reason we created Rackpack was because we wanted to easily be able to test a lot of algorithms because we wanted to evaluate if we wanted to be using them in production.
+So we started looking at first at what was available but at the time there was far less.
+I think I remember only Surprise and Implicit being well known of the packages and neither of them really fit our purpose.
+Surprise was focused more on explicit feedback which is not the type of feedback that we collected from Prümel.
+Implicit was really difficult to extend if I remember it correctly.
+So we looked around, we started reading some papers and we noticed that a lot of people were also not using these packages but releasing their code that accompanied the papers and notebooks that were posted to GitHub and a lot of copy-pasting between these notebooks.
+Every time I was seeing them train test split code and the same metrics being copy-pasted between people and then we thought, okay, well, we want to be using, well, we want to be doing experiments and we want to be doing them easily and quickly but for us it's also really important that when we develop an algorithm and it works that we can use it in production and for that you need a very clear interface, you need to be able to test your code, all of those things.
+And that's how we started developing RICPAC a few years back.
+It took us a very long time to open source it mostly because while we work within a company and open sourcing things it's like not obvious to most companies.
+It takes a long time.
+A lot of lawyers have to be involved.
+So we're super happy that eventually we did get it open sourced and it's available for everyone to use now.
+But the advantage of that I think is that we've had two years to work with RICPAC and develop RICPAC and if you'd go back in our history to the initial versions you'd see that a lot has changed.
+Like we changed the interfaces completely the entire way how it works.
+I think we have four different iterations of the pipeline.
+But we're really happy with the way it works now.
+We think it works really well and we use it all the time at Frumil now to test out different algorithms.
+So every time a customer tells us like hey we want to try something new or put recommendations in this location what should we do?
+Then it's just like create a pipeline in RICPAC, test all of the different algorithms we have in a suitable scenario for the use case that this customer is trying to pursue and just evaluate it, look at the results and then be like okay this is what we're going to put in production for you.
+So that's really nice I think.
+Okay I see, I see.
+You really see that.
+I've gone through the paper and then I also followed your thoughts on the structure and on the pipeline concept.
+It's really intuitive because the way it is structured makes it really easy to grasp.
+And yeah it's interesting to see that there's I guess a lot of work behind it that yielded that yeah I guess it's always some intermittent result so I wouldn't call it a final result because things always evolve and change and something like that.
+But you really see good structure and I liked it because I think if you have a good structure then it's always better for people to comprehend and makes also the whole thing more accessible, easier to use.
+Robin, what would you actually add to Lien's remarks in terms of the development and ideation process behind RICPAC?
+That it was the best thing that we did.
+Great.
+By far.
+I remember in like 2019 I was writing my own evaluation code because I wanted to do something like sequential recommendation style thing and I was evaluating one by one and it would not finish running like I would set it running in the morning and then it would run like 24 hours for a simple data set and it would just like and it was just me writing in a notebook and that's exactly what they mentioned like we managed to extrapolate from a notebook and then go to optimized code and then iterate over the interface so that now when I have to write an experiment I just get happy because I get to use this framework and it doesn't matter if I'm having a shitty day, it doesn't matter, I get to use this amazing framework.
+I can really relate to that because I'm currently thinking about that variational autoencoder paper that was published somewhere in 2017 or 2018 by Netflix which was a pretty competitive algorithm and has also been used for many benchmarks in the subsequent papers but if you always go back to that paper and the connected implementation then you're always ending up in that Jupyter notebook and you think about wasn't that generalized somewhere or generally implemented.
+Of course, everybody who is able and willing to do so could do it but I guess, Lin, you mentioned that the libraries that you took into account by the time you started developing Rackpack were also at least one of them so I guess you mentioned implicit was hard to extend with new algorithms.
+Yes, so I guess you claim that Rackpack should support correct reproducible and reusable experimentation.
+So, this is what I read in the paper.
+So how or which obstacles are you addressing when you, I guess you already mentioned the re-usability.
+What additional obstacles do you see as researchers in the current setting of public code for recommenders?
+If I think about what I want to be doing when I'm doing research is I just want to focus on my algorithm.
+I want to improve the things and I don't want to be worrying about doing my train test split or making sure that my metric implementation is correct but even things like making a recommendation, making sure that every user has received a recommendation that all of them have received the same amount of recommendations.
+Things like that are stuff that I don't want to be worrying about at that time and I notice in other people's notebooks that are things they also often do not worry about but they are very important is what we've learned.
+Initially, I think when we first started out doing this, we tried to put things in production and then realized only after we did that that some users weren't getting any recommendations.
+That's the kind of mistake you have to make in a production setting to realize that it is something that can really happen because if you've never encountered that, if you've never been woken up on a Sunday being all like, hey, there are no recommendations for this user, why is this happening?
+You don't know that that is potentially an issue and I think that's one of the things we've really focused on with RecFact.
+We've really brought our production mindset to the package and so we have a lot of boiler plate in there.
+Of course, there's metrics but for example, the scenarios are always a valid train validation test split and it's one that we've really thought about.
+The validation dataset is made in such a way that it makes sense, that it is equally as difficult as predicting the test set stuff like that and it's also been extensively tested.
+The train validation test split is made in such a way that we validate, we have tests for like, do we have enough interactions in the validation outset?
+Do we have enough interactions in the test outset?
+Like are we really evaluating sensible things?
+We do the same thing with algorithms for example.
+We always check if there are empty rows or columns in a similarity matrix which should be a dead giveaway that something is going wrong.
+We also check if every user has received a recommendation and stuff like that.
+Making really sure that the train validation and test splits are done properly and realistically to ensure or also to provide a tool that is hopefully going to be used by researchers to ensure that evaluations are done more consistently and by that are going also to be more comparable.
+Yeah, absolutely.
+And it's also, I think a lot of people default to the weak generalization and strong generalization split.
+You know what I'm talking about, right?
+Because those are the names that are often used like weak generalization where you just split your users randomly, some is out, some is in and then you use whatever is your training data set to predict what was left out and then with strong generalization you just leave a portion of your users out.
+And I think it's normal that people do that because those are relatively straightforward to implement.
+But if you want to go closer to a real use case, something that we encounter like predicting the next item a user is going to click using only data from before a certain time because that is the last time your algorithm was retrained, then it gets a lot harder and it becomes really hard to implement that.
+And so it's easier to just default to strong generalization or weak generalization.
+So it's basically a little bit of trade off between ease of implementation and the correctness of evaluation.
+Exactly.
+And so we've included all of those different, we call them scenarios because they're supposed to like, we want them to correspond to real scenarios, real use cases of recommendations in the real world.
+And we've made sure that they've been correctly implemented and you can use them on any data set.
+Even if you don't use anything else in RecPack, you can just use the scenario on your partner's data frame to split your data and you know that it will be done correctly.
+So it gives me a little bit of hope that people will be using the more complicated scenarios to come closer to real use cases that we encounter and doing recommendations in the real world.
+Okay, what is the minimum requirement of data in terms of columns that you need if you want to plug into your own pandas data frame?
+Yeah.
+So we, I mean, we work with implicit data.
+So we have like, we expect three columns or two.
+So you have a user identifier, an item identifier, and then perhaps a timestamp ideally, especially if you want to use like more realistic scenarios.
+As they mentioned, if you want to simulate a certain like timestamp at which a model is trained, then you obviously need temporal information because otherwise you have no way of knowing which interaction should be used for training or we shouldn't.
+Yeah.
+And so if you have those three, then you can use the scenarios to split your data set properly.
+Okay, so a user identifier, item identifier would be the really bare minimum.
+And then possibly you also have a timestamp to then make sure that you are, for example, in the splits, not using future data to somehow predict the past.
+Like you see sometimes in some papers where there's just a random train test that's bits that somehow disregards the time information that you have.
+And then you are basically assuming that given these three columns, you have implicit positive feedback, is this the case?
+Yes, we focus on the implicit and especially the positive feedback.
+I was, to be honest, a bit confused because the paper is called RecPack, another experimentation toolkit for top end recommendation using implicit feedback data, like Lin, you also stressed.
+But then your first example was actually MovieLens, which is explicit data.
+And this enters, I guess, also a topic that is well disputed among researchers and practitioners, which somehow brings us to what are proper transformations from explicit into implicit feedback data.
+Because sometimes you see people that take the MovieLens ratings and just say, hey, we keep all with four and five stars as positive.
+Or some people, for example, calculate the user mean and take all the ratings equal or above the user's mean as positive feedback.
+There are a couple of questions here.
+So what do you do with, for example, MovieLens or other data sets that are originally explicit in RecPack?
+And what is your point in general on this different ways of transforming explicit into implicit data?
+So the problem is that when we use RecPack, we actually most often do it with our own data, of course, that I think the data sets component of RecPack is perhaps the one that is least developed because we use our own data.
+We only need to use public data sets when we want to get the public because if you use private data sets, then they'll reject you.
+This is very honorable because we also see papers being accepted that are only relying on non-disclosed data.
+I can tell you from experience that even if you because we've always done public and private data sets in our papers and we've received quite a few rejections that stated that we needed to use only or more public data sets or we could never accept them.
+I think it depends on the reviewer as it always does with basically anything.
+But yeah, about movie lens specifically, I think right now it's the only explicit feedback data set we have in there and it's in there because it's just used so often also for other algorithms that use implicit feedback actually.
+And so what we do in RecPack, correct me if I'm wrong, Robin, is I think we do the trick with everything about four.
+So four and five is considered a positive interaction.
+Everything below is disregarded.
+But the reason we do that is mostly because it's the most common transformation applied.
+I don't really have any strong opinions on the correct transformations because what we've learned from having to use that data set as well in our experiments for papers is that there's no real way to get explicit feedback data sets to resemble implicit feedback data sets.
+You'll notice that they're always way more dense than actual implicit feedback data sets.
+And they're just different.
+And I don't think you can bridge the gap somehow with any of the transformations you apply.
+So that is my opinion.
+What do you think, Robin?
+I have never really thought about it.
+I rarely use the movie lens data set because, I mean, as you say, it's a very specific data set.
+It's users answering surveys sent out at specific time stamps.
+So especially in my work where I do focus on temporal information, if I'm just getting like the time stamp that I get in the data set is just like a moment when a user saw the survey being sent to them via email or whatever, then that's not actually relevant because it doesn't actually the time stamp doesn't mean what I want it to mean in an implicit feedback setting, right?
+I expect the time stamp to actually be linked to a moment when the user was interested in this.
+If he rated the moving five in the movie lens data set, I don't actually know if he had just seen the movie or he had seen the movie 15 years ago and thought, oh, that was a really good movie 15 years ago.
+I think we sometimes read papers that use the movie lens data sets for algorithms that are time aware or sequence aware.
+And we're always surprised at that because the movie lens data set, if you look at the time stamps spans about 20 years, it starts I think somewhere in the, in the nineties and then well spans until today will not actually today, I think two years ago or something.
+And I always wonder like, how can that work?
+Have you checked the time stamps before you develop this algorithm?
+Like it's really weird.
+I should really talk to some of the authors that Rex is, I think.
+I guess you will have the opportunity to do that.
+Okay.
+You mentioned movie lens is the only explosive data set that you integrated so far, which are the other data sets that we can expect to be delivered right out of the box with R We have a dresser, which is a news data set from a Danish or Norwegian newspaper, Norwegian.
+They have two data sets.
+We have a huge one, which we didn't put in and they have a one week data set, which is perfect for news recommendation, at least for our use cases until now.
+Yeah.
+We have cosmetic shop, which is a Kaggle data sets, which we found out about after we did a retail experiment for which we needed public data sets.
+So that was unfortunate, but it's actually, it's an interesting data set actually contains like all the information you would need for temporal analysis in a retail context.
+And it's like pretty big, like it's not a tiny data set like you would find otherwise than the site you like data sets.
+I don't actually remember where that one was about, Lin, you use it during your research, I think.
+I guess it's somehow a scientific paper sharing or annotation platform, and then you could share papers or something like that.
+I never also used it, but I'm aware that this data set exists.
+I also, I use it in a reproducibility paper that I still haven't published, but they use Site2like as well.
+I also never really, really want.
+Yeah.
+So that somehow already brings us also to the very first top level module of Rackpack, because it's basically the data sets module that people, as far as I understood, could also use to integrate their own data sets, because I got from your introduction so far that this whole package was also introduced with the intention to make it easier for people to extend and you are welcoming people to contribute there.
+Can you walk us through the sequence of modules that you use within Rackpack that we can get a detail and what your thoughts were behind those?
+Yeah, sure.
+So of course, it starts with the data set like you mentioned earlier.
+We have a few included if you want to complete lists.
+There's also Netflix, RecSys Challenge 2015, 30 Music Sessions, and Retail Rocket in there, in addition to the ones we mentioned earlier, Movie Lens Site, you like in a address and cosmetic shop.
+Cool.
+But yeah, as you said, you can also use your own data set.
+The idea of data sets, they're really basic actually.
+It's just that there's a pandas data frame and the ones we have included already have some filtering applied to it, the filtering that we see very often applied in other academic papers.
+So we don't have to think about those filters anymore or go looking for them in other papers.
+They're already in there.
+So you can start from your own pandas data frame, wherever you got the data from, user, item, and preferably timestamp, and then add a bunch of filters to it as well.
+So that's the first thing you would be doing.
+You would apply these filters to the panel's data frame using the data frame preprocessor interface.
+And that will also make sure that your user and item IDs, they will become like consecutive numbers from zero to whatever, because that often ends up being an issue.
+Yes.
+If you have a matrix factorization, everyone has forgotten to do that step and then ended up with a few million by few million matrix.
+That is the first step that is always applied.
+You cannot get around it in Reykjavik.
+Yeah.
+Yeah.
+And so then you have a, you have a data set and then the next step is the scenario that we talked about earlier.
+So I don't like to talk about the train test split or train validation test split, because I feel that is what distinguishes recommendation from other data science, see things like classification and clustering and whatever.
+Because it's not just like you cannot just mindlessly split a data set like you mentioned earlier, random, random splits is just not a good idea for recommendation.
+And that's why we decided to call them scenarios, because we want people to be thinking about the use case.
+If you want to do like a box of recommendations on an article page, then really what you're trying to do is next item prediction, things you might want to read next or things you might want to look at next.
+On a homepage, you're more likely to just use some kind of timed scenario where you just want to use everything that has gone before to predict whatever comes after.
+And so that's the kind of thing we want you to be thinking about when you use Rekpak scenarios.
+In some cases, it might be perfectly sensible to use something like strong generalization where you predict for unseen users.
+That happens often in e-commerce.
+We've noticed that from all what you get a lot of users who are new.
+All of the time, and you want to make good recommendations for them during that first session and they may not return for another three months.
+And by then, the cookies have been cleared and they're a completely new user to us.
+So in those cases, strong generalization makes a lot of sense because you're constantly predicting for unseen users.
+So in those cases, we would recommend using that scenario because then that's what you're looking for, right?
+You want to predict for unseen users.
+So that's what you should evaluate.
+And you could refer to scenarios as being the way that you perform the train validation test splitting.
+But on the other hand, with scenarios, you really like to stress, hey, think about what you want to achieve with your recommender because this is basically a scenario.
+And Robin, you mentioned that or you are dedicated to really the time aspects and to the time awareness of recommenders.
+So is this really like your favorite module or something that you put in a lot of work or what is your take on this module?
+For me, the time splits are very important because well, yeah, you see in the time aware model space, usually people have realized that you shouldn't predict the future based on like you shouldn't include your future events in your training data to predict positive events.
+It just doesn't make sense, luckily.
+So it was important for my research to have these scenarios in there.
+But then still, you have the differences, right?
+You have the time scenario like the inset on a homepage.
+You just I mean, you're not sure what if you can predict anything of a user's next interactions like within a certain timeframe, then that's that's great.
+But on an article page, you're usually I mean, if we talk to our customers, the goal is usually to prolong their sessions, right to get them the users to read as much as possible.
+So if we can predict the next item that the user might be willing to read, then we can push them to like continue reading from the article page and don't force them to go back to the homepage or things like that.
+And this intent behind the scenarios is really important to me.
+Okay, gotcha.
+Brief recap.
+So far, we have data sets with some preconfigured data sets that you can load can also integrate your own data set as you want.
+You have the pre processing part.
+And then afterwards, you have the scenarios you define, are we somehow approaching the core of what every researcher's heart bumps the most for?
+We should use the picture of the that we have of our of our of our pipeline that there was nothing and I was missing in between the scenarios and Okay, so then maybe you can.
+You can introduce the next step in the pipeline.
+Our algorithms.
+Yeah.
+So this is where the core of a lot of researchers goes into focus.
+I mean, work on new algorithms, get them developed, compare them to all the algorithms.
+So this is where Rekback we have implemented like a suite of 20 algorithms that you can compare to if you have your own algorithm, which we found important.
+We've cherry picked them a little bit based on our research and implemented them when we needed them.
+So you might see a lot of temporal algorithms in there, maybe.
+Surprise, surprise.
+But there is also like some strong baselines from the start when as Linus mentioned in the past where we were looking like which state of the art algorithms can we add to the to the Froumel framework?
+And this is where a lot of strong baselines like some of the neural networks were implemented to just compare them to each other and which could be relevant for Froumel, etc.
+And then especially for these neural networks, like in the last year, I think we've started like generalizing them or at least like trying to come up with a way to create a base class that has a lot of like the basic functionality that you need for like these iterative algorithms that you train them for an epoch, then you check them on their validation data set and then go again through the training data set and get all the boilerplate in a base class and then just let users or researchers focus on their how do we want our neural network to look which modules do we want to put together with torch, etc.
+And don't have to bother with we need a for loop here.
+We need to make sure that we store our results for every epoch.
+Like how well does it perform?
+Do we want early stopping?
+Do we not want early stopping?
+All these kind of like silly little things that just take up so much space if you were to have to implement them for every algorithm over and over and over again.
+Which non neural network based algorithms do we find in the package and how easy or how accessible is it to integrate a new algorithm that I, for example, want to compare with the existing ones?
+Do you want a full list of non neural network algorithms?
+Maybe just if they're the most popular ones, for example, maybe we can give you the categories because we've created categories.
+So we have a bunch of items, similarity algorithms, things like item KNN, so other or other neighborhood methods, also timer neighborhood methods, SVD, Protuvac, stuff like that.
+And we have one hybrid algorithm, which is both user similarity and item similarity.
+It's called Kuhn that we have a bunch of factorization algorithms, NMF, WMF, BPRMF list goes on.
+Auto encoders, we have MULTVAE, EASE and the extension of MULTVAE, RECVAE.
+MULTVAE is the paper you were referring to earlier for additional auto encoders for collaborative filtering.
+Okay, really a bunch of algorithms and many of them that are quite well known across many papers.
+So I guess a good point to start if you want to evaluate against competitive algorithms.
+We're not trying to have every algorithm possible in there right now, because that just would not be feasible for us to develop and maintain.
+But we made sure that with having all of these different categories, that we have at least one representative baseline of each, and also the boilerplate that you can reuse then.
+So if you want to develop a new item similarity algorithm, you'll find quite a lot of baselines to compare against.
+But then also the boilerplate you would need to start your own item similarity algorithm.
+With all of this checking I talked about earlier that says like, oh, you have an empty row in your similarity matrix, etc.
+Same thing for like deep learning algorithms, we use PyTorch as Robin mentioned earlier, we have auto encoders and session based algorithms.
+And for both, we also have like a kind of template that does a bunch of checking and a bunch of tests that are like, are all of my gradients being updated?
+They're not things like that.
+So I hope if we've succeeded in our goal that it should be really easy to add another algorithm to rec pack.
+And we're hoping also that people will start developing their own algorithms using rec pack, and then making them publicly available either by allowing us to really include it in the library or just posting their implementations online following the rec pack interface.
+Because anything that is written with the rec pack interface can be used.
+Cool, perfect.
+So it should be very easy for people who want to start off with their own algorithm or who want to extend an existing yet implemented algorithm to go further, take the template or take the current implementation and from their extent to what they want to achieve and then also contribute back to rec pack and then it becomes accessible through rec pack.
+So in the best case, someone who is writing a paper could basically just refer to the corresponding module in rec pack and see here it's implemented and here you can, for example, also directly compared with others.
+Exactly.
+That would be the dream.
+Like if people could just start doing that, that would be amazing.
+I think research would progress at lightning speed if we could all do that.
+Yeah, great.
+And then I mean, you did a great job with it because it was not like, hey, let's somehow develop a package.
+No, what you did was driven by some demand that is coming from practice, that is coming from industry and also from your own research and solving your own problems, which are sometimes very similar to others problems is always somehow one of the best drivers for a successful product.
+So let's hope for the best that people get on board and also use it.
+And I guess you will also have a nice chance for it next week at RecSys when you are presenting it as part of your demo in front of the audience for it.
+So let's hope for the best.
+But so far we are not done yet.
+I mean, the algorithms are somehow the core or the heart.
+How do we get further with it?
+So the algorithms you would most likely use within a pipeline.
+And so you would start building a pipeline using the pipeline builder.
+And the reason we use a builder pattern for that software engineering term is that a pipeline is often quite complicated.
+You have a bunch of algorithms that you want to evaluate your own implementation, but then also the different baselines that you want to evaluate it against.
+You need to do some hyper parameter tuning, etc.
+And so all of that can be configured in the pipeline, which will then run each of these instantiations of the algorithm with the different hyper parameters for you.
+So you create this pipeline builder, you add all of the algorithms with all of the hyper parameters that you want to evaluate to it.
+And then some post processing filters, optionally.
+This is something we added also because we saw that need within Fumal because very often in a production setting, you want to apply some post processing to your recommendations, like only allow recommendations from certain categories or eliminate some categories from your recommendations, especially in e-commerce, like items that are only for people in certain age categories, you might want to eliminate them from recommendations or things that could be seen as offensive, stuff like that.
+One standard post processing step we do is the elimination of things you've already visited before.
+And you can toggle that off because sometimes we found at Fumal that it's useful actually to recommend people things that they've already looked at before.
+In most cases, it is not.
+So we filter that out.
+And then you add all of the different metrics that you want to evaluate.
+Again, you can choose as many metrics as you like.
+And then you just use pipeline dot run, and it will start running your pipeline for you and evaluate all of the different metrics for all of the different algorithms for all of the different hyper parameters.
+And at the end, report the results to you in this like neat pandas data frame that has a summary of all of your metric results and whichever algorithm performed best on the validation data set.
+That means that we have post processing where you could, for example, make sure you apply certain business rules or additional rules after you get your let's call them raw recommendations.
+And then you have metrics and you are able to also orchestrate this whole thing within the pipeline to do proper hyper parameter optimization.
+Maybe just one remark or question when looking into metrics, I have so far seen that there are a couple of metrics involved there.
+I guess the example you are bringing up the users and DCG.
+But so far, most of them are focused very much on accuracy evaluation.
+Do you also intend to extend this, for example, to evaluate the diversity or the coverage of recommendations?
+What is your take on this?
+Yeah, I think it's definitely our goal to add these metrics as well, like fairness metrics as well, stuff like that.
+The problem is that for non accuracy metrics, you often also need a bit of metadata.
+And that is something that we're still figuring out, like how to add that to rec pack without making things too complicated.
+Because one of our goals with rec pack is to have a super simple interface that is super intuitive to use.
+And metadata makes that a little more complicated.
+Okay.
+But it's definitely like on the on the roadmap.
+I think Robin has already done some work on it.
+So we're hopeful that we'll be able to release some other metrics relatively soon in a few months.
+But yeah, you're right right now, we're very focused on accuracy metrics.
+One interesting thing I think, which has also been important in my research is that for most of our metrics, we do not only report the mean of the mean, like because we always take the mean of the user and then the mean over all users and you report that number.
+And in rec pack, you can also look into the more detailed metrics, the distribution, how did I do for every user, which of the recommendations were actually hits and which were not.
+So that right now, diversity metrics are not yet included in rec pack.
+But with a little effort, if you just use the the simple hit gay metric, which just reports the hits that you received, you can do your own diversity metrics after the fact, because we have all of these like little element wise results in there.
+Okay, gotcha.
+This is a very valid and good point, because sometimes just looking on the very high level inclines you to miss important points that you only see or grasp on a more detailed level.
+So therefore, also being able to look into that as something very good.
+We've often that's also something we learned from from working at Fumal and doing like putting these algorithms live in a real setting.
+And then oftentimes, it just underperforms and you don't really know why.
+And often it has to do with like you said, the distribution of the metric, like, it's no good if the if the mean value is slightly higher, but the variance is twice as large.
+So if you have a very large variance, the performance for your users, it's often actually not a better algorithm to use in a production setting, because you don't want some users to have really good recommendations and some users to have really, really bad recommendations.
+And I think it's something that is not often like talked about in academic papers, but is really important for us.
+It's one of the first things we always look at if we decide to use an algorithm in production or not.
+Nice.
+This makes totally sense to me.
+Regarding another point, could you elaborate a bit on a rec packs compatibility with scikit-learn?
+Yeah, I, it was Lin's original idea, but I'll try to explain it.
+She's a visionary in this sense.
+No, it's I mean, it was we're originally developing it.
+And it's very easy to just go down a line of creating your own custom interfaces and just go like as wild as you want and then just pick and choose.
+But we eventually are lean suggested like, let's just use the scikit-learn interface.
+Like it's standardized.
+People know about this interface.
+I had used it before during my studies and in doing some, some little experiments myself and adding this and it's a constraint because you can't do everything right.
+You need to, you put a limit on what you can do, but adding the intuition and the background knowledge that I have of this interface and what it means just makes it so much easier to use.
+So in that we are limiting ourselves, but the gains of the intuition is so big for new users.
+Exactly.
+Yeah.
+I've been working in, in the data science industry, not in recommendation systems for a while now, even before I started my PhD, I worked natural language processing and standard clustering things and classification.
+And one of my biggest frustrations was always that if you want to use a new package, you have to like deep dive into the documentation again.
+You know, you really have to familiarize yourself with the package and what it can do and how it does it.
+And between all of that, there was scikit-learn that was like home base, like everyone knows how it works and everyone has used it.
+And I think that's one of the frustrations that I remember very well and that has led us to develop Rackpack in this way.
+Whenever we develop a new interface, we look at what's out there, what we've used before, and we try to make it at least similar, if not the same.
+And of course, scikit-learn is the basic building block, I think, of all data science projects.
+So we try to resemble it whenever we can.
+But for example, with the train test splits, that was not possible.
+And then we looked at other packages, other inspirations, and then tried to mimic them as much as we can.
+So then hopefully when you use Rackpack, our goal is that you feel like you already know it before you know it.
+That would be the ultimate goal.
+This sounds really awesome.
+And I really like the idea that you are bringing up of not reinventing the wheel, but borrowing and taking ideas from existing and yet established implementations.
+I have to confess, when reading the part on compatibility with scikit-learn to allow easy access and to ensure familiarity, I was actually thinking about a possible future for Rackpack.
+And that is, eventually, it becomes a dedicated module within scikit-learn.
+So that you have sklearn.recommender, and then you have Rackpack at your hands.
+What is your take on this?
+I think that would be amazing.
+But I actually think they're also because Surprise is part of the scikit-learn extensions, or I don't remember what they're called exactly.
+But I think that would be a first goal to end up in that list, the scikit-learn extensions and packages that use a similar interface.
+And then we'll see from there how far into the whole scikit-learn framework we can get integrated.
+But that would be great, because that would really help adoption as well.
+And I think something like Rackpack, we're really proud of the way it works, and we like using it ourselves.
+But of course, it can only succeed in its goal if people start using it.
+Great.
+Yeah.
+And not only great, but also a call for checking it out and developing it further, which should be easy and fun, since both of you provided a really good starting point.
+You solved your own problems, very likely addressed the pain of other researchers as well, and shared the solution with the community.
+So let's hope that others use it, extend it, and make it grow.
+One of the reviewers of the demo paper that we'll be presenting at Rexxus said that they believe that Rackpack could be the new scikit-learn for recommender systems.
+The sweetest thing anyone has ever said to me.
+I was so proud.
+This is fantastic to hear.
+I guess there is barely better feedback to receive.
+Whoever it was, I love you.
+Great.
+So maybe the corresponding reviewer will take the opportunity during the conference and reveal him or herself.
+Let's see.
+So far we have talked a lot about Rackpack, which was driven by industry research demands.
+Let's move closer to industry, especially to what you are doing in industry, since you are both industrial PhDs.
+So you also spent significant time in a company, and this company is called Frumel.
+Can you tell us a bit more about Frumel and your work there?
+So what is Frumel?
+What customer needs this Frumel addressing?
+So Frumel is now six and a half years old, and so it's been around for quite a while because recommendation is a pretty new thing still.
+And it was originally started by Bart, our promoter, and Koon, a PhD student of his, because they wanted ordinary companies to be able to do recommendations like the giants of industry, like the way Netflix was already doing, the way Spotify was starting to do YouTube.
+So they wanted ordinary companies to perform extraordinary things?
+Exactly.
+They wanted to level the playing field, make this technology personalization accessible to companies that may not at the time have had the money to invest in their own teams to do that kind of thing.
+So that's what we've been doing for the past six years.
+We focus mostly, like I said earlier, on the news industry and the e-commerce industry.
+Initially, currently, we've really narrowed it down, and we're really focusing on news right now because we've learned that it's really an area that we're starting to know very well, and we can really make a difference.
+And there's also a lot of interest to adopt personalization there.
+So yeah, what we do is we work for a bunch of mostly right now European publishers, some of the biggest in Belgium, in Italy.
+Who am I missing, Robin?
+The Netherlands.
+The Netherlands as well.
+We have one of the largest newspapers in the Netherlands on board right now.
+And we do recommendations for them, as I said before, in all different contexts.
+So you have these home page recommendations that are at the top of the page, just the thing you want to be seeing when you open up your home page, the thing that is most interesting to you.
+But also read further, read more on article pages, everything that can help a user in their reading journey, I guess you could say on the website.
+Kind of like reminder recommendations as well.
+We do this weekly recap newsletter for a bunch of our customers.
+That's like, these are the articles you may have missed this week that we think you might be interested in that goes out on Sunday.
+So we always work together with our customer and tailor our recommendations to their use case.
+And from doing that over the past six years, we've compiled like a list of the most common like questions asked or use cases that we see.
+And we've started calling them modules now.
+And there are I think 64 or something at this point.
+So there's there's way too many to list them all here for you.
+But there are things like you might have missed the most frequently read reengagement, paywall recommendations, stuff like that.
+So So what I understand is that you identified several distinct use cases for personalization that may also be distinct with regards to the channel.
+So be it on the website, like your top 10 recommendations, be it post notifications, or personalized news compilations sent out via email.
+And these use cases basically resemble the distinct modules of Frumald's offering.
+Is that correct?
+Yes, indeed.
+That is exactly it.
+So these are all things that we've learned that can help like optimize the reader journey, help people subscribe to newspapers, read more, be more active.
+And so yeah, we've bundled them into little things called modules.
+And then they come to us and say, we want for examples that our users subscribe more.
+And then we're like, ah, then you should use these four modules or we want to like have our users stay longer, and then we'll say, ah, but then you should use these modules like read further or select for you stuff like that.
+Okay, I see.
+But how does the collaboration or integration of those modules work on a more detailed level?
+Of course, customers are having different levels of maturity in terms of personalized offerings.
+But let's for example, assume I'm a small news company running a news website, there's no personalization, be it recommendations or search at all.
+For example, I am only running non personalized recommendations, like the most popular or currently trending articles.
+How does my offering become personalized with Frumald support?
+So do you keep a copy of my data and I call your API to get recommendations?
+How do you onboard new clients?
+Yeah, so everything is is indeed an API, we have an events API that we expect you to communicate all the things the user is doing to things like what have they been reading, which pages have they clicked, which recommendations have they clicked, which recommendations have been impressed to them, stuff like that.
+Then we have the items API where you can send us metadata that we will use for content based recommendation, but also to apply business rules and stuff like that.
+And also perform analysis of the customer's data.
+After the fact, things like are we really recommending, you know, diverse content?
+Are we not pushing users into into little bubbles?
+And then you have the recommendations API, which is the one that they call whenever they want recommendations for the different modules.
+And so these are like the three core components of the formal platform, all API is the events API, the items API, the recommendations API.
+And then there's just different ways to integrate them for the recommendations API, we have SDKs for specific programming languages that you can integrate directly into your node JS backend or your PHP backend or whatever, or you can just call the API raw, like, whatever, you can decide for the events API.
+There's integrations with Google tag manager, there's like little snippets that you can embed in your code that make it easier for you to do it.
+Or again, you can just call the API directly.
+It's also fine.
+Same thing for the item.
+So there's like a bunch of different options.
+We've made sure that almost every option that we've encountered so far is covered.
+So yeah, that's how it works.
+And then we start collecting data, preferably live data, our platform is set up to respond really quickly to things.
+And that is why we're also focusing on news now and are really good at news recommendation because this time aspect is super important there.
+You really have to retrain your models every half hour, at least.
+And oftentimes we do it more often.
+So we're constantly updating like different models in the backend, we respond to your requests, usually under 100 milliseconds, we're really like we're really performance focused in that way.
+And that has really helped us with our news customers.
+Okay, I see.
+So the Froomo platform basically consists of three components, the events, items and recommendation API.
+And there is of course, focus on performance in terms of achieving very low latency for your recommendations.
+What about customers that are a bit more advanced than our initial example?
+So customers who, for example, have a data science team or department, which has also been working on personalization.
+Let's assume that this team wants to try out a new approach.
+So how flexible is your service with respect to new approaches?
+Or how do you satisfy this potential need?
+I think that in the past two years, we've really become more of a real product software as a service company, much less a consulting company.
+So we actually focus right now on companies that don't already have their own in-house data science team.
+And if they do, we will often just be something that they will be like benchmarked against.
+So in that sense, there is no collaboration between our data scientists and their data scientists, mostly because we've learned that, well, productionizing an algorithm is really hard.
+And it's a big investment that often does not pay off.
+And I think that's also like RecPack bridges that gap a little bit, but still every implementation we have to make in RecPack of a new algorithm that comes out is quite an investment.
+And then when we take it from RecPack to production, there's a bunch more steps still that have to be performed.
+We have to figure out how often we should retrain this model.
+How expensive is it to retrain?
+Because a lot of these deep learning algorithms that are coming out are really expensive to train.
+And you need GPUs for them.
+It really drives up the cost.
+And oftentimes, it's not comparable.
+The investment is not worth the gain that we achieve with these algorithms.
+So we've stopped doing that whenever they come to us and say, this is a new algorithm, try it out.
+Because actually, most of the time, we found that it doesn't outperform what we currently have.
+We have a lot of algorithms in our product suite already.
+And we know really well how to use them, when to use them, when to retrain them, how much data to use with each of them, which filters to apply.
+And I think that knowledge is really what makes Fumal perform so well, always.
+So that's why we stopped taking.
+We were kind of like, we're in the lead now.
+So we don't let the customers, data scientists, lead anymore.
+But we really take the lead because we've been doing this for so many years that we've really figured out, OK, this is how you actually get an improvement.
+And this really works.
+And this other stuff doesn't.
+And we ask our customers to trust us to do that well.
+I believe that years of experience create the necessary credibility there.
+Exactly.
+And we find very often that if a new customer comes in and we're benchmarked against their solution, that at first they may be hesitant because a lot of our algorithms at first site seem pretty simple.
+We use a lot of neighborhood-based methods, for example.
+But then we do end up outperforming their solution very often.
+And that's because we really know what we're doing in this production setting.
+We're not just focused on the algorithm side of things, but we figured out how to retrain your algorithms, when to retrain them, which filters, et cetera.
+All of that also contributes to a recommendation.
+Yeah, it really works.
+I see your point.
+What are your roles at Frumal?
+So are you focused on a certain topic or are you covering a broader range of tasks and duties at the company?
+So Robin, maybe do you want to go first?
+It has evolved.
+In the last years, especially since we've developed Rekpak, I've been helping out our customer success team, which is the team that is serving our customers, trying to figure out which algorithms are the best.
+And so with our framework that we had, we were the go-to people to just run these five algorithms against this use case and tell us what works best.
+And we were able to do this in a couple days' time, just the runtime of the algorithms, rather than they had to set up all these experiments and stuff.
+And especially in my research, I've been focusing, I had a submission pending for months now regarding how often should we train our models and how should we schedule this.
+Because for some use cases, you can get by by just training your model once a day or once a week or whatever.
+But as leads for news, you can't do this.
+Because if you train your model during the night and they make new articles at eight o'clock in the morning, you're just going to recommend articles from the past day and not actually relevant articles for the user.
+So that's where I was trying to figure out which signals can we use in the data to figure out, oh, things have changed.
+People are interested in things that our model doesn't know yet.
+We should retrain it again.
+And so this is where my major expertise lies with regarding the A-B tests that we try to set up.
+But our customers is like, how much data should we use?
+When should we train our models?
+This side of the optimization of the algorithms, which is often forgotten in academia, right?
+It's just like.
+Okay, I understand.
+What have been the biggest surprises you encountered in that work?
+Probably the biggest surprise is how fast the model can degrade.
+Its performance can degrade in a news context.
+I was doing some experiments and I was expecting like a news customer.
+I mean, after a couple hours, the model will be like 60% or 70% of the performance of a model that was not retrained.
+But then when I actually looked at it was like after two hours, we were only hitting like 20% of performance of an up to date model.
+In offline experiments, granted, there's always this shift between offline and online, but it did show that if you keep your model up to date, that it really pays off.
+Because especially in these news contexts, like things change so rapidly.
+And I mean, it can be during night, nothing changes.
+But then in the morning, a new article is published and another new article is published and another new article is published.
+And then the first one that was published is already no longer relevant.
+People are just interested in the newer news.
+Yeah, that seems pretty valid to me.
+And maybe this is also the reason why it's actually called news.
+I have never thought about that before, to be honest.
+So need to check the etymology afterwards.
+You mentioned before that you work for clients not only in the news sector, but also in e-commerce.
+Have you seen similar model drift results in e-commerce?
+Not completely different because the models do degrade.
+But we did notice, for example, we were able to rather than retrain our models every hour on a retail customer, we were actually able to say based on offline results, guys, we don't need this.
+The models don't actually change.
+We're training them every hour, but they're not changing.
+That makes hosting costs significantly cheaper, of course.
+And that is also something that our customers care about.
+Exactly.
+So we were able to go like, OK, we don't have to retrain every hour.
+Let's retrain every six hours.
+That way, if something special happens, we're still able to pick it up.
+We still use our costs like it's one sixth of the training costs for these models.
+We also are able on these customers to use a little bit more involved models or use more data because that trains a little bit longer.
+But we now have the time to actually train these more complex models.
+OK, I get your point.
+And thanks for sharing these interesting distinctions.
+So Frumal started off with personalized news recommendations, extending its offering to customers in e-commerce.
+Are you also targeting other sectors or what are the plans if you're allowed to share those?
+I think initially, actually, it was the other way around.
+Bart and Koen had this vision of recommendations should be used in all industries.
+So we'll just make Frumal open to all industries.
+And initially, most of our clients came from e-commerce and news because they were early adopters.
+We had also a few media companies, like more streaming companies.
+And then I think after a while, we started realizing that while we're also doing a good job for e-commerce, news is where we could really make a difference as compared to our competitors.
+And there's also a way the retail recommendation landscape is much more competitive right now than a loose recommendation landscape, which is why I think we started shifting also towards news.
+Of course, to come back to what Robin says, doing recommendations in a production setting is always a trade-off between accuracy, cost, and timeliness.
+And that is one thing that we started figuring out at Frumal very soon and that Robin's research has also focused on.
+Well, indeed, we always were super fast at retraining our models.
+So we always did that, but then we couldn't run these deep learning models that take hours and hours to train because they just weren't very competitive.
+And then we realized that we could train them less often at a much lower cost and still retain the same accuracy, things like that.
+Cool.
+That definitely sounds like an insightful job.
+Thanks for sharing these insights of Frumal's development, the challenges, and also the experiences he made so far.
+I also have to thank you for mentioning the trigger work research again, which actually brings me to the last major topic I want to talk about.
+So let's move from practice to research, starting with Robin.
+You have already mentioned a couple of points you are focusing on, but in order to get a more holistic picture, can you share with us what your research is about and which questions you are trying to answer?
+I'm trying to look at the impact of temporal dynamics of recommender systems, especially related to how they work in production.
+So my first big research topic was the work I told you about that was like, when should we retrain our models?
+What's the impact of not retraining a model?
+And then now more recently, I'm focusing on what data should we use to train our models because we have these big static data sets provided to us by companies.
+But maybe, especially in news context, we shouldn't just use the whole data set to train our model, but just use like recent data.
+That's one of my papers finally accepted at the perspectives workshop in upcoming RExis.
+Great.
+And congrats to that.
+So it's actually the workshop on the perspectives on the evaluation of recommender systems, right?
+Exactly.
+I'm looking forward to it.
+And in general to the next week in Seattle at RExis 2022.
+Lian, during my preparation of this episode, I also came across your paper on a topic that concerns many people inside and outside the RExis community, which is filter bubbles.
+You presented a, and I quote, operationalized definition of technological filter bubble.
+I have read your critical reception of current wake and inconsistent definitions.
+Can you enlighten us with a better definition of filter bubbles?
+Yeah, I think that by the way, this paper will also be presenting it at the factor workshop at RExis.
+So both Robert and I have a super busy schedule, but yes.
+Yeah.
+And then I think a few others as well, but we don't have time to talk about that anymore.
+Let's just focus on this one.
+No.
+So I think, yeah, as you mentioned, filter bubbles are things that people are really worried about.
+Everyone, I think both us working on recommender systems, we noticed it specifically again in this, like with our news customers, because they care about like offering diverse news and pluralistic news, like having a lot of different viewpoints on there.
+And so they talk about filter bubbles a lot, even in like sales conversations, you get these questions like, okay, but what do you do about filter bubbles?
+But the funny thing is that filter bubbles had become this like all encompassing term, everything wrong with personalization is filter bubbles.
+And so it was really a bit of a moving target for us because, okay, then we showed that we do offer diverse recommendation.
+And they were like, yeah, but over time, doesn't it decrease?
+And then like, okay, we'll look at that.
+And then so in the paper, what we finally set out to do was look at the conceptual work on filter bubbles.
+So the original work more like philosophical works on the subject and look at when these people have written about, okay, what is a filter bubble?
+How should we define it?
+And that's what we did.
+We found this very interesting paper by Pariser.
+He's an influential communication science scholar.
+But the problem, of course, with these types of philosophical definitions are that they're not very concrete.
+They're not something I as a researcher could like just take and work with and translate into a statistical hypothesis that I could test with our recommendations.
+And that's what we tried to do in the paper.
+So we call it operationalizing, which is a term often used in the social sciences as well of translating these concepts into measurable things.
+And so yeah, we came up with an operationalized definition of the technological filter bubble.
+As you said, do you want me to read it out to you?
+I think I like, I haven't memorized.
+No, I guess there is no need, but if you could just share with us the core components of your definition.
+Yeah, so we defined it as a concept that has four components.
+We say that a technological filter bubble is a decrease in the diversity.
+So diversity is an essential concept.
+Many different ways to define diversity.
+Still you have viewpoint diversity, you have topic diversity, all of these things, but all of them are a way to encompass diversity of a user's recommendations.
+Like only of the recommendations, not of the user's own behavior, but of the recommendations themselves over time, because that was also a point in the original definition.
+I just realized I said something really dumb earlier.
+I said that the paper was by priser, but that's not the case.
+The original filter bubble was by priser.
+It's a diagram that I wanted to mention.
+I just realized that now.
+I'm very sorry.
+I was a little confused when you said the interesting paper by priser, having heard you go from that paper on the book.
+It just hit me now.
+You didn't use the right name.
+Okay, anyway, so Dahlgren, very interesting paper by Dahlgren, who is an influential communication science scholar.
+Priser was the author of the original filter bubble book.
+Sorry.
+No worries.
+You shall be forgiven.
+Thank you.
+I think it's getting quite late.
+That's the issue.
+I think a logical filter bubble is a decrease in the diversity of the user's recommendations over time, because this time aspect, I think, is also really important, that it gets worse over time because you become like you end up in this feedback loop where you are shown things by the recommendation system that you again click on.
+And because those things you are shown are not diverse, the things you click on are not diverse, and then you end up in this endless loop.
+Down and down the rabbit hole.
+Exactly.
+And another really important part of the definition is that we think you can end up in this filter bubble as a result of the choices made by any stakeholder in your recommendations.
+And they can be the user.
+The user can just click things that are totally not diverse and in that way make themselves end up in a filter bubble.
+That is one possibility, but it can also be the system that shows you very non-diversified only recommendations within the same category or with the same viewpoint.
+That's also one way you can end up in there.
+Or it can just be an editorial choice.
+I think if you would go on Breitbarts or one of those very far right publications in the US, then there aren't a lot of viewpoints to be shown.
+So any recommender system that is in place on that website cannot.
+It's an impossibility for the recommender system to show you the Erskine.
+So yeah, those are the few components.
+And then now we're working.
+We have a publication under submission where we use this definition and define a statistical model to measure filter bubbles in news websites.
+Hopefully it will be accepted and then we can talk again.
+So best of luck for your submission and I see we have a potential topic for a future episode where we could dive more into the details of filter bubbles, the standard association of everybody that is confronted with recommender systems.
+Yep.
+I have to confess, I'm really annoyed sometimes when you say that you are in recommender systems and the first thing you hear is filter bubbles.
+But now you can be like, ha, but are you talking about the operationalized definition of the psychological filter bubble?
+Thanks.
+I will definitely try to keep that in mind to be better prepared for my next discussion.
+Besides filter bubbles and those challenges, which other challenges do you see in the field of recommender systems?
+I think I'll just say my research subject.
+So totally filter bubble big challenge.
+Okay, for the sake of importance, I will try to make an exception there and accept your answer.
+What about you, Robin?
+Tough question.
+I can't go lean just with my research subject.
+It's boring.
+You can't do that.
+No, I think one of the bigger challenges facing us as well is the gap still between offline experimentation and the results we see online.
+We tried out, as an example, we tested the ease implementation offline and it was just like the best algorithm by far in a lot of scenarios.
+And so we were like, guys, we need to get this into our product.
+It's so good.
+And so we implemented into our product and in some places, it would just not have performing a simple item K&M because it was doing conceptually very similar things.
+It was just recommending similar articles to users based on the few articles that they had read.
+So while it was maybe able to capture the similarity a little bit better than item K&M was, plus giving us better scores offline, the online experience of the users was just that, well, they were getting similar articles to things that they had read, which they were getting in the other user group as well, just from another model, which was slightly different, but they were performing almost exactly the same.
+So this gap in terms of use cases that we're seeing online is just very interesting.
+I think if I can add to that and give a less boring answer, there's another paper presentation at the perspectives workshop that I just saw the paper teaser video of this morning.
+It's called recommender systems are not everything towards a broader perspective in recommender evaluation by Benedict Luke.
+And he says some things that I really agree with that we've seen as well.
+And it's not enough to just treat the algorithm as a thing that's doing the recommendations.
+It's important to think about the context that these recommendations will be shown in.
+And we tried that a little bit with the scenarios, but we're still very far off.
+We've also noticed that adding a different title to our recommendations makes a big difference.
+Showing them a little differently on the page, maybe instead of a vertical list, a horizontal list, things like that really changed the user's perception of recommendations.
+And also all of the other articles that are shown around it, if you have two boxes with very similar recommendations, that gives a very different result, like two very different boxes.
+And sometimes by adding a new recommendation list, another recommendation list starts performing worse because they have some kind of overlap or not so much overlap in the recommendations that are shown, but in the user choice models underlying what the user is looking for at that moment.
+And I think that's a really big challenge that we really haven't solved yet in my command system.
+Okay, I see another recommendation for an interesting presentation next week.
+Thanks.
+And another good reason to attend the perspectives workshop, which we already advertised last episode where we had Christine Bauer with us who is actually co-organizing the perspectives workshop.
+Sorry, we're all just really big fans of the perspective workshop.
+Yeah, I have also voted for it and definitely intend to go there next week.
+Great.
+Yes.
+Also, one of my standard closing questions.
+Who do you like me to invite for one of the future episodes of experts?
+I can get off easy and say Benedict Loop, but I mean, it's a lot too easy, maybe.
+So Benedict, we hope you're listening.
+I will reach out to you.
+Yes, indeed.
+Robin, what about you?
+No idea.
+I don't know people.
+Come on.
+Maybe when I have something new that I can share.
+I think we should both actually nominate Harold Stick, who's a researcher at Netflix.
+And we've renamed our Slack channel the Harold Stick Fan Club in about two years.
+That's hilarious.
+That is a very fair suggestion, Ligas.
+He has like all of his work is amazing.
+All of his papers are great every time a new one comes out.
+And he's very good at doing simple things, explaining them well, things that are important in practice as well.
+So that's why he's a favorite of ours.
+He really bridges the gap between academia and industry.
+So yes, Harold.
+Yeah, I guess this is a very good recommendation.
+Actually, you have to think about the Kelly Brighter recommendations paper.
+Yes.
+Or he was also the author of the EASR paper.
+So very interesting contributions there.
+Last but not least, and not trying to mess with the tradition.
+Here's my third question, and you might already know it.
+What is your favorite personalized product?
+I am a really big fan of TikTok.
+But if you get me going about TikTok, I will not stop for another half hour.
+So.
+Okay, so TikTok and all the rest, we will talk about the Rexes.
+Exactly.
+Everyone who wants to know about how amazing TikTok is, come and talk to me at Rexes.
+I'll tell you all about it.
+Perfect.
+Robin, what about you?
+Probably Spotify.
+I was like, especially a year ago or something, my Discover Weekly was very good.
+It contained a lot of music that I enjoyed.
+Lately, it's been a little bit harder because I've been listening more to Spotify, and now it's just too much of a mix to actually listen to the playlist.
+I still do go through it and just try out some of the music that I'm like, oh, this is a genre that I'm now in the mood for.
+Okay, I'll try this song out and then go from there.
+But their homepage and their different, like, I don't want to call them modules because that's formal terminology, but their daily playlists, just like taking my liked songs, which is a huge list of thousands of songs from a variety of moods, like topics, and just putting them into five or six different boxes that I can go, okay, I'm in the mood for this now, and not everything else from my liked songs.
+I really enjoy it.
+Nice.
+Thanks for your answers.
+With this, we conclude today's episode in which we talked about really a broad range of topics, the new Python RecSys package, Rackpack, Frumal, personalization and use, and e-commerce, as well as your work there.
+And finally, your research on filter bubbles, model degradation, and training data selection.
+Lene, Robin, it was enlightening and also fun talking to both of you.
+And I'm really looking forward to meet you in person at RecSys next week.
+Well, we can also perform some karaoke together to keep up with another RecSys tradition.
+So thank you very much for your participation.
+It was my pleasure.
+Have a nice rest of the day.
+And as always, see you at RecSys.
+Bye.
+Bye.
+Bye.
+Thank you so much for listening to this episode of RECSPERTS, recommender systems experts, the podcast that brings you the experts in recommender systems.
+If you enjoy this podcast, please subscribe to it on your favorite podcast player and please share it with anybody you think might benefit from it.
+Please also leave a review on pod shazer.
+And last but not least, if you have questions, a recommendation for an interesting expert you want to have in my show or any other suggestions, drop me a message on Twitter or send me an email to Marcel at RECSPERTS.com.
+Thank you again for listening and sharing and make sure not to miss the next episode because people who listen to this also listen to the next episode.
+See you.
+Thanks.
