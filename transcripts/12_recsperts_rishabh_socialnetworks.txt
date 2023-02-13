@@ -34,20 +34,20 @@ The consumption habits are different.
 The behaviors of users are different.
 The expectations of users are different.
 So imagine like, I mean, it's not just one axis you're developing.
-Like 19 different Rexxus systems.
+Like 19 different RecSys systems.
 To me, one of the most attractive parts was the scale, the ownership and the richness of the marketplace problems here.
 Hello, Happy New Year and welcome to this new episode of RECSPERTS.
 A recommender systems experts.
-For today's episode, I invited Richard Marotra and I'm very happy that he accepted my invitation to share and discuss his research in Rexxus.
+For today's episode, I invited Rishabh Mehrotra and I'm very happy that he accepted my invitation to share and discuss his research in RecSys.
 Richard is the director of machine learning at ShareChat.
-Some of you might have seen and met Richard already at last year's Rexxus where share chat was also a sponsor of the conference.
+Some of you might have seen and met Richard already at last year's RecSys where share chat was also a sponsor of the conference.
 And in this episode, we are having many topics and I guess it will be a very, very interesting episode today.
-Since of course we are talking about what broad reshuff to recommender systems and about his research and industry with two different directions on multi stakeholder recommendations and multi objective Rexxus user intent, user satisfaction and how to learn this from user interactions.
+Since of course we are talking about what broad reshuff to recommender systems and about his research and industry with two different directions on multi stakeholder recommendations and multi objective RecSys user intent, user satisfaction and how to learn this from user interactions.
 And of course, we are also talking about India's biggest social media platform, which is ShareChat.
 Rexxup obtained his PhD from UCL, did an internship for Microsoft Research.
 He was also entrepreneurially active founding a startup during his time of research at UCL.
 And in 2017, he joined Spotify.
-And last year he joined ShareChat and he has published many papers at wisdom, rexxus, dub, dub, dub and many other conferences.
+And last year he joined ShareChat and he has published many papers at wisdom, RecSys, dub, dub, dub and many other conferences.
 So happy anniversary Rexxup and welcome to the show.
 Thanks so much Marcel.
 Thanks for the invite.

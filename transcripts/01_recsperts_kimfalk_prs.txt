@@ -502,7 +502,7 @@ Yeah.
 So the thing is that the way that you calculate the metrics that we talked a lot about before was that you should try and predict what next I want to watch.
 And since the content-based recommendations are very close, very similar things all the time, then unless you are very specific in your taste, then it won't actually predict very well the things that you are watching.
 So the metrics that I tried to use or I used for the content-based didn't actually give very good results.
-So in the Rexxus world, my experience is that you should try and go with collaborative filtering as much as you can when you have the option.
+So in the RecSys world, my experience is that you should try and go with collaborative filtering as much as you can when you have the option.
 But content-based recommendations are also a very good idea to also have in your mix, in the sense that you could have kind of a cascading algorithm where you start out with collaborative filtering.
 And then if that doesn't fill it out, then use content-based and so on.
 Which just brings us to the large field of hybrid recommender.

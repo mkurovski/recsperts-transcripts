@@ -134,7 +134,7 @@ So we were using user and item features and building embeddings from that.
 And we used things like denoising autoencoders to build up a vector representation and other elements.
 And I think one of the key things that I still am working towards actually, the new work that we're doing in Merlin is splitting those models up.
 How do you get to the point where you can run these systems in production?
-And I think the key difference and the key challenge I see in the Rexxus space is the data sets that we have are not really representative of what's going on in production environments.
+And I think the key difference and the key challenge I see in the RecSys space is the data sets that we have are not really representative of what's going on in production environments.
 And so there's a big gap and challenge from the research community and from the public perception.
 Like if you Google recommender systems, you're going to find matrix factorization based solutions.
 Movie lens.

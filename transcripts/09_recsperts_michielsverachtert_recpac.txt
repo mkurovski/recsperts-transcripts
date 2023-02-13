@@ -435,7 +435,7 @@ Yeah.
 And not only great, but also a call for checking it out and developing it further, which should be easy and fun, since both of you provided a really good starting point.
 You solved your own problems, very likely addressed the pain of other researchers as well, and shared the solution with the community.
 So let's hope that others use it, extend it, and make it grow.
-One of the reviewers of the demo paper that we'll be presenting at Rexxus said that they believe that Rackpack could be the new scikit-learn for recommender systems.
+One of the reviewers of the demo paper that we'll be presenting at RecSys said that they believe that Rackpack could be the new scikit-learn for recommender systems.
 The sweetest thing anyone has ever said to me.
 I was so proud.
 This is fantastic to hear.
